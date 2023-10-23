@@ -1,5 +1,6 @@
 export interface LeaveFormData {
   
+    employeeId : number;
     appliedLeaveTypeId : number;
     leaveTypeId: number;
     leaveType: null;
@@ -10,4 +11,5 @@ export interface LeaveFormData {
     applyLeaveDay : number,
     remaingLeave:number,
     leaveStatusId: number,
+    isHalfDay : boolean,
 }

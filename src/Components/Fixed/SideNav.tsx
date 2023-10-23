@@ -22,6 +22,10 @@ import FactCheckIcon from '@mui/icons-material/FactCheck';
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import BadgeIcon from '@mui/icons-material/Badge';
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import SideNavLink from "./SideNavLink";
 
 const drawerWidth = 240;
 
@@ -121,6 +125,11 @@ export default function MiniDrawer() {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
+  const handleSignout = () => {
+    localStorage.removeItem("EmployeeID");
+    window.location.reload()
+    // navigate("/login")
+  }
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -140,6 +149,7 @@ export default function MiniDrawer() {
     >
       <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
     </Menu>
   );
 
@@ -191,7 +201,8 @@ export default function MiniDrawer() {
           </IconButton>
         </DrawerHeader>
         <Divider />
-        <List>
+        <SideNavLink open={open} />
+        {/* <List>
         <ListItem
             disablePadding
             sx={{ display: "block" }}
@@ -273,7 +284,85 @@ export default function MiniDrawer() {
               <ListItemText primary={"Status"} sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
           </ListItem>
-        </List>
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/accountingyear");
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <AccountBalanceIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Accounting Year"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/employee");
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <BadgeIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Add Employee"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => {
+              navigate("/employees");
+            }}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <FormatListBulletedIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Employees List"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+        </List> */}
       </Drawer>
     </Box>
   );

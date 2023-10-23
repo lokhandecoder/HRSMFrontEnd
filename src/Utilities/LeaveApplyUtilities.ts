@@ -2,75 +2,100 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import { EmployeeLeave } from "../Model/EmployeeLeave";
 import { GetEmployeeLeave } from "../Database/LeaveType";
 import { LeaveFormData } from "../Model/LeaveFormData";
+import { useState, useEffect } from "react";
 import { GetLeaveHistory } from "../Database/LeaveHIstory";
 import { Console } from "console";
 import axios from "axios";
 import { createLeaveApply, updateLeaveApply } from "../Services/EmployeeLeaveApplyServices";
+import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
+
+
 
 const LeaveApplyUtilities = (
   formData: any,
   setFormData: React.Dispatch<any>,
   todayDate: any,
   onSubmit: any,
-  setSnackbarOpen: any,
-  setsubmitMessageOpen: any,
-  setsnackbarDateValid: any,
-  setsnackLeavetype: any,
+
   difference: any,
   setdifference: any,
   balanceLeave: any,
   setBalanceLeave: any,
 
-  employeeLeaves :EmployeeLeave[] ,setemployeeLeaves :any
-) => {
-  const handleSubmit = (event: React.FormEvent) => {
+  employeeLeaves :EmployeeLeave[] ,setemployeeLeaves :any, errors:any,
+  setErrors :any, snackbar:any, initialFormData : any ) => {
+
+
+    const [loading, setLoading] = useState(false);
+
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    setLoading(true);
+
     event.preventDefault();
 
-    //console.log({formData});
-
-    //return false;
-    // IsValidDate();
-    // if (formData.applyLeave > formData.balanceLeave) {
-    //   console.log("Error: You do not have sufficient leaves.");
-    //   setSnackbarOpen(true);
-    // }else 
-    // if (!IsValidDate()) {
-    //   setsnackbarDateValid(true);
-    //   console.log("Error : Endate should be greater than start end");
-    // } else
-     if (formData.leaveTypeId <= 0) {
-      setsnackLeavetype(true);
-      console.log("Select tthe type");
-    } else {
-      onSubmit(formData);
-
-      if (formData.appliedLeaveTypeId>0){
-
-        updateLeaveApply(formData.appliedLeaveTypeId,formData)
-      }
-    else{
-      createLeaveApply(formData);
+    const isValid = isFormDataValid(formData);
+   // alert(isValid);
+    if (!isValid) {
+      // Handle validation error, e.g., display an error message
+      return;
     }
-      
-      // createLeaveApply(formData);
-      // axios.post("https://leaveapplication14.azurewebsites.net/api/employee/CreateAppliedLeave",formData).then((res) => console.log("Send", res)).catch((e) => console.log("BAd",e));
-      setsubmitMessageOpen(true);
+
+    const applyLeave =
+    formData.appliedLeaveTypeId > 0
+      ? await updateLeaveApply(formData.appliedLeaveTypeId, formData)
+      : await createLeaveApply(formData);
+
+    const { status, message } = applyLeave;
+    
+    if (status ===200){
+      //setsubmitMessageOpen(true);
+      snackbar.showSnackbar(message, 'success', { vertical: 'top', horizontal: 'center' }, 5000);
+      setLoading(false);
       handleClear();
+    }else{
+      //setsubmitMessageOpen(true);
+      //handleClear();
+      setLoading(false);
+      snackbar.showSnackbar(message, 'warning', { vertical: 'top', horizontal: 'center' }, 5000);
     }
-    // const list = GetLeaveHistory();
-    // list.push(formData);
-  };
 
-  const IsValidDate = () => {
-    if (formData.endDate < formData.startDate) {
-      console.log("valid");
-      return true;
-    } else {
-      console.log("invalid");
-      return false;
+    console.log({formData});
+
+  }
+  const isFormDataValid = (formData: LeaveFormData) => {
+    const newErrors: Partial<Record<keyof LeaveFormData, string>> = {};
+    if (formData.leaveTypeId <= 0) {
+      newErrors.leaveTypeId = 'Please select a leave type.';
     }
-  };
+  
+    // Check for null values and compare dates
+    if (formData.startDate !== null && formData.endDate !== null) {
+      if (formData.startDate > formData.endDate) {
+        newErrors.startDate = 'Start date must be less than or equal to end date.';
+        newErrors.endDate = 'Start date must be less than or equal to end date.';
+      }
+    }
 
+  
+    if (formData.employeeId <= 0) {
+      newErrors.employeeId = 'Please select an employee.';
+    }
+  
+    if (formData.applyLeaveDay > formData.balanceLeave) {
+      newErrors.applyLeaveDay = 'Applied leave cannot exceed balance leave.';
+    }
+  
+    // You can add additional validations for other fields here
+  
+    // Check if there are any errors
+    const isValid = Object.keys(newErrors).length === 0;
+  
+    setErrors(newErrors);
+   // return { isValid, errors };
+   return isValid;
+  };
+  
   const handleSelectChange = (event: SelectChangeEvent<string | number>) => {
     const value =
       typeof event.target.value === "string"
@@ -101,25 +126,22 @@ const LeaveApplyUtilities = (
     // Test()
   };
 
-  const handleClear = () => {
+  const handleIsHalfDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
-      leaveTypeId: 0,
-      startDate: todayDate,
-      endDate: todayDate,
-      leaveReason: "",
+      ...formData,
+      isHalfDay: event.target.checked, // Update isHalfDay with the checkbox value
     });
-    setdifference(0);
   };
 
-  // const GetBalanceLeaveByLeaveTypeId = (
-  //   employeeLeaves: EmployeeLeave[],
-  //   leaveTypeId: number
-  // ): number | null => {
-  //   const employeeLeave = employeeLeaves.find(
-  //     (leave) => leave.leaveTypeId === leaveTypeId
-  //   );
-  //   return employeeLeave ? employeeLeave.balanceLeaves : null;
-  // };
+  const handleClear = () => {
+    setFormData(initialFormData);
+    setdifference(0);
+
+
+  
+  };
+
+ 
   const GetBalanceLeaveByLeaveTypeId = (
    // employeeLeaves: employeeLeaves,
     leaveTypeId: number
@@ -127,13 +149,7 @@ const LeaveApplyUtilities = (
     const balanceLeave = employeeLeaves.find(
       (leave) => leave.leaveTypeId === leaveTypeId 
     );
-
-    
-    //alert(JSON.stringify(balanceLeave));
-    //alert(JSON.stringify(employeeLeaves));
-    //alert(JSON.stringify(leaveTypeId));
     const balance =balanceLeave ? balanceLeave.balanceLeaves : 0;
-   // alert(balance);
     return balance;
   };
   const differenceChecker = () => {
@@ -179,7 +195,14 @@ const LeaveApplyUtilities = (
         ...prevFormData,
         balanceLeave: balanceLeave,
       }));
-     const applyLeave =  differenceChecker();
+
+      let applyLeave =0;
+      if (formData.isHalfDay){
+         applyLeave = 0.5
+      }else{
+         applyLeave =  differenceChecker();
+      }
+     
      setFormData((prevFormData: LeaveFormData) => ({
       ...prevFormData,
       applyLeaveDay: applyLeave,
@@ -202,9 +225,7 @@ const LeaveApplyUtilities = (
     console.log({formData});
   };
 
-  // const ValidateEmployeeById = () => {
-  //   console.log(GetLeaveTypeByEmployeeId());
-  // }
+  
 
   return {
     handleSelectChange,
@@ -214,8 +235,10 @@ const LeaveApplyUtilities = (
     handleClear,
     handleSubmit,
     Test,
+    loading,
     differenceChecker,
     // ValidateEmployeeById,
+    handleIsHalfDayChange
   };
 };
 export default LeaveApplyUtilities;
