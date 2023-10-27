@@ -1,4 +1,5 @@
-import React from 'react';
+
+import { useEffect, useState } from 'react';
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip  } from '@mui/material';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -9,6 +10,10 @@ import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { useNavigate } from 'react-router-dom';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+import { GetRoleAssignIdByEmployee } from '../../Services/RoleAssignServices';
+import { EmployeeModel } from '../../Model/EmployeeModel';
+
+
 
 interface MenuItem {
     label: string;
@@ -36,7 +41,25 @@ interface MenuItem {
       function filterMenuItemsByRole(menuItems: MenuItem[], role: string): MenuItem[] {
         return menuItems.filter(item => !item.roles || item.roles.includes(role));
       }
+      const checking = GetRoleAssignIdByEmployee();
       
+
+      // const [data, setData] = useState<EmployeeModel[] | null>(null);
+
+      // useEffect(() => {
+      //   const fetchData = async () => {
+      //     try {
+      //       // Use the employeeRoleAssignId in your API call or data fetching logic
+      //       const result = await GetRoleAssignIdByEmployee();
+      //       setData(result);
+      //     } catch (error) {
+      //       console.error("Failed to fetch data: ", (error as Error).message);
+      //     }
+      //   };
+    
+      //   fetchData();
+      // }, []);
+
       // Example usage
       const roleToFilter = 'admin'; // Replace with the desired role
       const filteredMenuItems = filterMenuItemsByRole(menuItems, roleToFilter);

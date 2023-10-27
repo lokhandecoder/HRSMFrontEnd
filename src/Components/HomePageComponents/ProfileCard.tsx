@@ -11,7 +11,9 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { GetEmployees } from "../../Database/EmployeeServices";
 import MainCard from "./MainCard";
 
+
 const employee = GetEmployees();
+
 function ProfileCard() {
   return (
     <Card sx={{  p: 1, boxShadow: 4, mt: 5 }}>

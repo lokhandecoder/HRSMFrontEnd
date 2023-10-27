@@ -60,6 +60,7 @@ export const LoginPageUtilities = () => {
             const employeeId = response.data.data.employee.employeeId.toString();
             const encryptedEmployeeId = encryptData(employeeId, secretKey_global);
           localStorage.setItem("EmployeeID", encryptedEmployeeId);
+          // localStorage.setItem("Role",response.data.data.UserRoleMapping);
           window.location.href = "/";
           toast.success("Login successful!");
           }

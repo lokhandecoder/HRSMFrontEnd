@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_URL } from "../APIConfig";
 import { RowHeaderModel, ColumnHeaderModel } from "../Model/RoleAssignModels";
 import { UserRoleMapping } from "../Model/UserRoleMapping";
+import { EmployeeModel } from "../Model/EmployeeModel";
 
 export async function GetRoleAssignsAsync(): Promise<{ data: ColumnHeaderModel[] }> {
     try {
@@ -34,4 +35,12 @@ export async function GetRoleAssignsAsync(): Promise<{ data: ColumnHeaderModel[]
     }
   };
   
-  
+  export async function GetRoleAssignIdByEmployee(): Promise<{ data: EmployeeModel[] }> {
+    try {
+      const response = await axios.get(`${API_URL}employee/GetEmployeesAsync`);
+      console.log("test", response.data.data)
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to fetch role assigns data: ' + (error as Error).message);
+    }
+  }
