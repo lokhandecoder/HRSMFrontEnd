@@ -37,6 +37,7 @@ import {
     const {
       employeeData,
       designations,
+      roles,
       genders,
       fieldErrors,
       snackbar,
@@ -218,6 +219,39 @@ import {
                     </Select>
                     {!!fieldErrors.designationId && (
                       <FormHelperText>{fieldErrors.designationId}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+                {/* for selecting role */}
+                <Grid item xs={3}>
+                  <FormControl fullWidth error={!!fieldErrors.roleAssignId}>
+                    <InputLabel id="demo-simple-select-label">
+                      Role
+                    </InputLabel>
+                    <Select
+                      labelId="roleAssignId"
+                      id="roleAssignId"
+                      name="roleAssignId"
+                      label="Role"
+                      value={employeeData.roleAssignId}
+                      onChange={(e) =>
+                        handleFieldChange("roleAssignId", e.target.value)
+                      }
+                    >
+                      <MenuItem value={0} key={0}>
+                        Select Role
+                      </MenuItem>
+                      {roles.map((role) => (
+                        <MenuItem
+                          key={role.roleAssignId}
+                          value={role.roleAssignId}
+                        >
+                          {role.roleAssignName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {!!fieldErrors.roleAssignId && (
+                      <FormHelperText>{fieldErrors.roleAssignId}</FormHelperText>
                     )}
                   </FormControl>
                 </Grid>

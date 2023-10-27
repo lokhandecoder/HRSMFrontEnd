@@ -19,9 +19,11 @@ import { IconButton } from "@mui/material";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
-import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
+//import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
+//import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
+
+import {ThumbDownOffAlt,Unpublished } from '@mui/icons-material';
 
 interface Row {
   appliedLeaveTypeId?: number;
@@ -295,7 +297,7 @@ function StatusTable() {
                             onLeaveReject(row.appliedLeaveTypeId || 0)
                           }
                         >
-                          <ThumbDownOffAltOutlinedIcon />
+                          <ThumbDownOffAlt />
                         </IconButton>
                       </>
                     )}
@@ -308,7 +310,7 @@ function StatusTable() {
                       //   onLeaveCancel(row.appliedLeaveTypeId || 0)
                       // }
                     >
-                      <UnpublishedOutlinedIcon />
+                      <Unpublished />
                     </IconButton></>
                     ) : (
                       // When either row.isApproved or row.isRejected is false
@@ -331,7 +333,7 @@ function StatusTable() {
                               onLeaveReject(row.appliedLeaveTypeId || 0)
                             }
                           >
-                            <ThumbDownOffAltOutlinedIcon />
+                            <ThumbDownOffAlt />
                           </IconButton>
                         )}
                       </>

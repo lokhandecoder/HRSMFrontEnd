@@ -1,5 +1,4 @@
-import React, { Suspense } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import DashBoardPage from "../Pages/DashBoardPage";
 import LeavePage from "../Pages/LeavePage";
 import StatusPage from "../Pages/StatusPage";
@@ -11,6 +10,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import AccountingYear from "../Pages/AccountingYear";
 import EmployeePage from "../Pages/EmployeePage";
 import EmployeesPage from "../Pages/EmployeesPage";
+import RoleAssign from "../Pages/RoleAssign";
 
 function RoutingPgae() {
   const jsonConfig = {
@@ -70,6 +70,12 @@ function RoutingPgae() {
         component: "EmployeesPage",
         protected: true,
         allowedRoles: ["admin"],
+      },
+      {
+        path: "/roleassign",
+        component: "RoleAssign",
+        protected: true, // Set this to true if it should be protected
+        allowedRoles: ["admin"], // Define allowed roles if needed
       },
     ],
   };
@@ -136,11 +142,16 @@ function RoutingPgae() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/roleassign"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <RoleAssign />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
-
-
-
     </>
   );
 }

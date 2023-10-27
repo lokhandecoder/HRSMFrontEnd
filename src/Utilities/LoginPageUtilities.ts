@@ -57,7 +57,7 @@ export const LoginPageUtilities = () => {
         .then((response) => {
           console.log("Successfully submitted:", response.data);
           if (response.data.status === 200) {
-            const employeeId = response.data.data.employeeId.toString();
+            const employeeId = response.data.data.employee.employeeId.toString();
             const encryptedEmployeeId = encryptData(employeeId, secretKey_global);
           localStorage.setItem("EmployeeID", encryptedEmployeeId);
           window.location.href = "/";

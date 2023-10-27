@@ -11,11 +11,14 @@ import {
   updateEmployee,
 } from "../Services/EmployeeServices";
 import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
+import { ColumnHeaderModel } from "../Model/RoleAssignModels";
+import { GetRoleAssignsAsync } from "../Services/RoleAssignServices";
 export const EmployeeUtilities = (employeeId: number) => {
   const today = dayjs();
   const todayDate = today.toDate();
   const snackbar = useCustomSnackbar();
 
+  const [roles, setRoles] = useState<ColumnHeaderModel[]>([]);
   const [designations, setDesignations] = useState<DesignationModel[]>([]);
   const [genders, setGenders] = useState<GenderModel[]>([]);
   const [loading, setLoading] = useState(false);
@@ -32,9 +35,12 @@ export const EmployeeUtilities = (employeeId: number) => {
     mobileNo: "",
     genderId: 0,
     designationId: 0,
+    roleAssignId: 0,
     isActive: false,
     designation: null,
     gender: null,
+    role: null,
+
   });
 
   /*
@@ -63,9 +69,10 @@ export const EmployeeUtilities = (employeeId: number) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [designationResult, genderResult] = await Promise.allSettled([
+        const [designationResult, genderResult, roleResult] = await Promise.allSettled([
           GetDesignationsAsync(),
           GetGendersAsync(),
+          GetRoleAssignsAsync()
         ]);
 
         setDesignations(
@@ -76,6 +83,9 @@ export const EmployeeUtilities = (employeeId: number) => {
         setGenders(
           genderResult.status === "fulfilled" ? genderResult.value.data : []
         );
+        setRoles(
+          roleResult.status === "fulfilled" ? roleResult.value.data : []
+        )
 
         if (employeeId > 0) {
           try {
@@ -145,6 +155,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       lastName,
       genderId,
       designationId,
+      roleAssignId,
       emailAddress,
       mobileNo,
       dateOfBirth,
@@ -242,6 +253,13 @@ export const EmployeeUtilities = (employeeId: number) => {
       setFieldErrors((prev) => ({ ...prev, genderId: null }));
     }
 
+    if (roleAssignId === 0) {
+      setFieldErrors((prev) => ({ ...prev, roleAssignId: "Role is required"}));
+      valid = false;
+    } else {
+      setFieldErrors((prev) => ({ ...prev, roleAssignId: null}));
+    }
+
     if (designationId === 0) {
       setFieldErrors((prev) => ({
         ...prev,
@@ -259,6 +277,7 @@ export const EmployeeUtilities = (employeeId: number) => {
     employeeData,
     designations,
     genders,
+    roles,
     fieldErrors,
     snackbar,
     handleFieldChange,

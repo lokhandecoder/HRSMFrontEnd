@@ -3,10 +3,12 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText, Tooltip  } 
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
-import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+//import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import {SpaceDashboard} from '@mui/icons-material';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { useNavigate } from 'react-router-dom';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 
 interface MenuItem {
     label: string;
@@ -27,7 +29,8 @@ interface MenuItem {
         { label: 'Status', path: '/status', roles: ['admin', 'manager', 'user'], ToolTiplabel: 'Shows Leave Status'  },
         { label: 'Accounting Year', path: '/accountingyear', roles: ['admin'], ToolTiplabel: 'Setting Accounting Year'  },
         { label: 'Add Employee', path: '/employee', roles: ['admin'], ToolTiplabel: 'Dashboard'  },
-        { label: 'Employees List', path: '/employees', roles: ['admin'], ToolTiplabel: 'Dashboard'  }
+        { label: 'Employees List', path: '/employees', roles: ['admin'], ToolTiplabel: 'Dashboard'  },
+        { label: 'Role Assign', path: '/roleassign', roles: ['admin'], ToolTiplabel: 'Assign Roles' }
       ];
       
       function filterMenuItemsByRole(menuItems: MenuItem[], role: string): MenuItem[] {
@@ -42,7 +45,7 @@ interface MenuItem {
   const getIconForItem = (label: string): JSX.Element | null => {
     switch (label) {
       case 'Dashboard':
-        return <SpaceDashboardIcon />;
+        return <SpaceDashboard />;
       case 'Apply for Leave':
         return <ExitToAppIcon />
         // Return the icon component for "Apply for Leave"
@@ -55,11 +58,13 @@ interface MenuItem {
         return <BadgeIcon />;
       case 'Employees List':
         return <FormatListBulletedIcon />;
+        case 'Role Assign':
+          return <AssignmentIndIcon />;
       default:
         return null;
     }
   };
-
+  
   return (
     <List>
       {filteredMenuItems.map((item, index) => (

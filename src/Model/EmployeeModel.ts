@@ -1,5 +1,6 @@
 import { DesignationModel } from "./DesignationModel";
 import { GenderModel } from "./GenderModel";
+import { ColumnHeaderModel } from "./RoleAssignModels";
 
 export interface EmployeeModel {
     employeeId: number,
@@ -12,8 +13,10 @@ export interface EmployeeModel {
       genderId: number;
       designationId: number;
       isActive: boolean;
+      roleAssignId: number;
       designation : DesignationModel | null;
-      gender : GenderModel | null;
+      gender : GenderModel | null;  
+      role: ColumnHeaderModel | null;    
       // gender: {
       //   designationName: string | null; // Adjust the type accordingly
       // };

@@ -64,7 +64,9 @@ import {
                     <TableCell>MObile No</TableCell>
                     <TableCell>Gender</TableCell>
                     <TableCell>Designation</TableCell>
+                    <TableCell>Role</TableCell>
                     <TableCell>Action</TableCell>
+
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -84,7 +86,9 @@ import {
                       <TableCell>{row.mobileNo}</TableCell>
                       {/* <TableCell>{row.gender.genderCode}</TableCell> */}
                       <TableCell>{row.gender ? row.gender.genderName: 'N/A'}</TableCell> 
-                     <TableCell>{row.designation ? row.designation.designationName: 'N/A'}</TableCell> 
+                     <TableCell>{row.designation ? row.designation.designationName: 'N/A'}</TableCell>
+                     <TableCell>{row.role ? row.role.roleAssignName: 'N/A'}</TableCell>
+                     
                       <TableCell>
                         <IconButton
                           aria-label="Edit"
