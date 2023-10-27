@@ -38,7 +38,7 @@ export async function GetRoleAssignsAsync(): Promise<{ data: ColumnHeaderModel[]
   export async function GetRoleAssignIdByEmployee(): Promise<{ data: EmployeeModel[] }> {
     try {
       const response = await axios.get(`${API_URL}employee/GetEmployeesAsync`);
-      console.log("test", response.data.data)
+      console.log("checking data", response.data)
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch role assigns data: ' + (error as Error).message);

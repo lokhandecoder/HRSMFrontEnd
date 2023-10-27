@@ -1,5 +1,5 @@
 import { Navigate, Route, useNavigate } from 'react-router-dom';
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { EmployeeIDByLocalStorage } from '../APIConfig';
 import { DecryptEmployeeID } from '../Services/EncryptEmplyeeID';
 
@@ -8,11 +8,27 @@ interface ProtectedRouteProps {
   allowedRoles  : any,
 }
 
+
+
 const ProtectedRoute = ({ children,allowedRoles   }: ProtectedRouteProps) => {
   const navigate = useNavigate()
-  const userRole = 'user'; // Replace with actual role retrieval logic
 
+  const userRole = 'user'; // Replace with actual role retrieval logic
+  const [roleAssignData, setRoleAssignData] = useState<number | null>(null);
+  useEffect(() => {
+    const assignId = localStorage.getItem("Role");
   
+    if (assignId !== null) {
+      // Parse the string to a number.
+      const roleAssignId = parseInt(assignId, 10);
+  
+      if (!isNaN(roleAssignId)) {
+        setRoleAssignData(roleAssignId);
+      }
+    }
+  }, []);
+
+  console.log("Role Assign id", roleAssignData);
   useEffect(() => {
     const isUserAuthenticated = localStorage.getItem("EmployeeID") !== null;
 

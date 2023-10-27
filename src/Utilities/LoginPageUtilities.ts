@@ -20,6 +20,7 @@ export const LoginPageUtilities = () => {
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const Navigate = useNavigate();
+  
   const [loading, setLoading] = useState(false);
 
 
@@ -56,11 +57,14 @@ export const LoginPageUtilities = () => {
       Axios.post(`${API_URL}employee/EmployeeLoginAsync`, formData)
         .then((response) => {
           console.log("Successfully submitted:", response.data);
+  
           if (response.data.status === 200) {
             const employeeId = response.data.data.employee.employeeId.toString();
             const encryptedEmployeeId = encryptData(employeeId, secretKey_global);
           localStorage.setItem("EmployeeID", encryptedEmployeeId);
-          // localStorage.setItem("Role",response.data.data.UserRoleMapping);
+          // alert(JSON.stringify(response.data.data));
+          
+          localStorage.setItem("Role",response.data.data);
           window.location.href = "/";
           toast.success("Login successful!");
           }
