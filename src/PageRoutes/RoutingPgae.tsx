@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import DashBoardPage from "../Pages/DashBoardPage";
 import LeavePage from "../Pages/LeavePage";
 import StatusPage from "../Pages/StatusPage";
@@ -10,149 +11,117 @@ import ProtectedRoute from "./ProtectedRoute";
 import AccountingYear from "../Pages/AccountingYear";
 import EmployeePage from "../Pages/EmployeePage";
 import EmployeesPage from "../Pages/EmployeesPage";
+import { UserRoleMapping } from '../Model/UserRoleMapping';
+import { GetUserRoleMappingsAsync } from '../Services/UserRoleMappingServices';
 import RoleAssign from "../Pages/RoleAssign";
 
 function RoutingPgae() {
-  
-  const jsonConfig = {
-    routes: [
-      {
-        path: "/assign",
-        protected: false,
-        component: "AssignManager",
-      },
-      {
-        path: "/login",
-        protected: false,
-        component: "LoginPage",
-      },
-      {
-        path: "/forgotpassword",
-        protected: false,
-        component: "ForgotPasswordPage",
-      },
-      {
-        path: "/updatepassword/:id?",
-        protected: false,
-        component: "UpdatePassword",
-      },
-      {
-        path: "/",
-        component: "DashBoardPage",
-        protected: true,
-        allowedRoles: ["admin", "user"],
-      },
-      {
-        path: "/leave/:id?",
-        component: "LeavePage",
-        protected: true,
-        allowedRoles: ["admin", "user"],
-      },
-      {
-        path: "/status",
-        component: "StatusPage",
-        protected: true,
-        allowedRoles: ["admin", "user"],
-      },
-      {
-        path: "/accountingyear",
-        component: "AccountingYear",
-        protected: true,
-        allowedRoles: ["admin"],
-      },
-      {
-        path: "/employee/:id?",
-        component: "EmployeePage",
-        protected: true,
-        allowedRoles: ["admin"],
-      },
-      {
-        path: "/employees",
-        component: "EmployeesPage",
-        protected: true,
-        allowedRoles: ["admin"],
-      },
-      {
-        path: "/roleassign",
-        component: "RoleAssign",
-        protected: true, // Set this to true if it should be protected
-        allowedRoles: ["admin"], // Define allowed roles if needed
-      },
-    ],
-  };
 
+  interface RouteConfig {
+    path: string;
+    element: JSX.Element;
+    roleIds: number[]; // An array of role IDs that can access this route
+  }
+
+  // const routes: RouteConfig[] = [
+  //   { path: '/assign', element: <AssignManager /> , roleIds: [1, 2]},
+  //   { path: '/login', element: <LoginPage /> , roleIds: [1, 2]},
+  //   { path: '/', element: <DashBoardPage />, roleIds: [1, 2] },
+  //   { path:"/leave/:id?", element: <LeavePage />, roleIds: [2] },
+  //   // Add more routes here as needed
+  // ];
+  // const routes: RouteConfig[] = [
+  //   { path: '/assign', element: <AssignManager />, roleIds: [1, 2] },
+  //   { path: '/login', element: <LoginPage />, roleIds: [1, 2, 3] },
+  //   { path: '/forgotpassword', element: <ForgotPasswordPage />, roleIds: [1, 2, 3] },
+  //   { path: '/updatepassword/:id?', element: <UpdatePassword />, roleIds: [1, 2, 3] },
+  //   { path: '/', element: <DashBoardPage />, roleIds: [1, 2] },
+  //   { path: '/leave/:id?', element: <LeavePage />, roleIds: [1, 2] },
+  //   { path: '/status', element: <StatusPage />, roleIds: [1, 2] },
+  //   { path: '/accountingyear', element: <AccountingYear />, roleIds: [1] },
+  //   { path: '/employee/:id?', element: <EmployeePage />, roleIds: [1] },
+  //   { path: '/employees', element: <EmployeesPage />, roleIds: [1] },
+  // ];
+  const userRoleId = 1; // Replace this with the user's actual role(s)
+
+
+  const [userRoleMappings, setUserRoleMappings] = useState<UserRoleMapping[]>([]);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await GetUserRoleMappingsAsync();
+        setUserRoleMappings(response.data);
+        console.log(response.data);
+        //console.log("222222222222222222");
+      } catch (error) {
+        console.error('Error fetching user role mappings: ' + (error as Error).message);
+      }
+    }
+
+    fetchData();
+  }, []);
+
+  function mapElementToComponent(elementName: string) {
+    switch (elementName) {
+      case 'AssignManager':
+        return AssignManager;
+      case 'LoginPage':
+        return LoginPage;
+      case 'DashBoardPage':
+        return DashBoardPage;
+      case 'EmployeesPage':
+          return EmployeesPage;
+      case 'EmployeePage':
+          return EmployeePage;
+      case 'AccountingYear':
+          return AccountingYear;
+      case 'StatusPage':
+          return StatusPage;
+      case 'AssignManager':
+          return AssignManager;
+      case 'LoginPage':
+          return LoginPage;
+      case 'ForgotPasswordPage':
+            return ForgotPasswordPage;
+      case 'UpdatePassword':
+            return UpdatePassword;
+      case 'LeavePage':
+              return LeavePage;     
+      case 'RoleAssign':
+            return RoleAssign;                                         
+      default:
+        return null; // Return a default component or handle the error
+    }
+  }
   return (
     <>
       <BrowserRouter>
-        <Routes>
-          <Route path="/assign" element={<AssignManager />}></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route
-            path="/forgotpassword"
-            element={<ForgotPasswordPage />}
-          ></Route>
-          <Route
-            path="/updatepassword/:id?"
-            element={<UpdatePassword />}
-          ></Route>
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <DashBoardPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/leave/:id?"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <LeavePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/status"
-            element={
-              <ProtectedRoute allowedRoles={["admin", "user"]}>
-                <StatusPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/accountingyear"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <AccountingYear />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/employee/:id?"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <EmployeePage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/employees"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <EmployeesPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/roleassign"
-            element={
-              <ProtectedRoute allowedRoles={["admin"]}>
-                <RoleAssign />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
+        {/* <Routes>
+          {userRoleMappings
+            .filter((route) => route.roleAssignId == userRoleId)
+            .map((route, index) => (
+              <Route key={index} path={route.routePath} element={mapElementToComponent(route.componentName)} />
+            ))}
+        </Routes> */}
+
+<Routes>
+      {userRoleMappings
+      .filter((route)=> route.roleAssignId == userRoleId)
+      .map((route, index) => {
+        const Component = mapElementToComponent(route.componentName);
+        if (Component) {
+          return (
+            <Route key={index} path={route.routePath} element={<Component />} />
+          );
+        }
+        // Handle the case where the component mapping failed
+        return null;
+      })}
+    </Routes>
       </BrowserRouter>
+
+
+
     </>
   );
 }

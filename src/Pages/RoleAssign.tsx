@@ -127,13 +127,14 @@ function RoleAssign() {
       setSelectedData(updatedData); // Assuming you have a setter function like this
     } else {
       // If the cell is not selected, add it to the selectedData
-      const newData: UserRoleMapping = { roleAssignId: columnId, applicationPageId: rowId };
+      const newData: UserRoleMapping = { roleAssignId: columnId, applicationPageId: rowId , roleAssignName:'',roleAssignCodeName:'',pageName:'',pageCode:'',routePath:'',menuPath:'',isMenuPage:false,componentName:'' };
       const updatedData = [...selectedData, newData];
       setSelectedData(updatedData);
     }
 
  
   };
+  
 
 
   if (error) {
