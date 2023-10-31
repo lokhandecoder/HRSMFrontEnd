@@ -15,6 +15,7 @@ import { GetGendersAsync } from "../Services/GenderServices";
 import { GetDesignationsAsync } from "../Services/DesignationServices";
 import { ColumnHeaderModel } from "../Model/RoleAssignModels";
 import { GetRoleAssignsAsync } from "../Services/RoleAssignServices";
+
 export const EmployeesUtilities = (employeeId: number) => {
   const navigate = useNavigate();
   const today = dayjs();
@@ -25,6 +26,7 @@ export const EmployeesUtilities = (employeeId: number) => {
   const [designations, setDesignations] = useState<DesignationModel[]>([]);
   const [genders, setGenders] = useState<GenderModel[]>([]);
   const [roles, setRoles] = useState<ColumnHeaderModel[]>([]);
+  const [selectedReportingPersons, setSelectedReportingPersons] = useState<EmployeeModel[]>([]);
 
   const onEdit = (employeeId: number) => {
     navigate(`/employee/${employeeId}`);
@@ -32,10 +34,11 @@ export const EmployeesUtilities = (employeeId: number) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [designationResult, genderResult, roleResult] = await Promise.allSettled([
+        const [designationResult, genderResult, roleResult, reportingPersonResult] = await Promise.allSettled([
           GetDesignationsAsync(),
           GetGendersAsync(),
-          GetRoleAssignsAsync()
+          GetRoleAssignsAsync(),
+          GetEmployeesAsync()
         ]);
 
         setDesignations(
@@ -49,6 +52,10 @@ export const EmployeesUtilities = (employeeId: number) => {
 
         setRoles(
           roleResult.status === "fulfilled" ? roleResult.value.data : []
+        )
+
+        setSelectedReportingPersons(
+          reportingPersonResult.status === "fulfilled" ? reportingPersonResult.value.data : []
         )
 
         const employeeResult = await GetEmployeesAsync();

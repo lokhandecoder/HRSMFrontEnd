@@ -3,7 +3,7 @@ import { GenderModel } from "./GenderModel";
 import { ColumnHeaderModel } from "./RoleAssignModels";
 
 export interface EmployeeModel {
-    employeeId: number,
+      employeeId: number,
       firstName: string;
       lastName: string;
       dateOfBirth: string | null;
@@ -14,9 +14,14 @@ export interface EmployeeModel {
       designationId: number;
       isActive: boolean;
       roleAssignId: number;
-      designation : DesignationModel | null;
+      reportingPersonId: number;
+ designation : DesignationModel | null;
       gender : GenderModel | null;  
-      role: ColumnHeaderModel | null;    
+      role: ColumnHeaderModel | null; 
+      reportingPerson: EmployeeModel | null;
+    
+       
+      
       // gender: {
       //   designationName: string | null; // Adjust the type accordingly
       // };

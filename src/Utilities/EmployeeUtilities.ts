@@ -13,6 +13,7 @@ import {
 import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
 import { ColumnHeaderModel } from "../Model/RoleAssignModels";
 import { GetRoleAssignsAsync } from "../Services/RoleAssignServices";
+import { GetEmployeesAsync } from "../Services/EmployeeServices"; 
 export const EmployeeUtilities = (employeeId: number) => {
   const today = dayjs();
   const todayDate = today.toDate();
@@ -22,6 +23,10 @@ export const EmployeeUtilities = (employeeId: number) => {
   const [designations, setDesignations] = useState<DesignationModel[]>([]);
   const [genders, setGenders] = useState<GenderModel[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedReportingPersons, setSelectedReportingPersons] = useState<EmployeeModel[]>([]);
+
+
+
   const [fieldErrors, setFieldErrors] = useState<{
     [key: string]: string | null;
   }>({});
@@ -36,28 +41,16 @@ export const EmployeeUtilities = (employeeId: number) => {
     genderId: 0,
     designationId: 0,
     roleAssignId: 0,
+    reportingPersonId: 0,
     isActive: false,
     designation: null,
     gender: null,
     role: null,
+    reportingPerson: null
+ 
 
   });
 
-  /*
-  const [employeeData, setEmployeeData] = useState<EmployeeModel>({
-    employeeId: employeeId,
-    firstName: "test",
-    lastName: "test",
-    dateOfBirth: dayjs(todayDate).format("MM-DD-YYYY"),
-    dateOfJoining: dayjs(todayDate).format("MM-DD-YYYY"),
-    emailAddress: "test@test.com",
-    mobileNo: "test",
-    genderId: 1,
-    designationId: 1,
-    isActive: false,
-  });
-
-  */
   const handleFieldChange = (
     fieldName: keyof EmployeeModel,
     value: string | number | boolean
@@ -69,10 +62,12 @@ export const EmployeeUtilities = (employeeId: number) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [designationResult, genderResult, roleResult] = await Promise.allSettled([
+        const [designationResult, genderResult, roleResult, reportingPersonResult] = await Promise.allSettled([
           GetDesignationsAsync(),
           GetGendersAsync(),
-          GetRoleAssignsAsync()
+          GetRoleAssignsAsync(),
+          GetEmployeesAsync()
+    
         ]);
 
         setDesignations(
@@ -86,6 +81,13 @@ export const EmployeeUtilities = (employeeId: number) => {
         setRoles(
           roleResult.status === "fulfilled" ? roleResult.value.data : []
         )
+        setSelectedReportingPersons(
+          reportingPersonResult.status === "fulfilled" ? reportingPersonResult.value.data : []
+        )
+      
+       
+        
+    
 
         if (employeeId > 0) {
           try {
@@ -156,6 +158,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       genderId,
       designationId,
       roleAssignId,
+      reportingPersonId,    
       emailAddress,
       mobileNo,
       dateOfBirth,
@@ -260,6 +263,14 @@ export const EmployeeUtilities = (employeeId: number) => {
       setFieldErrors((prev) => ({ ...prev, roleAssignId: null}));
     }
 
+    if (reportingPersonId === 0) {
+      setFieldErrors((prev) => ({ ...prev, reportingPersonId: "Reporting Person is required"}));
+      valid = false;
+    } else {
+      setFieldErrors((prev) => ({ ...prev, reportingPersonId: null}));
+    }
+
+
     if (designationId === 0) {
       setFieldErrors((prev) => ({
         ...prev,
@@ -277,6 +288,7 @@ export const EmployeeUtilities = (employeeId: number) => {
     employeeData,
     designations,
     genders,
+    selectedReportingPersons,
     roles,
     fieldErrors,
     snackbar,

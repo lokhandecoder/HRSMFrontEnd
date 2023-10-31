@@ -12,6 +12,8 @@ import {
   AlertColor,
 } from "@mui/material";
 import { Box, Button, Card, CardContent, CardActions } from "@mui/material";
+import SaveIcon from '@mui/icons-material/Save';
+import CancelIcon from '@mui/icons-material/Cancel';
 import LayoutComponent from "../Components/Fixed/LayoutComponent";
 import TableRowWithCheckboxes from "../Components/DataTable/TableRowWithCheckboxes";
 import {
@@ -177,6 +179,7 @@ function RoleAssign() {
                   variant="contained"
                   color="primary"
                   onClick={handleSave}
+                  startIcon={<SaveIcon />}
                 >
                   Save
                 </Button>
@@ -186,6 +189,7 @@ function RoleAssign() {
                   variant="contained"
                   color="secondary"
                   onClick={handleReset}
+                  startIcon={<CancelIcon />}
                 >
                   Reset
                 </Button>

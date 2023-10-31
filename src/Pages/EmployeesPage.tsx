@@ -65,8 +65,8 @@ import {
                     <TableCell>Gender</TableCell>
                     <TableCell>Designation</TableCell>
                     <TableCell>Role</TableCell>
+                    <TableCell>Reporting Person</TableCell>
                     <TableCell>Action</TableCell>
-
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -88,7 +88,7 @@ import {
                       <TableCell>{row.gender ? row.gender.genderName: 'N/A'}</TableCell> 
                      <TableCell>{row.designation ? row.designation.designationName: 'N/A'}</TableCell>
                      <TableCell>{row.role ? row.role.roleAssignName: 'N/A'}</TableCell>
-                     
+                     <TableCell>{row.reportingPerson ? row.reportingPerson.firstName: 'N/A'}</TableCell>
                       <TableCell>
                         <IconButton
                           aria-label="Edit"

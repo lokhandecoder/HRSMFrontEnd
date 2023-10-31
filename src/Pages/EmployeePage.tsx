@@ -28,6 +28,7 @@ import {
   import Alert from "@mui/material/Alert";
   import SaveIcon from '@mui/icons-material/Save';
   import { useParams } from "react-router-dom"; // Import useParams to get the ID from the route params
+import { EmployeeModel } from "../Model/EmployeeModel";
   const EmployeePage = () => {
     const { id } = useParams();
     const employeeId = id ? parseInt(id, 10) : 0;
@@ -39,6 +40,7 @@ import {
       designations,
       roles,
       genders,
+      selectedReportingPersons,
       fieldErrors,
       snackbar,
       handleFieldChange,
@@ -255,6 +257,40 @@ import {
                     )}
                   </FormControl>
                 </Grid>
+                {/* //adding reporting person */}
+                <Grid item xs={3}>
+                  <FormControl fullWidth error={!!fieldErrors.reportingPersonId}>
+                    <InputLabel id="demo-simple-select-label">
+                      Reporting Person
+                    </InputLabel>
+                    <Select
+                      labelId="reportingPersonId"
+                      id="reportingPersonId"
+                      name="reportingPersonId"
+                      label="Reporting Person"
+                      value={employeeData.reportingPersonId}
+                      onChange={(e) =>
+                        handleFieldChange("reportingPersonId", e.target.value)
+                      }
+                    >
+                      <MenuItem value={0} key={0}>
+                        Select Reporting Person
+                      </MenuItem>
+                      {selectedReportingPersons.map((repPerson) => (
+                        <MenuItem
+                          key={repPerson.employeeId}
+                          value={repPerson.employeeId}
+                        >
+                          {repPerson.firstName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {!!fieldErrors.reportingPersonId && (
+                      <FormHelperText>{fieldErrors.reportingPersonId}</FormHelperText>
+                    )}
+                  </FormControl>
+                </Grid>
+              
                 <Grid item xs={3}>
                   {" "}
                   <FormControlLabel
@@ -268,7 +304,7 @@ import {
               </Grid>
             </Box>
           </CardContent>
-          <CardActions>
+          <CardActions style={{ justifyContent: "right" }}> 
             <Button
               variant="contained"
               onClick={handleSubmit}
