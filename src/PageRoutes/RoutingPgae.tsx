@@ -122,7 +122,7 @@ function RoutingPgae() {
         // Handle the case where the component mapping failed
         return null;
       })}
-      <Route path="/login" element={<LoginPage />} />
+      {/* <Route path="/login" element={<LoginPage />} /> */}
     </Routes>
       </BrowserRouter>
 
