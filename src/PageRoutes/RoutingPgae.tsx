@@ -42,7 +42,7 @@ function RoutingPgae() {
   //   { path: '/employee/:id?', element: <EmployeePage />, roleIds: [1] },
   //   { path: '/employees', element: <EmployeesPage />, roleIds: [1] },
   // ];
-  const userRoleId = 3; // Replace this with the user's actual role(s)
+  //const userRoleId = 3; // Replace this with the user's actual role(s)
 
 
   const [userRoleMappings, setUserRoleMappings] = useState<UserRoleMapping[]>([]);
@@ -54,7 +54,14 @@ function RoutingPgae() {
         setUserRoleMappings(response.data);
         console.log("user role",response.data);
         const roleid = localStorage.getItem("Role" )
-        console.log("role id ",roleid)
+        if (roleid) {
+          // Parse the JSON string back to an object
+          const parsedData = JSON.parse(roleid);
+          console.log("parsedata",parsedData.employee.roleAssignId)
+          setuserrole(parsedData.employee.roleAssignId);
+        }else{
+          setuserrole(null)
+        }
         // setuserrole(loca)
         //console.log("222222222222222222");
       } catch (error) {
@@ -111,7 +118,7 @@ function RoutingPgae() {
 
 <Routes>
       {userRoleMappings
-      .filter((route)=> route.roleAssignId == userRoleId)
+      .filter((route)=> route.roleAssignId == userrole)
       .map((route, index) => {
         const Component = mapElementToComponent(route.componentName);
         if (Component) {
@@ -122,7 +129,7 @@ function RoutingPgae() {
         // Handle the case where the component mapping failed
         return null;
       })}
-      {/* <Route path="/login" element={<LoginPage />} /> */}
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
       </BrowserRouter>
 

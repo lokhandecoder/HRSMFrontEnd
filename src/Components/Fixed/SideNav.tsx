@@ -129,7 +129,9 @@ export default function MiniDrawer() {
   };
   const handleSignout = () => {
     localStorage.removeItem("EmployeeID");
-    window.location.reload()
+    localStorage.removeItem("Role");
+    // window.location.reload()
+    navigate("/login")
     // navigate("/login")
   }
   const menuId = "primary-search-account-menu";

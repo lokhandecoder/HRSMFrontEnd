@@ -3,10 +3,10 @@ import * as CryptoJS from 'crypto-js';
 
 import { EmployeeIDByLocalStorage, secretKey_global } from '../APIConfig';
 
-export const encryptData = (data: string, secretKey: string): string => {
-    const encrypted = CryptoJS.AES.encrypt(data, secretKey);
-    return encrypted.toString();
-  };
+export const encryptData = (data: number, secretKey: string): string => {
+  const encrypted = CryptoJS.AES.encrypt(data.toString(), secretKey);
+  return encrypted.toString();
+};
   
   // Decryption function
   export const decryptData = (encryptedData: string, secretKey: string): string => {
@@ -21,7 +21,7 @@ export const encryptData = (data: string, secretKey: string): string => {
     }
 
     const employeeId = decryptData(encryptedEmployeeId, secretKey_global); 
-    console.log("decrypted employee ID : ",employeeId)
+    console.log("decrypted employee ID: ",employeeId)
     return employeeId;
 
-  }
+  } 
