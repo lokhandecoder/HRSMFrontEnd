@@ -185,6 +185,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, dateOfBirth: null }));
+      valid = true;
     }
 
     // Date of Joining validation
@@ -205,6 +206,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, dateOfJoining: null }));
+      valid = true;
     }
 
     if (firstName.trim() === "") {
@@ -215,6 +217,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, firstName: null }));
+      valid = true;
     }
 
     if (lastName.trim() === "") {
@@ -225,6 +228,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, lastName: null }));
+      valid = true;
     }
     if (emailAddress.trim() === "") {
       setFieldErrors((prev) => ({
@@ -240,6 +244,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, emailAddress: null }));
+      valid = true;
     }
 
     if (mobileNo.trim() === "") {
@@ -247,6 +252,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, mobileNo: null }));
+      valid = true;
     }
 
     if (genderId === 0) {
@@ -254,6 +260,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, genderId: null }));
+      valid = true;
     }
 
     if (roleAssignId === 0) {
@@ -261,6 +268,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, roleAssignId: null}));
+      valid = true;
     }
 
     if (reportingPersonId === 0) {
@@ -268,6 +276,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, reportingPersonId: null}));
+      valid = true;
     }
 
 
@@ -279,6 +288,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, designationId: null }));
+      valid = true;
     }
 
     return valid;
