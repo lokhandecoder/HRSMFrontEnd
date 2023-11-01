@@ -42,16 +42,20 @@ function RoutingPgae() {
   //   { path: '/employee/:id?', element: <EmployeePage />, roleIds: [1] },
   //   { path: '/employees', element: <EmployeesPage />, roleIds: [1] },
   // ];
-  const userRoleId = 1; // Replace this with the user's actual role(s)
+  const userRoleId = 3; // Replace this with the user's actual role(s)
 
 
   const [userRoleMappings, setUserRoleMappings] = useState<UserRoleMapping[]>([]);
+  const [userrole, setuserrole] = useState(null);
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await GetUserRoleMappingsAsync();
         setUserRoleMappings(response.data);
-        console.log(response.data);
+        console.log("user role",response.data);
+        const roleid = localStorage.getItem("Role" )
+        console.log("role id ",roleid)
+        // setuserrole(loca)
         //console.log("222222222222222222");
       } catch (error) {
         console.error('Error fetching user role mappings: ' + (error as Error).message);
@@ -91,6 +95,7 @@ function RoutingPgae() {
             return RoleAssign;                                         
       default:
         return null; // Return a default component or handle the error
+
     }
   }
   return (
@@ -117,6 +122,7 @@ function RoutingPgae() {
         // Handle the case where the component mapping failed
         return null;
       })}
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
       </BrowserRouter>
 

@@ -64,7 +64,7 @@ export const LoginPageUtilities = () => {
           localStorage.setItem("EmployeeID", encryptedEmployeeId);
           // alert(JSON.stringify(response.data.data));
           
-          localStorage.setItem("Role",response.data.data);
+          localStorage.setItem("Role",JSON.stringify(response.data.data));
           window.location.href = "/";
           toast.success("Login successful!");
           }
