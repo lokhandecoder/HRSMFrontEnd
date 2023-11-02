@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { UserRoleMapping } from '../../Model/UserRoleMapping';
 import { GetUserRoleMappingsAsync } from '../../Services/UserRoleMappingServices';
+import { getDecryptedValueFromStorage } from '../../Utilities/LocalStorageEncryptionUtilities';
 
 interface MenuItem {
   label: string;
@@ -45,16 +46,17 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
   // function filterMenuItemsByRole(menuItems: MenuItem[], role: string): MenuItem[] {
   //   return item.roleIds.some((roleId) => userRoleIds.includes(roleId));
   // }
-  const userRoleId = 1; // Replace this with the user's actual role
-
-  const filterMenuItemsByRole = menuItems.filter((item) => {
-    if (item.roleIds) {
-      // If the menu item has specified roleIds, check if the user's role matches any of them
-      return item.roleIds.includes(userRoleId);
-    }
-    // If there are no specified roleIds, the item is accessible to all
-    return true;
-  });
+  
+  //const userRoleId = 4; // Replace this with the user's actual role
+  const [userrole, setuserrole] = useState(null);
+  // const filterMenuItemsByRole = menuItems.filter((item) => {
+  //   if (item.roleIds) {
+  //     // If the menu item has specified roleIds, check if the user's role matches any of them
+  //     return item.roleIds.includes(userRoleId);
+  //   }
+  //   // If there are no specified roleIds, the item is accessible to all
+  //   return true;
+  // });
 
   // Example usage
   // const roleToFilter = 1; // Replace with the desired role
@@ -62,32 +64,52 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
   //console.log(filteredMenuItems);
 
   const getIconForItem = (label: string): JSX.Element | null => {
+    console.log({label});
     switch (label) {
-      case 'Dashboard':
+      case 'DashBoardPage':
         return <SpaceDashboardIcon />;
-      case 'Apply for Leave':
+      case 'LeavePage':
         return <ExitToAppIcon />
       // Return the icon component for "Apply for Leave"
       // return <YourApplyForLeaveIconComponent />;
-      case 'Status':
+      case 'StatusPage':
         return <FactCheckIcon />;
-      case 'Accounting Year':
+      case 'AccountingYear':
         return <AccountBalanceIcon />;
-      case 'Add Employee':
+      case 'EmployeePage':
         return <BadgeIcon />;
-      case 'Employees List':
+      case 'EmployeesPage':
         return <FormatListBulletedIcon />;
       default:
         return <FormatListBulletedIcon />;
     }
   };
   const [userRoleMappings, setUserRoleMappings] = useState<UserRoleMapping[]>([]);
+  
+  const roleid = JSON.parse(localStorage.getItem("Role") || "{}");
+  //const roleAssignId = roleid?.employee?.roleAssignId;
+  //alert(roleAssignId)
+  // useEffect(() => {
+
+  // }, []);
+
   useEffect(() => {
+
+
     async function fetchData() {
       try {
         const response = await GetUserRoleMappingsAsync();
         setUserRoleMappings(response.data);
-        console.log(response.data);
+        //console.log(response.data);
+        //const roleid = localStorage.getItem("Role")
+        // if (roleid) {
+        //   // Parse the JSON string back to an object
+        //   const parsedData = JSON.parse(roleid);
+        //   console.log("parsedata",parsedData.employee.roleAssignId)
+        //   setuserrole(parsedData.employee.roleAssignId);
+        // }else{
+        //   setuserrole(null)
+        // }
         //console.log("222222222222222222");
       } catch (error) {
         console.error('Error fetching user role mappings: ' + (error as Error).message);
@@ -98,19 +120,31 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
   }, []);
 
 
+  // const filterMenuItemsByRole2 = userRoleMappings.filter((item) => {
+
+  //   if (item.isMenuPage) {
+  //     // If the menu item has specified roleIds, check if the user's role matches any of them
+  //     const component = getIconForItem(item.componentName);
+  //     if (component) {
+  //       return item.roleAssignId==userRoleId;
+  //     }
+      
+  //   }
+  //   // If there are no specified roleIds, the item is accessible to all
+  //   return true;
+  // });
+  const roleAssignId = getDecryptedValueFromStorage("roleAssignId","0");
+  //alert(roleAssignId);
   const filterMenuItemsByRole2 = userRoleMappings.filter((item) => {
-    if (item.isMenuPage) {
-      // If the menu item has specified roleIds, check if the user's role matches any of them
-      return item.roleAssignId==userRoleId;
-    }
-    // If there are no specified roleIds, the item is accessible to all
-    return true;
+    return item.isMenuPage === true && item.roleAssignId === parseInt( roleAssignId);
   });
 
   return (
-
-   
-    <List>
+    
+ <>
+   {console.log({userRoleMappings})}
+   {console.log({filterMenuItemsByRole2})}
+   <List>
       {filterMenuItemsByRole2.map((item, index) => (
         
         <>
@@ -138,7 +172,7 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
             }}
           >
             {/* Replace with appropriate icon based on the item */}
-            {getIconForItem(item.pageName)}
+            {getIconForItem(item.componentName)}
           </ListItemIcon>
           <ListItemText primary={item.pageName} sx={{ opacity: open ? 1 : 0 }} />
         </ListItemButton>
@@ -151,6 +185,7 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
       }
      
     </List>
+ </>
   );
 };
 

@@ -7,6 +7,7 @@ import { API_URL, secretKey_global } from "../APIConfig";
 import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import { encryptData } from "../Services/EncryptEmplyeeID";
+import { setEncryptedValueInStorage } from "./LocalStorageEncryptionUtilities";
 
 interface FormData {
   email: string;
@@ -60,9 +61,18 @@ export const LoginPageUtilities = () => {
   
           if (response.data.status === 200) {
             const employeeId = response.data.data.employee.employeeId.toString();
+            const roleAssignId = response.data.data.employee.roleAssignId.toString();
             const encryptedEmployeeId = encryptData(employeeId, secretKey_global);
-          localStorage.setItem("EmployeeID", encryptedEmployeeId);
+            localStorage.setItem("EmployeeID", encryptedEmployeeId);
           // alert(JSON.stringify(response.data.data));
+
+
+          setEncryptedValueInStorage("employeeID", employeeId);
+          setEncryptedValueInStorage("roleAssignId", roleAssignId);
+          setEncryptedValueInStorage("employeeObject", response.data.data.employee);
+          //alert(roleAssignId);
+
+        
           
           localStorage.setItem("Role",JSON.stringify(response.data.data));
           window.location.href = "/";
