@@ -19,7 +19,6 @@ export async function getLeaveTypes(): Promise<{ data: LeaveType[] }> {
   //  const response = await axios.get<LeaveType[]>(`${API_URL}/GetAllLeaveTypes`);
   const response = await axios.get<{ data: LeaveType[] }>(`${API_URL}LeaveType/GetAllLeaveTypes`);
 
-  console.log("Data from api",response.data.data)
     return response.data;
     
   } catch (error) {
@@ -37,8 +36,6 @@ export async function getLeaveStatus(): Promise<{ data: LeaveStatus[] }> {
     
   //  const response = await axios.get<LeaveType[]>(`${API_URL}/GetAllLeaveTypes`);
   const response = await axios.get<{ data: LeaveStatus[] }>(`${API_URL}LeaveStatus/GetLeaveStatusesAsync`);
-
-  console.log("Data from api",response.data.data)
     return response.data;
     
   } catch (error) {

@@ -23,28 +23,6 @@ function RoutingPgae() {
     roleIds: number[]; // An array of role IDs that can access this route
   }
 
-  // const routes: RouteConfig[] = [
-  //   { path: '/assign', element: <AssignManager /> , roleIds: [1, 2]},
-  //   { path: '/login', element: <LoginPage /> , roleIds: [1, 2]},
-  //   { path: '/', element: <DashBoardPage />, roleIds: [1, 2] },
-  //   { path:"/leave/:id?", element: <LeavePage />, roleIds: [2] },
-  //   // Add more routes here as needed
-  // ];
-  // const routes: RouteConfig[] = [
-  //   { path: '/assign', element: <AssignManager />, roleIds: [1, 2] },
-  //   { path: '/login', element: <LoginPage />, roleIds: [1, 2, 3] },
-  //   { path: '/forgotpassword', element: <ForgotPasswordPage />, roleIds: [1, 2, 3] },
-  //   { path: '/updatepassword/:id?', element: <UpdatePassword />, roleIds: [1, 2, 3] },
-  //   { path: '/', element: <DashBoardPage />, roleIds: [1, 2] },
-  //   { path: '/leave/:id?', element: <LeavePage />, roleIds: [1, 2] },
-  //   { path: '/status', element: <StatusPage />, roleIds: [1, 2] },
-  //   { path: '/accountingyear', element: <AccountingYear />, roleIds: [1] },
-  //   { path: '/employee/:id?', element: <EmployeePage />, roleIds: [1] },
-  //   { path: '/employees', element: <EmployeesPage />, roleIds: [1] },
-  // ];
-  //const userRoleId = 3; // Replace this with the user's actual role(s)
-
-
   const [userRoleMappings, setUserRoleMappings] = useState<UserRoleMapping[]>([]);
   const [userrole, setuserrole] = useState(null);
   useEffect(() => {
@@ -52,12 +30,10 @@ function RoutingPgae() {
       try {
         const response = await GetUserRoleMappingsAsync();
         setUserRoleMappings(response.data);
-        console.log("user role",response.data);
         const roleid = localStorage.getItem("Role" )
         if (roleid) {
           // Parse the JSON string back to an object
           const parsedData = JSON.parse(roleid);
-          console.log("parsedata",parsedData.employee.roleAssignId)
           setuserrole(parsedData.employee.roleAssignId);
         }else{
           setuserrole(null)

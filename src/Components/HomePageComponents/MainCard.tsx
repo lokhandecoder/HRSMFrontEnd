@@ -22,7 +22,6 @@ function MainCard() {
             );
             // Assuming employeeResult.data is a single EmployeeModel
             setEmployeeData(employeeResult.data);
-            console.log(employeeResult.data);
           } catch (error) {
             console.error("Error fetching employee data:", error);
           }

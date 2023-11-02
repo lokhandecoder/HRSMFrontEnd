@@ -25,6 +25,7 @@ import { GetRoleAssignsAsync, GetApplicationPagesAsync,  createUserRoleMappingsA
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../APIConfig";
 import axios from "axios";
+import { GetUserRoleMappingsAsync } from "../Services/UserRoleMappingServices";
 
 
 type DataObject = {
@@ -46,7 +47,16 @@ function RoleAssign() {
   const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor | undefined>("success"); 
   const navigate = useNavigate();
   const [selectedData, setSelectedData] = useState<UserRoleMapping[]>([]);
+  const [ userRole, setUserRole] = useState<UserRoleMapping[]>([]);
 
+  // for (const item of userRole) {
+  //   if (item.roleAssignId && item.applicationPageId) {
+  //     if (!initialData[item.applicationPageId]) {
+  //       initialData[item.applicationPageId] = {};
+  //     }
+  //     initialData[item.applicationPageId][item.roleAssignId] = true;
+  //   }
+  // }
 
   useEffect(() => {
     async function fetchData() {
@@ -56,6 +66,9 @@ function RoleAssign() {
 
         const rowResponse = await GetApplicationPagesAsync();
         setRowHeaders(rowResponse.data);
+        const userrole = await GetUserRoleMappingsAsync();
+        // console.log("userrole",userrole.data);
+        setSelectedData(userrole.data);
         setLoading(false);
       } catch (error: any) {
         setError(
@@ -93,8 +106,8 @@ function RoleAssign() {
       setSnackbarMessage('Data saved successfully');
       setSnackbarSeverity('success');
       setSnackbarOpen(true);
-      setData(initialData);
-      setSelectedData([]);
+      //setData(initialData);
+      //setSelectedData([]);
 
       
     
@@ -140,6 +153,7 @@ function RoleAssign() {
   if (error) {
     return <p>{error}</p>;
   }
+  console.log("userroleee", userRole)
 
   return (
     <>

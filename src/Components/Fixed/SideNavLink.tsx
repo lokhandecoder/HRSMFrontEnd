@@ -68,7 +68,6 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
   //console.log(filteredMenuItems);
 
   const getIconForItem = (label: string): JSX.Element | null => {
-    console.log({label});
     switch (label) {
       case 'DashBoardPage':
         return <SpaceDashboardIcon />;
@@ -150,14 +149,10 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
   return (
     
  <>
-   {console.log({userRoleMappings})}
-   {console.log({filterMenuItemsByRole2})}
    <List>
       {filterMenuItemsByRole2.map((item, index) => (
         
         <>
-        {console.log(item.pageName)}
-        {console.log(index)}
         <Tooltip key={index} title={item.pageName} placement="right">
 
         <ListItem

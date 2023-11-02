@@ -21,7 +21,6 @@ export const encryptData = (data: number, secretKey: string): string => {
     }
 
     const employeeId = decryptData(encryptedEmployeeId, secretKey_global); 
-    console.log("decrypted employee ID: ",employeeId)
     return employeeId;
 
   } 
