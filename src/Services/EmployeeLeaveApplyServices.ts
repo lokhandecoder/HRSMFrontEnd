@@ -45,7 +45,7 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   export async function GetAppliedLeavesByEmpIdAsync(): Promise<any> {
     try {
       const empID = DecryptEmployeeID();
-      const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByEmpIdAsync/${empID}`);
+      const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByReportingPersonIdAsync/${empID}`);
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
