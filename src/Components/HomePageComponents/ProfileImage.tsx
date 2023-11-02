@@ -1,5 +1,7 @@
 import React, { useState, ChangeEvent } from "react";
 import "../../Resources/Styles/HomePageCSS/Profile.css";
+import PersonIcon from '@mui/icons-material/Person';
+
 
 const ProfileImage: React.FC = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -22,6 +24,7 @@ const ProfileImage: React.FC = () => {
           <img src={image} alt="Profile" className="profile-picture" />
         ) : (
           <div className="placeholder">Upload Profile Picture</div>
+
         )}
       </label>
       <input

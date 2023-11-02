@@ -17,7 +17,7 @@
 }
 
 #container .product-details h1 {
-  font-family: "Bebas Neue", cursive;
+  /* font-family: "Bebas Neue", cursive; */
   display: inline-block;
   position: relative;
   font-size: 30px;
@@ -25,7 +25,7 @@
   margin: 0;
 }
 #container .product-details h3 {
-  font-family: "Bebas Neue", cursive;
+  /* font-family: "Bebas Neue", cursive; */
   /* display: inline-block; */
   position: relative;
   font-size: 20px;

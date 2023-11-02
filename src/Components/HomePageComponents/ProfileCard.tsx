@@ -10,9 +10,11 @@ import Grid from "@mui/material/Grid";
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { GetEmployees } from "../../Database/EmployeeServices";
 import MainCard from "./MainCard";
+import PersonIcon from '@mui/icons-material/Person';
 
 
 const employee = GetEmployees();
+
 
 function ProfileCard() {
   return (
@@ -24,7 +26,11 @@ function ProfileCard() {
               <MainCard />
             </Grid>
             <Grid item xs={4} >
-              <ProfileImage />
+
+{/* <PersonIcon  /> */}
+
+              
+              {/* <ProfileImage /> */}
             </Grid>
           </Grid>
         </div>

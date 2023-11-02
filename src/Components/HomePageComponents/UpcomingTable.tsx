@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import TableContainer from "@mui/material/TableContainer";
 import Table from "@mui/material/Table";
 import TableHead from "@mui/material/TableHead";
@@ -7,17 +7,35 @@ import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 import Collapse from "@mui/material/Collapse";
 import Box from "@mui/material/Box";
+import { Holiday } from "./UpcomingHolidays";
+import { GetHolidaysAsync } from "../../Services/HolidaysServices";
 
-interface Holiday {
-  date: string;
-  holiday: string;
-}
 
-interface UpcomingTableProps {
-  holidays: Holiday[];
-}
+const formatDate = (date: string) => {
+  const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit', year: 'numeric' };
+  return new Date(date).toLocaleDateString(undefined, options);
+};
 
-const UpcomingTable: React.FC<UpcomingTableProps> = ({ holidays }) => {
+const UpcomingTable = () => {
+  const [data, setData] = useState<Holiday[]>([]);
+
+  useEffect(() => {
+    const FetchList = async () => {
+      try {
+        const fetchData = await GetHolidaysAsync();
+        const fetched = fetchData.data;
+        if (Array.isArray(fetched)) {
+          setData(fetched);
+        } else {
+          console.error("Invalid holidays data.");
+        }
+      } catch (error) {
+        console.error("Error fetching leave types:", (error as Error).message);
+      }
+    };
+    FetchList();
+  }, []);
+
   return (
     <TableContainer>
       <Table>
@@ -28,11 +46,11 @@ const UpcomingTable: React.FC<UpcomingTableProps> = ({ holidays }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {holidays.map((holiday, index) => (
+          {data.map((holiday, index) => (
             <React.Fragment key={index}>
               <TableRow>
-                <TableCell>{holiday.date}</TableCell>
-                <TableCell>{holiday.holiday}</TableCell>
+              <TableCell>{formatDate(holiday.holidayDate)}</TableCell>
+                <TableCell>{holiday.holidayName}</TableCell>
               </TableRow>
             </React.Fragment>
           ))}

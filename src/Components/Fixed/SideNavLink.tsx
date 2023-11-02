@@ -11,6 +11,10 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { UserRoleMapping } from '../../Model/UserRoleMapping';
 import { GetUserRoleMappingsAsync } from '../../Services/UserRoleMappingServices';
 import { getDecryptedValueFromStorage } from '../../Utilities/LocalStorageEncryptionUtilities';
+import ReduceCapacityIcon from '@mui/icons-material/ReduceCapacity';
+import Tooltip from '@mui/material/Tooltip';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
+
 
 interface MenuItem {
   label: string;
@@ -80,6 +84,10 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
         return <BadgeIcon />;
       case 'EmployeesPage':
         return <FormatListBulletedIcon />;
+      case 'RoleAssign':
+        return <ReduceCapacityIcon />;
+      case 'AssignManager':
+        return <AssignmentIndIcon />;
       default:
         return <FormatListBulletedIcon />;
     }
@@ -150,6 +158,8 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
         <>
         {console.log(item.pageName)}
         {console.log(index)}
+        <Tooltip key={index} title={item.pageName} placement="right">
+
         <ListItem
         
         key={index}
@@ -177,6 +187,8 @@ const SideNavLink = ({ open }: SideNavLinkProps) => {
           <ListItemText primary={item.pageName} sx={{ opacity: open ? 1 : 0 }} />
         </ListItemButton>
       </ListItem>
+      </Tooltip>
+
         </>
         
        

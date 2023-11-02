@@ -130,6 +130,8 @@ function RoutingPgae() {
         return null;
       })}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
+      <Route path="/updatepassword/:id" element={<UpdatePassword />} />      
     </Routes>
       </BrowserRouter>
 
