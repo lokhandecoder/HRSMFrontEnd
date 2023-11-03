@@ -23,7 +23,9 @@ import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 //import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
 
-import {ThumbDownOffAlt,Unpublished } from '@mui/icons-material';
+import { ThumbDownOffAlt, Unpublished } from "@mui/icons-material";
+import { GetEmployeesAsync } from "../../Services/EmployeeServices";
+import { Employee } from "../../Database/EmployeeServices";
 
 interface Row {
   appliedLeaveTypeId?: number;
@@ -38,11 +40,15 @@ interface Row {
   leaveStatusId: number;
   isRejected: boolean;
   isApproved: boolean;
+  firstName: string;
+  lastName: string;
+  leaveTypeName: string;
 }
 
 function StatusTable() {
   const employeeId = 3; // Replace with the actual employee ID
   const [data, setData] = useState<Row[]>([]); // Specify the type for data
+  const [employee, setEmployee] = useState<Employee[]>([]);
   const navigate = useNavigate();
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
@@ -83,11 +89,14 @@ function StatusTable() {
     // Update selectedLeaveStatusId
     setSelectedLeaveStatusId(value);
   };
+  console.log("tabke data", data);
   useEffect(() => {
     const FetchList = async () => {
       try {
         const fetchData = await GetAppliedLeavesByEmpIdAsync();
         const fetched = fetchData.data;
+        const fetchemployee = await GetEmployeesAsync();
+
         if (Array.isArray(fetched)) {
           setData(fetched);
         } else {
@@ -126,7 +135,6 @@ function StatusTable() {
     return `${day}/${month}/${year}`;
   }
 
-
   // useEffect(() => {
   //   const fetchData = async () => {
   //     try {
@@ -141,35 +149,31 @@ function StatusTable() {
   //   fetchData();
   // }, []);
 
-
-    
-
-    const fetchData = async () => {
-      try {
-        const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
-        const leavestatuss = LeaveStatus.data;
-        setLeaveStatus(leavestatuss);
-      } catch (error) {
-        console.error("Failed to fetch data: ", (error as Error).message);
-      }
-    };
-  
+  const fetchData = async () => {
+    try {
+      const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
+      const leavestatuss = LeaveStatus.data;
+      setLeaveStatus(leavestatuss);
+    } catch (error) {
+      console.error("Failed to fetch data: ", (error as Error).message);
+    }
+  };
 
   const onLeaveApprove = async (appliedLeaveTypeId: number) => {
     const isApproved = true;
     const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
-    
+
     fetchData();
   };
-  const onLeaveCancel = (appliedLeaveTypeId: number) => {};
+  const onLeaveCancel = (appliedLeaveTypeId: number) => {
+    
+  };
   const onLeaveReject = async (appliedLeaveTypeId: number) => {
     const isApproved = true;
     const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
     fetchData();
   };
-  const onLeaveEdit = (appliedLeaveTypeId: number) => {
-
-  };
+  const onLeaveEdit = (appliedLeaveTypeId: number) => {};
   const onLeaveDelete = (appliedLeaveTypeId: number) => {};
 
   useEffect(() => {
@@ -180,6 +184,7 @@ function StatusTable() {
       <Table sx={{ minWidth: 700 }} aria-label="simple table">
         <TableHead>
           <TableRow>
+            <TableCell>First Name</TableCell>
             <TableCell>Leave Type</TableCell>
             <TableCell>Start Date</TableCell>
             <TableCell>End Date</TableCell>
@@ -198,10 +203,9 @@ function StatusTable() {
             ? data.map((row: Row, key) => (
                 <TableRow key={key}>
                   <TableCell>
-                    {leaveTypes.find(
-                      (type) => type.leaveTypeId === row.leaveTypeId
-                    )?.leaveTypeName || ""}
+                    {row.firstName} {row.lastName}
                   </TableCell>
+                  <TableCell>{row.leaveTypeName}</TableCell>
                   <TableCell>
                     {row.startDate
                       ? formatDate(new Date(row.startDate))
@@ -264,19 +268,42 @@ function StatusTable() {
                   </TableCell> */}
 
                   <TableCell>
-                    <IconButton
+                    {/* <IconButton
                       aria-label="Edit"
                       onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
+                      disabled={row.isApproved} 
                     >
-                      <ModeEditOutlinedIcon />
-                    </IconButton>
+                      <ModeEditOutlinedIcon 
+                      />
+                    </IconButton> */}
+                    {!row.isApproved && (
+                      <IconButton
+                        aria-label="Edit"
+                        onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
+                        disabled={row.isApproved}
+                      >
+                        <ModeEditOutlinedIcon />
+                      </IconButton>
+                    )}
 
-                    <IconButton
+                    {/* <IconButton
                       aria-label="Delete"
                       onClick={() => onLeaveDelete(row.appliedLeaveTypeId || 0)}
+                      disabled={row.isApproved}
                     >
                       <DeleteForeverOutlinedIcon />
-                    </IconButton>
+                    </IconButton> */}
+                    {/* {!row.isApproved && (
+                      <IconButton
+                        aria-label="Delete"
+                        onClick={() =>
+                          onLeaveDelete(row.appliedLeaveTypeId || 0)
+                        }
+                        disabled={row.isApproved}
+                      >
+                        <DeleteForeverOutlinedIcon />
+                      </IconButton>
+                    )} */}
                   </TableCell>
 
                   <TableCell>
@@ -304,14 +331,16 @@ function StatusTable() {
 
                     {row.isApproved && row.isRejected ? (
                       // When both row.isApproved and row.isRejected are true
-                      <><IconButton
-                      aria-label="Approve"
-                      // onClick={() =>
-                      //   onLeaveCancel(row.appliedLeaveTypeId || 0)
-                      // }
-                    >
-                      <Unpublished />
-                    </IconButton></>
+                      <>
+                        <IconButton
+                          aria-label="Approve"
+                          // onClick={() =>
+                          //   onLeaveCancel(row.appliedLeaveTypeId || 0)
+                          // }
+                        >
+                          <Unpublished />
+                        </IconButton>
+                      </>
                     ) : (
                       // When either row.isApproved or row.isRejected is false
                       <>

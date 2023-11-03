@@ -38,6 +38,7 @@ const LeaveApplyUtilities = (
    // alert(isValid);
     if (!isValid) {
       // Handle validation error, e.g., display an error message
+      setLoading(false);
       return;
     }
 

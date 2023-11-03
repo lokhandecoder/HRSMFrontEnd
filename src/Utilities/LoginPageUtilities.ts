@@ -78,8 +78,8 @@ export const LoginPageUtilities = () => {
           window.location.href = "/";
           toast.success("Login successful!");
           }
-          toast.error("Login failed. Please try again.");
-          setLoading(false);
+          // toast.error("Login failed. Please try again.");
+          // setLoading(false);
         })
         .catch((error) => {
           console.error("Error submitting:", error);

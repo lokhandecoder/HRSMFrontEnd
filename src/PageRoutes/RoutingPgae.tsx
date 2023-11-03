@@ -14,6 +14,7 @@ import EmployeesPage from "../Pages/EmployeesPage";
 import { UserRoleMapping } from '../Model/UserRoleMapping';
 import { GetUserRoleMappingsAsync } from '../Services/UserRoleMappingServices';
 import RoleAssign from "../Pages/RoleAssign";
+import LeaveApprovedPage from '../Pages/LeaveApprovedPage';
 
 function RoutingPgae() {
 
@@ -75,7 +76,9 @@ function RoutingPgae() {
       case 'LeavePage':
               return LeavePage;     
       case 'RoleAssign':
-            return RoleAssign;                                         
+            return RoleAssign;
+      case "LeaveApprovedPage":
+            return LeaveApprovedPage;                                         
       default:
         return null; // Return a default component or handle the error
 
@@ -108,6 +111,7 @@ function RoutingPgae() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
       <Route path="/updatepassword/:id" element={<UpdatePassword />} />      
+      <Route path='/leaveapproved' element={<LeaveApprovedPage />} />
     </Routes>
       </BrowserRouter>
 
