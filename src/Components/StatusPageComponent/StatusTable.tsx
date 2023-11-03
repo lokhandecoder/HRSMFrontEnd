@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { getLeaveStatus, getLeaveTypes } from "../../Services/LeaveType";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { LeaveStatus } from "../../Model/LeaveStatus";
+import ClearIcon from '@mui/icons-material/Clear';
+
 import {
   GetAppliedLeavesByEmpIdAsync,
   UpdateIsApprovedAsync,
@@ -194,7 +196,7 @@ function StatusTable() {
             <TableCell>Remaining Leaves</TableCell>
             {/* <TableCell>Status</TableCell> */}
             {/* <TableCell>Action</TableCell> */}
-            <TableCell>Edit/Delete </TableCell>
+            <TableCell>Edit </TableCell>
             <TableCell>Approve/Reject </TableCell>
           </TableRow>
         </TableHead>
@@ -324,7 +326,8 @@ function StatusTable() {
                             onLeaveReject(row.appliedLeaveTypeId || 0)
                           }
                         >
-                          <ThumbDownOffAlt />
+                          {/* <ThumbDownOffAlt /> */}
+                          <ClearIcon />
                         </IconButton>
                       </>
                     )}
@@ -362,7 +365,8 @@ function StatusTable() {
                               onLeaveReject(row.appliedLeaveTypeId || 0)
                             }
                           >
-                            <ThumbDownOffAlt />
+                            {/* <ThumbDownOffAlt /> */}
+                            <ClearIcon />
                           </IconButton>
                         )}
                       </>
