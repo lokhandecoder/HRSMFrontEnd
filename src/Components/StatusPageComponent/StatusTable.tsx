@@ -308,7 +308,7 @@ function StatusTable() {
                     )} */}
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className={row.isApproved ? 'approved-cell' : ''}>
                     {!row.isApproved && !row.isRejected && (
                       <>
                         <IconButton
@@ -317,7 +317,7 @@ function StatusTable() {
                             onLeaveApprove(row.appliedLeaveTypeId || 0)
                           }
                         >
-                          <DoneAllOutlinedIcon />
+                          <DoneAllOutlinedIcon  color="success"/>
                         </IconButton>
 
                         <IconButton
@@ -326,8 +326,9 @@ function StatusTable() {
                             onLeaveReject(row.appliedLeaveTypeId || 0)
                           }
                         >
+                          {/* Rejected */}
                           {/* <ThumbDownOffAlt /> */}
-                          <ClearIcon />
+                          <ClearIcon color="error" />
                         </IconButton>
                       </>
                     )}
@@ -348,27 +349,32 @@ function StatusTable() {
                       // When either row.isApproved or row.isRejected is false
                       <>
                         {row.isApproved && !row.isRejected && (
-                          <IconButton
-                            aria-label="Approve"
-                            onClick={() =>
-                              onLeaveCancel(row.appliedLeaveTypeId || 0)
-                            }
-                          >
-                            <CancelOutlinedIcon />
-                          </IconButton>
+                          // <IconButton
+                          //   aria-label="Approve"
+                          //   onClick={() =>
+                          //     onLeaveCancel(row.appliedLeaveTypeId || 0)
+                          //   }
+                          // >
+                          //   <CancelOutlinedIcon color="error"/>
+                          // </IconButton>
+                          "Approved"
                         )}
 
-                        {!row.isApproved && row.isRejected && (
-                          <IconButton
-                            aria-label="Reject"
-                            onClick={() =>
-                              onLeaveReject(row.appliedLeaveTypeId || 0)
-                            }
-                          >
-                            {/* <ThumbDownOffAlt /> */}
-                            <ClearIcon />
-                          </IconButton>
-                        )}
+                        {!row.isApproved && row.isRejected && 
+                        (
+                          // <IconButton
+                          //   aria-label="Reject"
+                          //   onClick={() =>
+                          //     onLeaveReject(row.appliedLeaveTypeId || 0)
+                          //   }
+                          // >
+                          //   Rejected
+                          //   {/* <ThumbDownOffAlt /> */}
+                          //   {/* <ClearIcon /> */}
+                          // </IconButton>
+                          "Rejected"
+                        )
+                        }
                       </>
                     )}
                   </TableCell>
