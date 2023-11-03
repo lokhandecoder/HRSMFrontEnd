@@ -11,6 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CircularProgress from "@mui/material/CircularProgress";
+import ClearIcon from '@mui/icons-material/Clear';
 import axios from "axios";
 import {
   GetEmployeeLeave,
@@ -344,7 +345,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                 </Grid>
               </Grid>
             </Box>
-            <TextField
+            <TextField error={!!errors.leaveReason}
               sx={{ mt: 1 }}
               id="leaveReason"
               name="leaveReason"
@@ -353,6 +354,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               rows={4}
               value={formData.leaveReason}
               onChange={handleInputChange}
+              helperText={errors.leaveReason || ''}
+
               fullWidth
             />
           </CardContent>

@@ -86,6 +86,9 @@ const LeaveApplyUtilities = (
     if (formData.applyLeaveDay > formData.balanceLeave) {
       newErrors.applyLeaveDay = 'Applied leave cannot exceed balance leave.';
     }
+    if (formData.leaveReason == "") {
+      newErrors.leaveReason = 'Please provide a reason';
+    }
   
     // You can add additional validations for other fields here
   
