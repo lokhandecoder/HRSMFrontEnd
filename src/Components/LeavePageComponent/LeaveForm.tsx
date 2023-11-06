@@ -177,7 +177,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
             balanceLeave: applyLeaveTemp.balanceLeave,
             leaveStatusId: applyLeaveTemp.leaveStatusId,
             employeeId: applyLeaveTemp.employeeId,
-            isHalfDay: false,
+            isHalfDay: applyLeaveTemp.isHalfDay,
           });
         }
       } catch (error) {
