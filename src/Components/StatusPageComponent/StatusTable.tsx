@@ -28,9 +28,11 @@ import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import { ThumbDownOffAlt, Unpublished } from "@mui/icons-material";
 import { GetEmployeesAsync } from "../../Services/EmployeeServices";
 import { Employee } from "../../Database/EmployeeServices";
+import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
 
 interface Row {
   appliedLeaveTypeId?: number;
+  employeeId: number;
   leaveTypeId: number;
   leaveType: null;
   startDate: Date | null;
@@ -48,13 +50,17 @@ interface Row {
 }
 
 function StatusTable() {
-  const employeeId = 3; // Replace with the actual employee ID
+  
+  const employeeId = DecryptEmployeeID();
+
+  
   const [data, setData] = useState<Row[]>([]); // Specify the type for data
   const [employee, setEmployee] = useState<Employee[]>([]);
   const navigate = useNavigate();
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
+  
 
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
@@ -91,7 +97,7 @@ function StatusTable() {
     // Update selectedLeaveStatusId
     setSelectedLeaveStatusId(value);
   };
-  console.log("tabke data", data);
+  console.log("table data", data);
   useEffect(() => {
     const FetchList = async () => {
       try {
@@ -108,10 +114,7 @@ function StatusTable() {
         console.error("Error fetching leave types:", (error as Error).message);
       }
     };
-    // axios
-    //   .get(`${API_URL}appliedLeave/GetAppliedLeavesAsync`)
-    //   .then((res) => {setData(res.data.data);console.log("new data", res.data.data)})
-    //   .catch((e) => console.log(e));
+    
 
     const fetchLeaveTypes = async () => {
       try {
@@ -137,19 +140,6 @@ function StatusTable() {
     return `${day}/${month}/${year}`;
   }
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
-  //       const leavestatuss = LeaveStatus.data;
-  //       setLeaveStatus(leavestatuss);
-  //     } catch (error) {
-  //       console.error("Failed to fetch data: ", (error as Error).message);
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, []);
 
   const fetchData = async () => {
     try {
@@ -194,194 +184,89 @@ function StatusTable() {
             <TableCell>Balance Leaves</TableCell>
             <TableCell>Applied Days</TableCell>
             <TableCell>Remaining Leaves</TableCell>
-            {/* <TableCell>Status</TableCell> */}
-            {/* <TableCell>Action</TableCell> */}
+            
             <TableCell>Edit </TableCell>
             <TableCell>Approve/Reject </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {data && data !== null
-            ? data.map((row: Row, key) => (
-                <TableRow key={key}>
-                  <TableCell>
-                    {row.firstName} {row.lastName}
-                  </TableCell>
-                  <TableCell>{row.leaveTypeName}</TableCell>
-                  <TableCell>
-                    {row.startDate
-                      ? formatDate(new Date(row.startDate))
-                      : "No date available"}
-                  </TableCell>
-                  <TableCell>
-                    {row.endDate
-                      ? formatDate(new Date(row.endDate))
-                      : "No date available"}
-                  </TableCell>
-                  {/* <TableCell>
-                    {row.startDate
-                      ? new Date(row.startDate).toISOString()
-                      : "No date available"}
-                  </TableCell>
-                  <TableCell>
-                    {row.endDate
-                      ? new Date(row.endDate).toISOString()
-                      : "No date available"}
-                  </TableCell> */}
-                  <TableCell>{row.leaveReason}</TableCell>
-                  <TableCell>{row.balanceLeave}</TableCell>
-                  <TableCell>{row.applyLeaveDay}</TableCell>
-                  <TableCell>{row.remaingLeave}</TableCell>
-                  {/* <TableCell>
-                    <Select
-                      labelId="leaveType"
-                      id="demo-simple-select"
-                      value={row.leaveStatusId}
-                      label="Leave Type"
-                      name="leaveTypeId"
-                      onChange={(event) =>
-                        handleSelectStatusChange(event, row.appliedLeaveTypeId)
-                      }
-                    >
-                     
-                      {leaveStatus.map((type, index) => (
-                        <MenuItem key={index} value={type.leaveStatusId}>
-                          {type.leaveStatusName}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </TableCell> */}
-                  {/* <TableCell>
-                    <Button
-                      color="primary"
-                      variant="contained"
-                      onClick={() => handleEdit(row.appliedLeaveTypeId)}
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      sx={{ m: 1 }}
-                      color="secondary"
-                      variant="contained"
-                      onClick={() => handleUpdate(row.appliedLeaveTypeId)}
-                    >
-                      Update
-                    </Button>
-                  </TableCell> */}
+  {data && data !== null
+    ? data.map((row: Row, key) => {
+        // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
+        const empId = "55";
+        const isCurrentUserLeave = empId === employeeId;
+       
 
-                  <TableCell>
-                    {/* <IconButton
-                      aria-label="Edit"
-                      onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
-                      disabled={row.isApproved} 
-                    >
-                      <ModeEditOutlinedIcon 
-                      />
-                    </IconButton> */}
-                    {!row.isApproved && (
-                      <IconButton
-                        aria-label="Edit"
-                        onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
-                        disabled={row.isApproved}
-                      >
-                        <ModeEditOutlinedIcon />
-                      </IconButton>
-                    )}
+        return (
+          <TableRow key={key}>
+            <TableCell>
+              {row.firstName} {row.lastName}
+            </TableCell>
+            <TableCell>{row.leaveTypeName}</TableCell>
+            <TableCell>
+              {row.startDate
+                ? formatDate(new Date(row.startDate))
+                : "No date available"}
+            </TableCell>
+            <TableCell>
+              {row.endDate
+                ? formatDate(new Date(row.endDate))
+                : "No date available"}
+            </TableCell>
+            <TableCell>{row.leaveReason}</TableCell>
+            <TableCell>{row.balanceLeave}</TableCell>
+            <TableCell>{row.applyLeaveDay}</TableCell>
+            <TableCell>{row.remaingLeave}</TableCell>
 
-                    {/* <IconButton
-                      aria-label="Delete"
-                      onClick={() => onLeaveDelete(row.appliedLeaveTypeId || 0)}
-                      disabled={row.isApproved}
-                    >
-                      <DeleteForeverOutlinedIcon />
-                    </IconButton> */}
-                    {/* {!row.isApproved && (
-                      <IconButton
-                        aria-label="Delete"
-                        onClick={() =>
-                          onLeaveDelete(row.appliedLeaveTypeId || 0)
-                        }
-                        disabled={row.isApproved}
-                      >
-                        <DeleteForeverOutlinedIcon />
-                      </IconButton>
-                    )} */}
-                  </TableCell>
+            <TableCell>
+              {!row.isApproved && (
+                <IconButton
+                  aria-label="Edit"
+                  onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
+                  disabled={row.isApproved}
+                >
+                  <ModeEditOutlinedIcon />
+                </IconButton>
+    )}
+            </TableCell>
 
-                  <TableCell className={row.isApproved ? 'approved-cell' : ''}>
-                    {!row.isApproved && !row.isRejected && (
-                      <>
-                        <IconButton
-                          aria-label="Approve"
-                          onClick={() =>
-                            onLeaveApprove(row.appliedLeaveTypeId || 0)
-                          }
-                        >
-                          <DoneAllOutlinedIcon  color="success"/>
-                        </IconButton>
+            <TableCell className={row.isApproved ? 'approved-cell' : ''}>
+              {!isCurrentUserLeave && !row.isApproved && !row.isRejected && (
+                <>
+                  <IconButton
+                    aria-label="Approve"
+                    onClick={() => onLeaveApprove(row.appliedLeaveTypeId || 0)}
+                  >
+                    <DoneAllOutlinedIcon color="success" />
+                  </IconButton>
 
-                        <IconButton
-                          aria-label="Reject"
-                          onClick={() =>
-                            onLeaveReject(row.appliedLeaveTypeId || 0)
-                          }
-                        >
-                          {/* Rejected */}
-                          {/* <ThumbDownOffAlt /> */}
-                          <ClearIcon color="error" />
-                        </IconButton>
-                      </>
-                    )}
+                  <IconButton
+                    aria-label="Reject"
+                    onClick={() => onLeaveReject(row.appliedLeaveTypeId || 0)}
+                  >
+                    <ClearIcon color="error" />
+                  </IconButton>
+                </>
+              )}
 
-                    {row.isApproved && row.isRejected ? (
-                      // When both row.isApproved and row.isRejected are true
-                      <>
-                        <IconButton
-                          aria-label="Approve"
-                          // onClick={() =>
-                          //   onLeaveCancel(row.appliedLeaveTypeId || 0)
-                          // }
-                        >
-                          <Unpublished />
-                        </IconButton>
-                      </>
-                    ) : (
-                      // When either row.isApproved or row.isRejected is false
-                      <>
-                        {row.isApproved && !row.isRejected && (
-                          // <IconButton
-                          //   aria-label="Approve"
-                          //   onClick={() =>
-                          //     onLeaveCancel(row.appliedLeaveTypeId || 0)
-                          //   }
-                          // >
-                          //   <CancelOutlinedIcon color="error"/>
-                          // </IconButton>
-                          "Approved"
-                        )}
-
-                        {!row.isApproved && row.isRejected && 
-                        (
-                          // <IconButton
-                          //   aria-label="Reject"
-                          //   onClick={() =>
-                          //     onLeaveReject(row.appliedLeaveTypeId || 0)
-                          //   }
-                          // >
-                          //   Rejected
-                          //   {/* <ThumbDownOffAlt /> */}
-                          //   {/* <ClearIcon /> */}
-                          // </IconButton>
-                          "Rejected"
-                        )
-                        }
-                      </>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))
-            : "No data available"}
-        </TableBody>
+              {row.isApproved && row.isRejected ? (
+                <>
+                  <IconButton aria-label="Approve">
+                    <Unpublished />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  {row.isApproved && !row.isRejected && "Approved"}
+                  {!row.isApproved && row.isRejected && "Rejected"}
+                </>
+              )}
+            </TableCell>
+          </TableRow>
+        );
+      })
+    : "No data available"}
+</TableBody>
       </Table>
     </TableContainer>
   );

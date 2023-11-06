@@ -51,7 +51,7 @@ console.log(employee);
 
 const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const snackbar = useCustomSnackbar();
-  const EMPIDD = DecryptEmployeeID()
+  const EMPIDD = DecryptEmployeeID();
   // const employeeID: number | null = employeeIdNumber ? parseInt(employeeIdNumber, 10) : 0;
 
   const { id } = useParams();
