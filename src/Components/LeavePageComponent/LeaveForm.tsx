@@ -241,6 +241,19 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     )}
                   </FormControl>
                 </Grid>
+                
+                <Grid item xs={12} sm={4} md={3} lg={2}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={formData.isHalfDay} // Set the checked state of the checkbox
+                        onChange={handleIsHalfDayChange} // Attach the onChange event
+                      />
+                    }
+                    label="Half day"
+                  />
+                </Grid>
+
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={["DatePicker"]}>
@@ -295,17 +308,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3} lg={2}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={formData.isHalfDay} // Set the checked state of the checkbox
-                        onChange={handleIsHalfDayChange} // Attach the onChange event
-                      />
-                    }
-                    label="Half day"
-                  />
-                </Grid>
+                
 
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <TextField

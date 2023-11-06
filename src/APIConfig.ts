@@ -1,5 +1,5 @@
 // apiConfig.js
-// const API_URL = 'http://localhost:5024/api/';
+//const API_URL = 'http://localhost:5024/api/';
 const API_URL = 'http://192.168.1.5:86/api/';
 //const API_URL = 'http://10.0.0.57:86/api/';
 
