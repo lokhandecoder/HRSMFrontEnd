@@ -206,7 +206,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     <>
       <form onSubmit={handleSubmit}>
         <Card sx={{ minWidth: 275, mt: 5, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%" }}>Apply for Leave</h1>
+          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Apply for Leave</h1>
           <CardContent>
             <Box sx={{ width: "100%" }}>
               <Grid

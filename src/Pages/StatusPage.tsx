@@ -9,7 +9,7 @@ function StatusPage() {
     <>
       <LayoutComponent>
         <Card sx={{ minWidth: 275, mt: 3, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%" }}>History</h1> 
+          <h1 style={{ marginLeft: "1%", fontSize: "24px"}}>History</h1> 
           <CardContent>
           <StatusTable />
           </CardContent>

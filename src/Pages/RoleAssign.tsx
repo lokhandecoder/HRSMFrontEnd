@@ -161,7 +161,7 @@ function RoleAssign() {
         <Box sx={{ mt: 4 }}>
           <Card>
             <CardContent>
-              <h1>Role Assignment</h1>
+              <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Role Assignment</h1>
               <TableContainer component={Paper}>
                 <Table>
                   <TableHead>

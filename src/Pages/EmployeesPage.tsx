@@ -49,7 +49,7 @@ import {
     return (
       <LayoutComponent>
         <Card sx={{ minWidth: 275, mt: 3, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%" }}>Employees List</h1>
+          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Employees List</h1>
   
           <CardContent>
             <TableContainer>

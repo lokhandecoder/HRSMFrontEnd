@@ -52,7 +52,7 @@ import { EmployeeModel } from "../Model/EmployeeModel";
     return (
       <LayoutComponent>
         <Card sx={{ minWidth: 275, mt: 3, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%" }}>Employee</h1>
+          <h1 style={{ marginLeft: "1%", fontSize: "24px"}}>Employee</h1>
   
           <CardContent>
             <Box component="form" noValidate autoComplete="off">

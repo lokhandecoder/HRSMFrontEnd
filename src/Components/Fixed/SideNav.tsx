@@ -175,7 +175,7 @@ export default function MiniDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Attendance Portal
+            Leave Management Portal
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
 
