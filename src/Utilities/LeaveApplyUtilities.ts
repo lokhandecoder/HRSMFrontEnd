@@ -130,12 +130,25 @@ const LeaveApplyUtilities = (
     // Test()
   };
 
+  // const handleIsHalfDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    
+  //   setFormData({
+  //     ...formData,
+  //     isHalfDay: event.target.checked,
+  //      // Update isHalfDay with the checkbox value
+  //   });
+  // };
+  
   const handleIsHalfDayChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const isHalfDay = event.target.checked;
     setFormData({
       ...formData,
-      isHalfDay: event.target.checked, // Update isHalfDay with the checkbox value
+      isHalfDay: isHalfDay, // Update isHalfDay with the checkbox value
+      endDate: isHalfDay ? formData.startDate : formData.endDate, // Update endDate based on isHalfDay
     });
   };
+  
+  
 
   const handleClear = () => {
     setFormData(initialFormData);
