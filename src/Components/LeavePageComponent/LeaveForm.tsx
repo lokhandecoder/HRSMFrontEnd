@@ -229,7 +229,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                       name="leaveTypeId"
                       onChange={handleSelectChange}
                     >
-                      <MenuItem value={0}>None</MenuItem>
+                      <MenuItem value={0}>Select</MenuItem>
                       {leaveTypes.map((type, index) => (
                         <MenuItem key={index} value={type.leaveTypeId}>
                           {type.leaveTypeName}
