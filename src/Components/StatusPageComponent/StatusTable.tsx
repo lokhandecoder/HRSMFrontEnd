@@ -193,8 +193,7 @@ function StatusTable() {
   {data && data !== null
     ? data.map((row: Row, key) => {
         // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
-        const empId = "55";
-        const isCurrentUserLeave = empId === employeeId;
+        const isCurrentUserLeave = row.employeeId.toString() === employeeId;
        
 
         return (
