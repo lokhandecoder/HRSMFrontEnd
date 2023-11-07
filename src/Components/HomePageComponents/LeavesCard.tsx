@@ -11,7 +11,7 @@ import { GetEmployeeLeaveByEmployeeId } from "../../Services/EmployeeLeaveServic
 import { getLeaveTypes } from "../../Services/LeaveType";
 import { EmployeeLeave } from "../../Model/EmployeeLeave";
 
-function LeavesCard() {
+function  LeavesCard() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
   useEffect(() => {
