@@ -59,6 +59,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const today = dayjs();
   const todayDate = today.toDate();
 
+
+
   // const [snackbarDateValid, setsnackbarDateValid] = useState(false);
   // const [snackbarLeavetype, setsnackLeavetype] = useState(false);
   // const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -86,26 +88,15 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     isHalfDay: false,
   };
   const [formData, setFormData] = useState<LeaveFormData>(initialFormData);
-
-  // const [formData, setFormData] = useState<LeaveFormData>({
-  //   appliedLeaveTypeId: appliedLeaveTypeId,
-  //   leaveTypeId: 0,
-  //   leaveType: null,
-  //   startDate: todayDate,
-  //   endDate: todayDate,
-  //   leaveReason: "",
-  //   balanceLeave: 0,
-  //   applyLeaveDay: 0,
-  //   remaingLeave: 0,
-  //   leaveStatusId: 2,
-  //   employeeId: employeeId,
-  //   isHalfDay: false,
-  // });
   const isWeekend = (date: Dayjs) => {
     const day = date.day();
 
     return day === 0 || day === 6;
   };
+
+  const handleCancel= () => {
+    setFormData(initialFormData)
+  }
 
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
@@ -124,10 +115,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     setFormData,
     todayDate,
     onSubmit,
-    //setSnackbarOpen,
-    //setsubmitMessageOpen,
-    //setsnackbarDateValid,
-    //setsnackLeavetype,
     difference,
     setdifference,
     balanceLeave,
@@ -149,7 +136,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   ]);
 
   useEffect(() => {
-    // const EmployeeID = 3;
+
 
     const fetchData = async () => {
       try {
@@ -187,20 +174,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
 
     fetchData();
   }, []);
-  // useEffect(() => {
-  //   // Calculate the difference in days between start date and end date
-  //   const dateDifference = formData.endDate.diff(formData.startDate, 'day');
-
-  //   // If difference is greater than 1 day, set default value to "Full Day" and make it readonly
-  //   if (dateDifference > 1) {
-  //     setApplyLeaveDefaultValue(1); // Full Day
-  //     setApplyLeaveReadOnly(true);
-  //   } else {
-  //     // If difference is 1 day or less, set default value to "None" and allow changes
-  //     setApplyLeaveDefaultValue(0); // None
-  //     setApplyLeaveReadOnly(false);
-  //   }
-  // }, [formData.startDate, formData.endDate]);
 
   return (
     <>
@@ -379,6 +352,17 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                   "Save"
                 )}
             </Button>
+            {/* Conditionally render the Cancel button when in edit mode */}
+            {appliedLeaveTypeId > 0 && (
+              <Button
+                size="large"
+                variant="contained"
+                color="secondary"
+                onClick={handleCancel}
+              >
+                Cancel
+              </Button>
+            )}
             <Button
               size="large"
               variant="contained"
