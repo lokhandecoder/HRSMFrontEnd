@@ -17,24 +17,22 @@ import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
-import { SelectChangeEvent } from '@mui/material';
+import { SelectChangeEvent } from "@mui/material";
 import InputLabel from "@mui/material/InputLabel";
 import { API_URL } from "../APIConfig";
 import axios from "axios";
-
-
+import { LeaveType } from "../Database/LeaveType";
+import { EmployeeLeave } from "../Model/EmployeeLeave";
+import { getLeaveTypes } from "../Services/LeaveType";
+import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices";
 
 function AccountingYear() {
+  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
   const [formData, setFormData] = useState({
     startDate: "",
     endDate: "",
-    sickLeaves: "",
-    casualLeaves: "",
-    maternityPaternityLeaves: "",  // Updated field name
-    // employeeName: ""  // Added employeeName field
-
   });
-  
 
   const isWeekend = (date: Dayjs) => {
     const day = date.day();
@@ -45,11 +43,11 @@ function AccountingYear() {
     let formattedValue: string;
 
     if (value === null) {
-      formattedValue = '';  // Set to an empty string if the value is null
-    } else if (typeof value === 'string') {
-      formattedValue = value;  // Use the string value as is
+      formattedValue = ""; // Set to an empty string if the value is null
+    } else if (typeof value === "string") {
+      formattedValue = value; // Use the string value as is
     } else {
-      formattedValue = value.format('YYYY-MM-DD');  // Format Dayjs object to string
+      formattedValue = value.format("YYYY-MM-DD"); // Format Dayjs object to string
     }
 
     setFormData((prevFormData) => ({
@@ -70,16 +68,33 @@ function AccountingYear() {
   };
   useEffect(() => {
     // console.log(API_URL);
-    axios.get(`${API_URL}employee`).then((res) => console.log(res.data.data)).catch((e) => console.log(e))
-    
-},[])
-  
+    axios
+      .get(`${API_URL}employee`)
+      .then((res) => console.log(res.data.data))
+      .catch((e) => console.log(e));
+    const fetchData = async () => {
+      try {
+        const [leaveTypesData, employeeLeaveData] = await Promise.all([
+          getLeaveTypes(),
+          GetEmployeeLeaveByEmployeeId(),
+        ]);
+        const leaveTypes = leaveTypesData.data;
+        setLeaveTypes(leaveTypes);
+        const employeeLeave = employeeLeaveData.data;
+        setemployeeLeaves(employeeLeave);
+      } catch (error) {
+        console.error("Failed to fetch data: ", (error as Error).message);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <LayoutComponent>
       <form onSubmit={handleSubmit}>
         <Card sx={{ minWidth: 275, mt: 5, boxShadow: 5 }}>
-        <h1 style={{ marginLeft: "1%" }}>Accounting Year</h1>
+          <h1 style={{ marginLeft: "1%" }}>Accounting Year</h1>
           <CardContent>
             <Box sx={{ width: "100%" }}>
               <Grid
@@ -108,7 +123,7 @@ function AccountingYear() {
                         <DatePicker
                           label="Start Date"
                           shouldDisableDate={isWeekend}
-                          value={dayjs(formData.startDate)}  // Convert string to Dayjs object
+                          value={dayjs(formData.startDate)} // Convert string to Dayjs object
                           onChange={(date) => handleChange("startDate", date)}
                         />
                       </FormControl>
@@ -123,54 +138,37 @@ function AccountingYear() {
                         <DatePicker
                           label="End Date"
                           shouldDisableDate={isWeekend}
-                          value={dayjs(formData.endDate)}  // Convert string to Dayjs object
+                          value={dayjs(formData.endDate)} // Convert string to Dayjs object
                           onChange={(date) => handleChange("endDate", date)}
                         />
                       </FormControl>
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-
                 <Grid item xs={12} sm={4} md={3} lg={2}>
-                  <TextField
-                    sx={{ mt: 1 }}
-                    id="sickLeaves"
-                    name="Sick Leaves"
-                    label="Sick Leaves"
-                    type="number"  // Set the input type to number
-                    inputProps={{ min: "0", max: "100" }}  // Set the minimum and maximum allowed values
-                    value={formData.sickLeaves}
-                    onChange={(event) => handleChange("sickLeaves", event.target.value)}
-                    fullWidth
-                  />
-                </Grid>
+                  {leaveTypes.map((leaveType, key) => {
+                    const matchingEmployeeLeave = employeeLeaves.find(
+                      (employeeLeave) =>
+                        employeeLeave.leaveTypeId === leaveType.leaveTypeId
+                    );
 
-                <Grid item xs={12} sm={4} md={3} lg={2}>
-                  <TextField
-                    sx={{ mt: 1 }}
-                    id="casualLeaves"
-                    name="Casual Leaves"
-                    label="Casual Leaves"
-                    type="number"  // Set the input type to number
-                    inputProps={{ min: "0", max: "100" }}  // Set the minimum and maximum allowed values
-                    value={formData.casualLeaves}
-                    onChange={(event) => handleChange("casualLeaves", event.target.value)}
-                    fullWidth
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={4} md={3} lg={2}>
-                  <TextField
-                    sx={{ mt: 1 }}
-                    id="maternityPaternityLeaves"  // Updated field name
-                    name="Maternity/Paternity Leaves"  // Updated field label
-                    label="Maternity/Paternity Leaves"  // Updated field label
-                    type="number"  // Set the input type to number
-                    inputProps={{ min: "0", max: "100" }}  // Set the minimum and maximum allowed values
-                    value={formData.maternityPaternityLeaves}  // Updated field name
-                    onChange={(event) => handleChange("maternityPaternityLeaves", event.target.value)}  // Updated field name
-                    fullWidth
-                  />
+                    return (
+                      <>
+                        <Typography
+                          sx={{ fontSize: 10 }}
+                          color=""
+                          gutterBottom
+                        >
+                          {leaveType.leaveTypeName}
+                        </Typography>
+                        <TextField
+                          label="Input"
+                          variant="outlined"
+                          fullWidth
+                        />
+                      </>
+                    );
+                  })}
                 </Grid>
               </Grid>
             </Box>
