@@ -3,6 +3,7 @@ import { API_URL } from "../APIConfig";
 import { EmployeeModel } from "../Model/EmployeeModel";
 import dayjs, { Dayjs } from "dayjs"; // Import dayjs
 import axios, { AxiosResponse, AxiosError } from "axios";
+import { LoginModel } from "../Model/LoginModel";
 
 export const createEmployee = async (employeeData: EmployeeModel) => {
   try {
@@ -87,4 +88,13 @@ export async function GetEmployeesAsync(): Promise<{ data: EmployeeModel[]}> {
     throw new Error('Failed to update leave data: ' + (error as Error).message);
   }
 }
+
+export const EmployeeLoginAsync = async (data: LoginModel) => {
+  try {
+    const response = await axios.post(`${API_URL}auth/login/`, data);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 

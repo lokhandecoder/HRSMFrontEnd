@@ -72,5 +72,7 @@ export const EmployeesUtilities = (employeeId: number) => {
   return {
     employeeData,
     onEdit,
+    roles,
+    selectedReportingPersons,
   };
 };

@@ -48,20 +48,24 @@ export const LoginPageUtilities = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(email);
   };
+        // Axios.post(`${API_URL}employee/EmployeeLoginAsync`, formData)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     setLoading(true);
     event.preventDefault();
     const isFormValid = IsFormValid(formData);
+    const newdata = {
+      emailAdderss : formData.email,
+      employeePassword : formData.password,
+    }
     if (isFormValid) {
       console.log(formData);
-      Axios.post(`${API_URL}employee/EmployeeLoginAsync`, formData)
-        .then((response) => {
-          console.log("Successfully submitted:", response.data);
+      Axios.post(`${API_URL}auth/login/`, newdata).then((response) => {
+          console.log("Successfully submitted:", response.data.status);
   
           if (response.data.status === 200) {
-            const employeeId = response.data.data.employee.employeeId.toString();
-            const roleAssignId = response.data.data.employee.roleAssignId.toString();
+            const employeeId = response.data.data.employeeId.toString();
+            const roleAssignId = response.data.data.roleAssignId.toString();
             const encryptedEmployeeId = encryptData(employeeId, secretKey_global);
             localStorage.setItem("EmployeeID", encryptedEmployeeId);
           // alert(JSON.stringify(response.data.data));
@@ -69,8 +73,7 @@ export const LoginPageUtilities = () => {
 
           setEncryptedValueInStorage("employeeID", employeeId);
           setEncryptedValueInStorage("roleAssignId", roleAssignId);
-          setEncryptedValueInStorage("employeeObject", response.data.data.employee);
-          //alert(roleAssignId);
+          setEncryptedValueInStorage("employeeObject", response.data.data);
 
         
           

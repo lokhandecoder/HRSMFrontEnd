@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { getLeaveStatus, getLeaveTypes } from "../../Services/LeaveType";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { LeaveStatus } from "../../Model/LeaveStatus";
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIcon from "@mui/icons-material/Clear";
 
 import {
   GetAppliedLeavesByEmpIdAsync,
@@ -50,17 +50,14 @@ interface Row {
 }
 
 function StatusTable() {
-  
   const employeeId = DecryptEmployeeID();
 
-  
   const [data, setData] = useState<Row[]>([]); // Specify the type for data
   const [employee, setEmployee] = useState<Employee[]>([]);
   const navigate = useNavigate();
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
-  
 
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
@@ -114,7 +111,6 @@ function StatusTable() {
         console.error("Error fetching leave types:", (error as Error).message);
       }
     };
-    
 
     const fetchLeaveTypes = async () => {
       try {
@@ -140,7 +136,6 @@ function StatusTable() {
     return `${day}/${month}/${year}`;
   }
 
-
   const fetchData = async () => {
     try {
       const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
@@ -157,9 +152,7 @@ function StatusTable() {
 
     fetchData();
   };
-  const onLeaveCancel = (appliedLeaveTypeId: number) => {
-    
-  };
+  const onLeaveCancel = (appliedLeaveTypeId: number) => {};
   const onLeaveReject = async (appliedLeaveTypeId: number) => {
     const isApproved = true;
     const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
@@ -174,98 +167,108 @@ function StatusTable() {
   return (
     <TableContainer>
       <Table sx={{ minWidth: 700 }} aria-label="simple table">
-        <TableHead>
+        <TableHead className="tableHead">
           <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell>Leave Type</TableCell>
-            <TableCell>Start Date</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell>Reason for Leave</TableCell>
-            <TableCell>Balance Leaves</TableCell>
-            <TableCell>Applied Days</TableCell>
-            <TableCell>Remaining Leaves</TableCell>
-            
-            <TableCell>Edit </TableCell>
-            <TableCell>Approve/Reject </TableCell>
+            <TableCell sx={{ color: "white" }}>First Name</TableCell>
+            <TableCell sx={{ color: "white" }}>Leave Type</TableCell>
+            <TableCell sx={{ color: "white" }}>Start Date</TableCell>
+            <TableCell sx={{ color: "white" }}>End Date</TableCell>
+            <TableCell sx={{ color: "white" }}>Reason for Leave</TableCell>
+            <TableCell sx={{ color: "white" }}>Balance Leaves</TableCell>
+            <TableCell sx={{ color: "white" }}>Applied Days</TableCell>
+            <TableCell sx={{ color: "white" }}>Remaining Leaves</TableCell>
+
+            <TableCell sx={{ color: "white" }}>Edit </TableCell>
+            <TableCell sx={{ color: "white" }}>Approve/Reject </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-  {data && data !== null
-    ? data.map((row: Row, key) => {
-        // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
-        const isCurrentUserLeave = row.employeeId.toString() === employeeId;
-       
+          {data && data !== null
+            ? data.map((row: Row, key) => {
+                // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
+                const isCurrentUserLeave =
+                  row.employeeId.toString() === employeeId;
 
-        return (
-          <TableRow key={key}>
-            <TableCell>
-              {row.firstName} {row.lastName}
-            </TableCell>
-            <TableCell>{row.leaveTypeName}</TableCell>
-            <TableCell>
-              {row.startDate
-                ? formatDate(new Date(row.startDate))
-                : "No date available"}
-            </TableCell>
-            <TableCell>
-              {row.endDate
-                ? formatDate(new Date(row.endDate))
-                : "No date available"}
-            </TableCell>
-            <TableCell>{row.leaveReason}</TableCell>
-            <TableCell>{row.balanceLeave}</TableCell>
-            <TableCell>{row.applyLeaveDay}</TableCell>
-            <TableCell>{row.remaingLeave}</TableCell>
+                return (
+                  <TableRow key={key}>
+                    <TableCell>
+                      {row.firstName} {row.lastName}
+                    </TableCell>
+                    <TableCell>{row.leaveTypeName}</TableCell>
+                    <TableCell>
+                      {row.startDate
+                        ? formatDate(new Date(row.startDate))
+                        : "No date available"}
+                    </TableCell>
+                    <TableCell>
+                      {row.endDate
+                        ? formatDate(new Date(row.endDate))
+                        : "No date available"}
+                    </TableCell>
+                    <TableCell>{row.leaveReason}</TableCell>
+                    <TableCell>{row.balanceLeave}</TableCell>
+                    <TableCell>{row.applyLeaveDay}</TableCell>
+                    <TableCell>{row.remaingLeave}</TableCell>
 
-            <TableCell>
-              {!row.isApproved && (
-                <IconButton
-                  aria-label="Edit"
-                  onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
-                  disabled={row.isApproved}
-                >
-                  <ModeEditOutlinedIcon />
-                </IconButton>
-    )}
-            </TableCell>
+                    <TableCell>
+                      {!row.isApproved && (
+                        <IconButton
+                          aria-label="Edit"
+                          onClick={() =>
+                            handleEdit(row.appliedLeaveTypeId || 0)
+                          }
+                          disabled={row.isApproved}
+                        >
+                          <ModeEditOutlinedIcon />
+                        </IconButton>
+                      )}
+                    </TableCell>
 
-            <TableCell className={row.isApproved ? 'approved-cell' : ''}>
-              {!isCurrentUserLeave && !row.isApproved && !row.isRejected && (
-                <>
-                  <IconButton
-                    aria-label="Approve"
-                    onClick={() => onLeaveApprove(row.appliedLeaveTypeId || 0)}
-                  >
-                    <DoneAllOutlinedIcon color="success" />
-                  </IconButton>
+                    <TableCell
+                      className={row.isApproved ? "approved-cell" : ""}
+                    >
+                      {!isCurrentUserLeave &&
+                        !row.isApproved &&
+                        !row.isRejected && (
+                          <>
+                            <IconButton
+                              aria-label="Approve"
+                              onClick={() =>
+                                onLeaveApprove(row.appliedLeaveTypeId || 0)
+                              }
+                            >
+                              <DoneAllOutlinedIcon color="success" />
+                            </IconButton>
 
-                  <IconButton
-                    aria-label="Reject"
-                    onClick={() => onLeaveReject(row.appliedLeaveTypeId || 0)}
-                  >
-                    <ClearIcon color="error" />
-                  </IconButton>
-                </>
-              )}
+                            <IconButton
+                              aria-label="Reject"
+                              onClick={() =>
+                                onLeaveReject(row.appliedLeaveTypeId || 0)
+                              }
+                            >
+                              <ClearIcon color="error" />
+                            </IconButton>
+                          </>
+                        )}
 
-              {row.isApproved && row.isRejected ? (
-                <>
-                  <IconButton aria-label="Approve">
-                    <Unpublished />
-                  </IconButton>
-                </>
-              ) : (
-                <>
-                  {row.isApproved && !row.isRejected && "Approved"}
-                  {!row.isApproved && row.isRejected && "Rejected"}
-                </>
-              )}
-            </TableCell>
-          </TableRow>
-        );
-      })
-    : "No data available"}
-</TableBody>
+                      {row.isApproved && row.isRejected ? (
+                        <>
+                          <IconButton aria-label="Approve">
+                            <Unpublished />
+                          </IconButton>
+                        </>
+                      ) : (
+                        <>
+                          {row.isApproved && !row.isRejected && "Approved"}
+                          {!row.isApproved && row.isRejected && "Rejected"}
+                        </>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            : "No data available"}
+        </TableBody>
       </Table>
     </TableContainer>
   );

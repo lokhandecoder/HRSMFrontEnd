@@ -25,70 +25,20 @@ import { LeaveType } from "../Database/LeaveType";
 import { EmployeeLeave } from "../Model/EmployeeLeave";
 import { getLeaveTypes } from "../Services/LeaveType";
 import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices";
+import { AccountingYearUtilities } from "../Utilities/AccountingYearUtilities";
 
 function AccountingYear() {
-  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
-  const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
-  const [formData, setFormData] = useState({
-    startDate: "",
-    endDate: "",
-  });
+  const Accountingyear = AccountingYearUtilities();
 
-  const isWeekend = (date: Dayjs) => {
-    const day = date.day();
-    return day === 0 || day === 6;
-  };
-
-  const handleChange = (field: string, value: string | Dayjs | null) => {
-    let formattedValue: string;
-
-    if (value === null) {
-      formattedValue = ""; // Set to an empty string if the value is null
-    } else if (typeof value === "string") {
-      formattedValue = value; // Use the string value as is
-    } else {
-      formattedValue = value.format("YYYY-MM-DD"); // Format Dayjs object to string
-    }
-
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      [field]: formattedValue,
-    }));
-  };
-  // const handleEmployeeNameChange = (event: SelectChangeEvent<string>) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     employeeName: event.target.value,
-  //   }));
-  // };
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    console.log("Form submitted with data:", formData);
-  };
-  useEffect(() => {
-    // console.log(API_URL);
-    axios
-      .get(`${API_URL}employee`)
-      .then((res) => console.log(res.data.data))
-      .catch((e) => console.log(e));
-    const fetchData = async () => {
-      try {
-        const [leaveTypesData, employeeLeaveData] = await Promise.all([
-          getLeaveTypes(),
-          GetEmployeeLeaveByEmployeeId(),
-        ]);
-        const leaveTypes = leaveTypesData.data;
-        setLeaveTypes(leaveTypes);
-        const employeeLeave = employeeLeaveData.data;
-        setemployeeLeaves(employeeLeave);
-      } catch (error) {
-        console.error("Failed to fetch data: ", (error as Error).message);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const {
+    leaveTypes,
+    employeeLeaves,
+    formData,
+    handleChange,
+    isWeekend,
+    handleTextFieldChange,
+    handleSubmit,
+  } = Accountingyear;
 
   return (
     <LayoutComponent>
@@ -102,20 +52,6 @@ function AccountingYear() {
                 rowSpacing={1}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 }}
               >
-                {/* <Grid item xs={12} sm={4} md={3} lg={2}>
-                  <FormControl fullWidth sx={{ mt: 1 }}>
-                  <InputLabel id="leaveType">Employee</InputLabel>
-                    <Select
-                      label="Employee Name"
-                      value={formData.employeeName}
-                      labelId="leaveType"
-                      onChange={handleEmployeeNameChange}
-                    >
-                      <MenuItem value="John Doe">John Doe</MenuItem>
-                      <MenuItem value="Jane Smith">Jane Smith</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid> */}
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={["DatePicker"]}>
@@ -130,7 +66,6 @@ function AccountingYear() {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={["DatePicker"]}>
@@ -147,24 +82,32 @@ function AccountingYear() {
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   {leaveTypes.map((leaveType, key) => {
-                    const matchingEmployeeLeave = employeeLeaves.find(
-                      (employeeLeave) =>
-                        employeeLeave.leaveTypeId === leaveType.leaveTypeId
-                    );
+                    const matchingEmployeeLeave =
+                      employeeLeaves &&
+                      employeeLeaves.find(
+                        (employeeLeave) =>
+                          employeeLeave.leaveTypeId === leaveType.leaveTypeId
+                      );
 
                     return (
                       <>
-                        <Typography
-                          sx={{ fontSize: 10 }}
-                          color=""
-                          gutterBottom
-                        >
-                          {leaveType.leaveTypeName}
-                        </Typography>
                         <TextField
-                          label="Input"
+                          sx={{ mt: 1 }}
+                          label={leaveType.leaveTypeName}
                           variant="outlined"
+                          name={leaveType.leaveTypeName}
                           fullWidth
+                          value={
+                            formData.leavetype[
+                              leaveType.leaveTypeId.toString()
+                            ] || ""
+                          }
+                          onChange={(e) =>
+                            handleTextFieldChange(
+                              leaveType.leaveTypeId.toString(),
+                              e as React.ChangeEvent<HTMLInputElement>
+                            )
+                          }
                         />
                       </>
                     );

@@ -11,22 +11,23 @@ import {
   Alert,
   AlertColor,
 } from "@mui/material";
+import TablePagination from "@mui/material/TablePagination";
 import { Box, Button, Card, CardContent, CardActions } from "@mui/material";
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Cancel';
+import SaveIcon from "@mui/icons-material/Save";
+import CancelIcon from "@mui/icons-material/Cancel";
 import LayoutComponent from "../Components/Fixed/LayoutComponent";
 import TableRowWithCheckboxes from "../Components/DataTable/TableRowWithCheckboxes";
-import {
-  RowHeaderModel,
-  ColumnHeaderModel,
-} from "../Model/RoleAssignModels";
+import { RowHeaderModel, ColumnHeaderModel } from "../Model/RoleAssignModels";
 import { UserRoleMapping } from "../Model/UserRoleMapping";
-import { GetRoleAssignsAsync, GetApplicationPagesAsync,  createUserRoleMappingsAsync} from "../Services/RoleAssignServices";
+import {
+  GetRoleAssignsAsync,
+  GetApplicationPagesAsync,
+  createUserRoleMappingsAsync,
+} from "../Services/RoleAssignServices";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../APIConfig";
 import axios from "axios";
 import { GetUserRoleMappingsAsync } from "../Services/UserRoleMappingServices";
-
 
 type DataObject = {
   [key: string]: {
@@ -44,19 +45,34 @@ function RoleAssign() {
   const [error, setError] = useState<string | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor | undefined>("success"); 
+  const [snackbarSeverity, setSnackbarSeverity] = useState<
+    AlertColor | undefined
+  >("success");
   const navigate = useNavigate();
   const [selectedData, setSelectedData] = useState<UserRoleMapping[]>([]);
-  const [ userRole, setUserRole] = useState<UserRoleMapping[]>([]);
+  const [userRole, setUserRole] = useState<UserRoleMapping[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Change this value based on your preference
 
-  // for (const item of userRole) {
-  //   if (item.roleAssignId && item.applicationPageId) {
-  //     if (!initialData[item.applicationPageId]) {
-  //       initialData[item.applicationPageId] = {};
-  //     }
-  //     initialData[item.applicationPageId][item.roleAssignId] = true;
-  //   }
-  // }
+  const handleChangePage = (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when changing the number of rows per page
+  };
+  const startSlice = page * rowsPerPage;
+  const endSlice = startSlice + rowsPerPage;
+
+  const displayedRowHeaders = rowHeaders.slice(startSlice, endSlice);
+
+
 
   useEffect(() => {
     async function fetchData() {
@@ -89,71 +105,74 @@ function RoleAssign() {
   }
 
   const [data, setData] = useState<DataObject>(initialData);
- 
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
   const handleSave = async () => {
-    
-    console.log("from consle",selectedData);
-    
-    try {
-      await axios.post(`${API_URL}UserRoleMapping/CreateUserRoleMappingsAsync/`, selectedData);
-      
+    console.log("from consle", selectedData);
 
-      console.log('Data saved successfully');
-      setSnackbarMessage('Data saved successfully');
-      setSnackbarSeverity('success');
+    try {
+      await axios.post(
+        `${API_URL}UserRoleMapping/CreateUserRoleMappingsAsync/`,
+        selectedData
+      );
+
+      console.log("Data saved successfully");
+      setSnackbarMessage("Data saved successfully");
+      setSnackbarSeverity("success");
       setSnackbarOpen(true);
       //setData(initialData);
       //setSelectedData([]);
-
-      
-    
     } catch (error) {
-      console.error('Error saving data:', error);
-    alert('Error saving data');
+      console.error("Error saving data:", error);
+      alert("Error saving data");
     }
   };
 
   const handleReset = () => {
     setData(initialData);
     setSelectedData([]);
-    setSnackbarMessage('Data reset to initial state');
-    setSnackbarSeverity('info');
+    setSnackbarMessage("Data reset to initial state");
+    setSnackbarSeverity("info");
     setSnackbarOpen(true);
   };
 
-  
   const toggleCell = (rowId: number, columnId: number) => {
     const cellKey = `${rowId}-${columnId}`;
     const isCellSelected = selectedData.some(
-      (data) => data.applicationPageId === rowId && data.roleAssignId === columnId
+      (data) =>
+        data.applicationPageId === rowId && data.roleAssignId === columnId
     );
 
     if (isCellSelected) {
-   
       const updatedData = selectedData.filter(
-        (data) => !(data.applicationPageId === rowId && data.roleAssignId === columnId)
+        (data) =>
+          !(data.applicationPageId === rowId && data.roleAssignId === columnId)
       );
       setSelectedData(updatedData); // Assuming you have a setter function like this
     } else {
       // If the cell is not selected, add it to the selectedData
-      const newData: UserRoleMapping = { roleAssignId: columnId, applicationPageId: rowId , roleAssignName:'',roleAssignCodeName:'',pageName:'',pageCode:'',routePath:'',menuPath:'',isMenuPage:false,componentName:'' };
+      const newData: UserRoleMapping = {
+        roleAssignId: columnId,
+        applicationPageId: rowId,
+        roleAssignName: "",
+        roleAssignCodeName: "",
+        pageName: "",
+        pageCode: "",
+        routePath: "",
+        menuPath: "",
+        isMenuPage: false,
+        componentName: "",
+      };
       const updatedData = [...selectedData, newData];
       setSelectedData(updatedData);
     }
-
- 
   };
-  
-
 
   if (error) {
     return <p>{error}</p>;
   }
-  console.log("userroleee", userRole)
 
   return (
     <>
@@ -161,20 +180,24 @@ function RoleAssign() {
         <Box sx={{ mt: 4 }}>
           <Card>
             <CardContent>
-              <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Role Assignment</h1>
+              <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>
+                Role Assignment
+              </h1>
               <TableContainer component={Paper}>
                 <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell></TableCell>
                       {columnHeaders.map((column) => (
-                        <TableCell key={column.roleAssignId}>{column.roleAssignName}</TableCell>
+                        <TableCell key={column.roleAssignId}>
+                          {column.roleAssignName}
+                        </TableCell>
                       ))}
                     </TableRow>
                   </TableHead>
-                  
+
                   <TableBody>
-                    {rowHeaders.map((row) => (
+                    {displayedRowHeaders.map((row) => (
                       <TableRowWithCheckboxes
                         key={row.id}
                         row={row}
@@ -182,7 +205,17 @@ function RoleAssign() {
                         selectedData={selectedData}
                         toggleCell={toggleCell}
                       />
+                      // Render each row here
                     ))}
+                    {/* {rowHeaders.map((row) => (
+                      <TableRowWithCheckboxes
+                        key={row.id}
+                        row={row}
+                        columnHeaders={columnHeaders}
+                        selectedData={selectedData}
+                        toggleCell={toggleCell}
+                      />
+                    ))} */}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -210,6 +243,15 @@ function RoleAssign() {
                 </Button>
               </CardActions>
             </CardContent>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25]}
+              component="div"
+              count={rowHeaders.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </Card>
         </Box>
       </LayoutComponent>

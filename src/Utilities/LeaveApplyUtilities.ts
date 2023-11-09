@@ -163,7 +163,7 @@ const LeaveApplyUtilities = (
    // employeeLeaves: employeeLeaves,
     leaveTypeId: number
   ): number | null => {
-    const balanceLeave = employeeLeaves.find(
+    const balanceLeave = employeeLeaves && employeeLeaves.find(
       (leave) => leave.leaveTypeId === leaveTypeId 
     );
     const balance =balanceLeave ? balanceLeave.balanceLeaves : 0;

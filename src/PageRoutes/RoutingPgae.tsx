@@ -35,7 +35,7 @@ function RoutingPgae() {
         if (roleid) {
           // Parse the JSON string back to an object
           const parsedData = JSON.parse(roleid);
-          setuserrole(parsedData.employee.roleAssignId);
+          setuserrole(parsedData.roleAssignId);
         }else{
           setuserrole(null)
         }
