@@ -15,6 +15,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { SelectChangeEvent } from "@mui/material";
@@ -38,19 +40,22 @@ function AccountingYear() {
     isWeekend,
     handleTextFieldChange,
     handleSubmit,
+    snackbar,
   } = Accountingyear;
 
   return (
     <LayoutComponent>
       <form onSubmit={handleSubmit}>
         <Card sx={{ minWidth: 275, mt: 5, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%" }}>Accounting Year</h1>
+          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>
+            Accounting Year
+          </h1>
           <CardContent>
             <Box sx={{ width: "100%" }}>
               <Grid
                 container
                 rowSpacing={1}
-                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 , lg: 1}}
               >
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -59,7 +64,7 @@ function AccountingYear() {
                         <DatePicker
                           label="Start Date"
                           shouldDisableDate={isWeekend}
-                          value={dayjs(formData.startDate)} // Convert string to Dayjs object
+                          value={dayjs(formData.financialYear.startDate)} // Convert string to Dayjs object
                           onChange={(date) => handleChange("startDate", date)}
                         />
                       </FormControl>
@@ -73,46 +78,66 @@ function AccountingYear() {
                         <DatePicker
                           label="End Date"
                           shouldDisableDate={isWeekend}
-                          value={dayjs(formData.endDate)} // Convert string to Dayjs object
+                          value={dayjs(formData.financialYear.endDate)} // Convert string to Dayjs object
                           onChange={(date) => handleChange("endDate", date)}
                         />
                       </FormControl>
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3} lg={2}>
-                  {leaveTypes.map((leaveType, key) => {
-                    const matchingEmployeeLeave =
-                      employeeLeaves &&
-                      employeeLeaves.find(
-                        (employeeLeave) =>
-                          employeeLeave.leaveTypeId === leaveType.leaveTypeId
-                      );
+              </Grid>
+              <Grid container
+                rowSpacing={5}
+                columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 1 }}>
+                {leaveTypes.map((leaveType, key) => {
+                  const matchingEmployeeLeave = employeeLeaves.find(
+                    (employeeLeave) =>
+                      employeeLeave.leaveTypeId === leaveType.leaveTypeId
+                  );
 
-                    return (
-                      <>
+                  return (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={4}
+                      md={5}
+                      lg={4}
+                      key={leaveType.leaveTypeId}
+                    >
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        {/* <InputLabel   
+                        htmlFor={leaveType.leaveTypeName}
+                        style={{ marginRight: "80px" }}
+                      >
+                        {leaveType.leaveTypeName}:
+                      </InputLabel> */}
+                        <Typography
+                          sx={{ mt: 4, mb: 4 }}
+                          variant="body2"
+                          color="text.secondary"
+                          // align="center"
+                          
+                        >
+                          {leaveType.leaveTypeName}:
+                        </Typography>
                         <TextField
-                          sx={{ mt: 1 }}
+                          fullWidth
                           label={leaveType.leaveTypeName}
                           variant="outlined"
                           name={leaveType.leaveTypeName}
-                          fullWidth
                           value={
-                            formData.leavetype[
-                              leaveType.leaveTypeId.toString()
-                            ] || ""
+                            formData.leaveTypeCounts[leaveType.leaveTypeId] ||
+                            ""
                           }
                           onChange={(e) =>
-                            handleTextFieldChange(
-                              leaveType.leaveTypeId.toString(),
-                              e as React.ChangeEvent<HTMLInputElement>
-                            )
+                            handleTextFieldChange(leaveType.leaveTypeId, e)
                           }
+                          style={{ marginTop: "8px" }} // Adjust the margin as needed
                         />
-                      </>
-                    );
-                  })}
-                </Grid>
+                      </div>
+                    </Grid>
+                  );
+                })}
               </Grid>
             </Box>
           </CardContent>
@@ -128,6 +153,20 @@ function AccountingYear() {
           </CardActions>
         </Card>
       </form>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={snackbar.duration}
+        onClose={snackbar.handleSnackbarClose}
+        anchorOrigin={snackbar.position}
+      >
+        <Alert
+          onClose={snackbar.handleSnackbarClose}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </LayoutComponent>
   );
 }

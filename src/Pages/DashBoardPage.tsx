@@ -17,8 +17,8 @@ function DashBoardPage() {
         <Grid container spacing={2}>
           <Grid item xs={8}>
             <ProfileCard />
-            <Box height={40} />
-            <LeavesCard />
+            {/* <ProfileCard /> */}
+            {/* <LeavesCard /> */}
           </Grid>
           <Grid item xs={4}>
             <UpcomingHolidays />
