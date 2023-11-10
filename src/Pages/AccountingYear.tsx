@@ -90,10 +90,11 @@ function AccountingYear() {
                 rowSpacing={5}
                 columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 1 }}>
                 {leaveTypes.map((leaveType, key) => {
-                  const matchingEmployeeLeave = employeeLeaves.find(
+                  const matchingEmployeeLeave = employeeLeaves && employeeLeaves.find(
                     (employeeLeave) =>
                       employeeLeave.leaveTypeId === leaveType.leaveTypeId
                   );
+                  
 
                   return (
                     <Grid

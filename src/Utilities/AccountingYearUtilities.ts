@@ -99,7 +99,7 @@ const handleTextFieldChange = (
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log("Form submitted with data:", formData);
-    axios.post(`${API_URL}LeaveAllocation/CreateLeaveAllocationForAllLeaveTypes`, formData).then((res) => {console.log("Zhala re", res);
+    axios.post(`${API_URL}FinancialYearSetup/CreateLeaveAllocationForAllLeaveTypes`, formData).then((res) => {console.log("Zhala re", res);
     snackbar.showSnackbar(
         "New Accountig Year has been Set Successfully",
         "success",
