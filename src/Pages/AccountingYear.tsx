@@ -57,7 +57,7 @@ function AccountingYear() {
                 rowSpacing={1}
                 columnSpacing={{ xs: 1, sm: 2, md: 3 , lg: 1}}
               >
-                <Grid item xs={12} sm={4} md={3} lg={2}>
+                <Grid item xs={12} sm={4} md={3} lg={3}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={["DatePicker"]}>
                       <FormControl fullWidth>
@@ -71,7 +71,7 @@ function AccountingYear() {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3} lg={2}>
+                <Grid item xs={12} sm={4} md={3} lg={3}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={["DatePicker"]}>
                       <FormControl fullWidth>
@@ -101,13 +101,13 @@ function AccountingYear() {
                       xs={12}
                       sm={4}
                       md={5}
-                      lg={4}
+                      lg={3}
                       key={leaveType.leaveTypeId}
                     >
                       <div style={{ display: "flex", alignItems: "center" }}>
                         {/* <InputLabel   
                         htmlFor={leaveType.leaveTypeName}
-                        style={{ marginRight: "80px" }}
+                        style={{ marginRight: "10px" }}
                       >
                         {leaveType.leaveTypeName}:
                       </InputLabel> */}
@@ -132,7 +132,7 @@ function AccountingYear() {
                           onChange={(e) =>
                             handleTextFieldChange(leaveType.leaveTypeId, e)
                           }
-                          style={{ marginTop: "8px" }} // Adjust the margin as needed
+                          style={{ marginTop: "8px"}} // Adjust the margin as needed
                         />
                       </div>
                     </Grid>
