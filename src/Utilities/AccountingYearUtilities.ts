@@ -9,21 +9,21 @@ import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices"
 import { API_URL } from "../APIConfig";
 
 export const AccountingYearUtilities = () => {
-    const snackbar = useCustomSnackbar();
+  const snackbar = useCustomSnackbar();
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
-//   const [formData, setFormData] = useState<{
-//     startDate: string;
-//     endDate: string;
-//     leavetype: {
-//       [leavetypeid: string]: string;
-//     };
-//   }>({
-//     startDate: "",
-//     endDate: "",
-//     leavetype: {},
-//   });
-const [formData, setFormData] = useState<{
+  //   const [formData, setFormData] = useState<{
+  //     startDate: string;
+  //     endDate: string;
+  //     leavetype: {
+  //       [leavetypeid: string]: string;
+  //     };
+  //   }>({
+  //     startDate: "",
+  //     endDate: "",
+  //     leavetype: {},
+  //   });
+  const [formData, setFormData] = useState<{
     financialYear: {
       startDate: string;
       endDate: string;
@@ -38,7 +38,7 @@ const [formData, setFormData] = useState<{
     },
     leaveTypeCounts: {},
   });
-  
+
   const isWeekend = (date: Dayjs) => {
     const day = date.day();
     return day === 0 || day === 6;
@@ -49,9 +49,9 @@ const [formData, setFormData] = useState<{
       value === null
         ? ""
         : typeof value === "string"
-        ? value
-        : value.format("YYYY-MM-DD");
-  
+          ? value
+          : value.format("YYYY-MM-DD");
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       financialYear: {
@@ -60,30 +60,30 @@ const [formData, setFormData] = useState<{
       },
     }));
   };
-  
-//   const handleTextFieldChange = (
-//     leavetypeid: string,
-//     e: React.ChangeEvent<HTMLInputElement>
-//   ) => {
-//     const newValue = e.target.value;
 
-//     setFormData((prevFormData) => ({
-//       ...prevFormData,
-//       leavetype: {
-//         leavetypeid, // Set leavetypeid as a key
-//         leavcount: newValue, // Set leavcount with the value
-//       },
-//     }));
-//   };
-const handleTextFieldChange = (
+  //   const handleTextFieldChange = (
+  //     leavetypeid: string,
+  //     e: React.ChangeEvent<HTMLInputElement>
+  //   ) => {
+  //     const newValue = e.target.value;
+
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       leavetype: {
+  //         leavetypeid, // Set leavetypeid as a key
+  //         leavcount: newValue, // Set leavcount with the value
+  //       },
+  //     }));
+  //   };
+  const handleTextFieldChange = (
     fieldName: string | number,
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const newValue = e.target.value;
-  
+
     // Convert the value to a number if the fieldName is a number
     const numericValue = typeof fieldName === 'number' ? parseInt(newValue, 10) : newValue;
-  
+
     setFormData((prevFormData) => ({
       ...prevFormData,
       leaveTypeCounts: {
@@ -92,29 +92,69 @@ const handleTextFieldChange = (
       },
     }));
   };
-  
-  
-  
+
+
+
+
+
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     console.log("Form submitted with data:", formData);
-    axios.post(`${API_URL}FinancialYearSetup/CreateLeaveAllocationForAllLeaveTypes`, formData).then((res) => {console.log("Zhala re", res);
-    snackbar.showSnackbar(
-        "New Accountig Year has been Set Successfully",
-        "success",
-        { vertical: "top", horizontal: "center" },
-        5000
-      );
-    }).catch((e) => {console.log(e);
-        snackbar.showSnackbar(
-            "Failed to Set Accounting Year",
-            "error",
+
+    axios
+      .post(
+        `${API_URL}FinancialYearSetup/CreateLeaveAllocationForAllLeaveTypes`,
+        formData
+      )
+      .then((res) => {
+        console.log("API Response:", res);
+
+        if (res.status === 200) {
+          if (res.data && res.data.status === 500) {
+            const errorMessage =
+              res.data.message || "Failed to Set Accounting Year";
+
+            snackbar.showSnackbar(
+              errorMessage,
+              "error",
+              { vertical: "top", horizontal: "center" },
+              5000
+            );
+          }
+          // Check if the response indicates an error
+
+        } else {
+          // Assume success
+          snackbar.showSnackbar(
+            "New Accounting Year has been Set Successfully",
+            "success",
             { vertical: "top", horizontal: "center" },
             5000
           );
-    });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+
+        const errorMessage =
+          error.response && error.response.data && error.response.data.message
+            ? error.response.data.message
+            : "Failed to Set Accounting Year";
+
+        snackbar.showSnackbar(
+          errorMessage,
+          "error",
+          { vertical: "top", horizontal: "center" },
+          5000
+        );
+      });
   };
+
+
+
+
+
   useEffect(() => {
     const fetchData = async () => {
       try {
