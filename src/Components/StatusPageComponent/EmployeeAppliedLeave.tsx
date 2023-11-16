@@ -14,21 +14,19 @@ import ClearIcon from "@mui/icons-material/Clear";
 
 import {
   AppliedLeaveUpdateStatusAsync,
-  DeleteAppliedLeaveByIdAsync,
   GetAppliedLeavesByEmpIdAsync,
+  GetAppliedLeavesByReportingPersonIdAsync,
   UpdateIsApprovedAsync,
   UpdateIsRejectedAsync,
 } from "../../Services/EmployeeLeaveApplyServices";
 import { IconButton, Stack, Tooltip } from "@mui/material";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
-import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 //import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 //import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
 
 import {
-  CancelPresentationOutlined,
   DeleteForeverOutlined,
   EditAttributesOutlined,
   ThumbDownOffAlt,
@@ -38,13 +36,12 @@ import { GetEmployeesAsync } from "../../Services/EmployeeServices";
 import { Employee } from "../../Database/EmployeeServices";
 import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
-import {
-  getDecryptedValueFromStorage,
-  setEncryptedValueInStorage,
-} from "../../Utilities/LocalStorageEncryptionUtilities";
 import { AppliedLeave } from "../../Model/AppliedLeaveModel";
-import ConfirmationDialog from "../ConfirmationDialog";
-function StatusTable() {
+import { getDecryptedValueFromStorage } from "../../Utilities/LocalStorageEncryptionUtilities";
+import DoneOutlineOutlinedIcon from '@mui/icons-material/DoneOutlineOutlined';
+import CancelPresentationOutlinedIcon from '@mui/icons-material/CancelPresentationOutlined';
+import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
+function EmployeeAppliedLeave() {
   const employeeId = DecryptEmployeeID();
 
   const [data, setData] = useState<AppliedLeave[]>([]); // Specify the type for data
@@ -53,10 +50,6 @@ function StatusTable() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
-  const [openConfirmation, setOpenConfirmation] = React.useState<boolean>(false);
-
-  const[selectedAppliedLeaveTypeId , setSelectedAppliedLeaveTypeId] = useState<number>(0);
-
 
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
@@ -66,10 +59,7 @@ function StatusTable() {
   };
 
   const handleDelete = (appliedLeaveTypeId: number | undefined) => {
-    //alert(appliedLeaveTypeId);
-    setSelectedAppliedLeaveTypeId(appliedLeaveTypeId || 0);
-    //alert("dsa");
-    setOpenConfirmation(true);
+    alert(appliedLeaveTypeId);
   };
 
   const handleUpdate = (appliedLeaveTypeId: number | undefined) => {
@@ -101,50 +91,44 @@ function StatusTable() {
     // Update selectedLeaveStatusId
     setSelectedLeaveStatusId(value);
   };
-  const handleConfirmationClose = async (value: string) => {
-    setOpenConfirmation(false);
-  
-    if (value=="yes"){
-     var response =  await DeleteAppliedLeaveByIdAsync(selectedAppliedLeaveTypeId);
-     FetchList();
-    }
-  };
   console.log("table data", data);
   useEffect(() => {
-   
+    const FetchList = async () => {
+      try {
+        const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
+
+        const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
+          roleAssignId
+        );
+        const fetched = fetchData.data;
+        const fetchemployee = await GetEmployeesAsync();
+
+        if (Array.isArray(fetched)) {
+          setData(fetched);
+        } else {
+          console.error("Invalid leave types data.");
+        }
+      } catch (error) {
+        console.error("Error fetching leave types:", (error as Error).message);
+      }
+    };
+
+    const fetchLeaveTypes = async () => {
+      try {
+        const fetchedLeaveTypes = await getLeaveTypes();
+        const leaveTypesData = fetchedLeaveTypes.data;
+        if (Array.isArray(leaveTypesData)) {
+          setLeaveTypes(leaveTypesData);
+        } else {
+          console.error("Invalid leave types data.");
+        }
+      } catch (error) {
+        console.error("Error fetching leave types:", (error as Error).message);
+      }
+    };
     FetchList();
     fetchLeaveTypes();
   }, []);
-
-  const FetchList = async () => {
-    try {
-      const fetchData = await GetAppliedLeavesByEmpIdAsync();
-      const fetched = fetchData.data;
-      const fetchemployee = await GetEmployeesAsync();
-
-      if (Array.isArray(fetched)) {
-        setData(fetched);
-      } else {
-        console.error("Invalid leave types data.");
-      }
-    } catch (error) {
-      console.error("Error fetching leave types:", (error as Error).message);
-    }
-  };
-
-  const fetchLeaveTypes = async () => {
-    try {
-      const fetchedLeaveTypes = await getLeaveTypes();
-      const leaveTypesData = fetchedLeaveTypes.data;
-      if (Array.isArray(leaveTypesData)) {
-        setLeaveTypes(leaveTypesData);
-      } else {
-        console.error("Invalid leave types data.");
-      }
-    } catch (error) {
-      console.error("Error fetching leave types:", (error as Error).message);
-    }
-  };
   function formatDate(date: Date) {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
@@ -163,20 +147,24 @@ function StatusTable() {
     }
   };
 
-  const onLeaveApprove = async (appliedLeaveTypeId: number) => {
+  const onLeaveApprove = async (appliedLeaveTypeId: number, statusCode : string) => {
     const isApproved = true;
     const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
 
     fetchData();
   };
   const onLeaveCancel = (appliedLeaveTypeId: number) => {};
-  const onLeaveReject = async (appliedLeaveTypeId: number) => {
-    const isApproved = true;
-    const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
-    fetchData();
-  };
-  const onLeaveEdit = (appliedLeaveTypeId: number) => {};
-  const onLeaveDelete = (appliedLeaveTypeId: number) => {};
+  // const onLeaveReject = async (appliedLeaveTypeId: number, statusCode : string) => {
+  //   const isApproved = true;
+  //   const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
+  //   fetchData();
+  // };
+  
+  //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
+  //const onLeaveDelete = (appliedLeaveTypeId: number) => {};
+
+  //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
+  //const onLeaveApprove = (appliedLeaveTypeId: number) => {};
 
 
   const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
@@ -187,6 +175,7 @@ function StatusTable() {
     });
   };
 
+
   useEffect(() => {
     fetchData(); // Call fetchData when the component mounts
   }, []);
@@ -195,48 +184,34 @@ function StatusTable() {
       case "APP":
         return (
           <Stack direction="row">
-            <Tooltip title="Edit">
+            <Tooltip title="Approve">
               <IconButton
-                aria-label="Edit"
-                onClick={() => handleEdit(appliedLeaveTypeId || 0)}
+                aria-label="Approve"
+                onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0,"APR")}
               >
-                <EditNoteOutlinedIcon />
+                <DoneOutlineOutlinedIcon color="success" />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Delete">
+            <Tooltip title="Reject">
               <IconButton
-                aria-label="Delete"
-                onClick={() => handleDelete(appliedLeaveTypeId || 0)}
+                aria-label="Reject"
+                onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REJ")}
               >
-                <DeleteForeverOutlined />
+                <CancelPresentationOutlinedIcon color="error" />
               </IconButton>
             </Tooltip>
           </Stack>
         );
       case "APR":
         return (
-          <Stack direction="row">
-          <Tooltip title="Cancel">
-            <IconButton
-              aria-label="Cancel"
-              onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0,"CAR")}
-            >
-              <CancelOutlinedIcon color="warning" />
-            </IconButton>
-          </Tooltip>
-         
-        </Stack>
-        );
-      case "CAR":
-        return (
           // <IconButton color="primary">
           //   <IconButton aria-label="Approve">
-          //     <Unpublished />
+          //     <EditAttributesOutlined />
           //   </IconButton>
           // </IconButton>
           <></>
         );
-        case "REC":
+      case "REC":
           return (
             // <IconButton color="primary">
             //   <IconButton aria-label="Approve">
@@ -253,7 +228,7 @@ function StatusTable() {
               //   </IconButton>
               // </IconButton>
               <></>
-            );    
+            );
             case "REJ":
               return (
                 // <IconButton color="primary">
@@ -262,7 +237,35 @@ function StatusTable() {
                 //   </IconButton>
                 // </IconButton>
                 <></>
-              );         
+              );  
+                    
+      case "CAR" :
+        return(<Stack direction="row">
+        <Tooltip title="Approve Cancel Request">
+          <IconButton
+            aria-label="Approve Cancel Request"
+            onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0,"APC")}
+          >
+            <DoneAllOutlinedIcon color="success" />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title="Reject Cancel Request">
+          <IconButton
+            aria-label="Reject Cancel Request"
+            onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REC")}
+          >
+            <CancelOutlinedIcon color="error" />
+          </IconButton>
+        </Tooltip>
+      </Stack>)  
+      case "APPROVED":
+        return (
+          <IconButton color="primary">
+            <IconButton aria-label="Approve">
+              <Unpublished />
+            </IconButton>
+          </IconButton>
+        );
       default:
         return (
           <IconButton color="primary">
@@ -274,7 +277,6 @@ function StatusTable() {
     }
   }
   return (
-    <>
     <TableContainer>
       <Table sx={{ minWidth: 700 }} aria-label="simple table">
         <TableHead>
@@ -334,11 +336,7 @@ function StatusTable() {
         </TableBody>
       </Table>
     </TableContainer>
-    
- <ConfirmationDialog isOpen = {openConfirmation} handleClose= {handleConfirmationClose}  message = "Are you sure you want to delete this leave" />
-    </>
-    
   );
 }
 /*UnpublishedOutlinedIcon*/
-export default StatusTable;
+export default EmployeeAppliedLeave;
