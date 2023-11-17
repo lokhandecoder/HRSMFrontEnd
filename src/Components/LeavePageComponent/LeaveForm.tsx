@@ -171,7 +171,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           //   isHalfDay: applyLeaveTemp.isHalfDay,
           // });
 
- /*Tedst*/ 
+ /*Tedst  asd*/ 
           setFormData(prevFormData => ({
             ...prevFormData,
             appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
@@ -188,6 +188,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
              //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
           }));
           setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
+           /*Tedst  asd*/ 
         }
       } catch (error) {
         console.error("Failed to fetch data: ", (error as Error).message);
