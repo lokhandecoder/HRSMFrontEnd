@@ -10,14 +10,16 @@ import { useNavigate } from "react-router-dom";
 import { getLeaveStatus, getLeaveTypes } from "../../Services/LeaveType";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { LeaveStatus } from "../../Model/LeaveStatus";
-import ClearIcon from "@mui/icons-material/Clear";
-import TablePagination from "@mui/material/TablePagination";
+import ClearIcon from '@mui/icons-material/Clear';
+
 import {
+  AppliedLeaveUpdateStatusAsync,
+  DeleteAppliedLeaveByIdAsync,
   GetAppliedLeavesByEmpIdAsync,
   UpdateIsApprovedAsync,
   UpdateIsRejectedAsync,
 } from "../../Services/EmployeeLeaveApplyServices";
-import { IconButton } from "@mui/material";
+import { IconButton, Stack, Tooltip } from "@mui/material";
 import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined";
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
@@ -25,152 +27,255 @@ import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 //import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
 
-import { ThumbDownOffAlt, Unpublished } from "@mui/icons-material";
+import {
+  CancelPresentationOutlined,
+  DeleteForeverOutlined,
+  EditAttributesOutlined,
+  ThumbDownOffAlt,
+  Unpublished,
+} from "@mui/icons-material";
 import { GetEmployeesAsync } from "../../Services/EmployeeServices";
 import { Employee } from "../../Database/EmployeeServices";
 import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
-import { StatusTableRow } from "../../Model/StatusTableRow";
-import { LeaveStatusUtilities } from "../../Utilities/LeaveStatusUtilities";
+
+interface Row {
+  appliedLeaveTypeId?: number;
+  employeeId: number;
+  leaveTypeId: number;
+  leaveType: null;
+  startDate: Date | null;
+  endDate: Date | null;
+  leaveReason: string;
+  balanceLeave: number;
+  applyLeaveDay: number;
+  remaingLeave: number;
+  leaveStatusId: number;
+  isRejected: boolean;
+  isApproved: boolean;
+  firstName: string;
+  lastName: string;
+  leaveTypeName: string;
+}
 
 function StatusTable() {
-  const StatusTable = LeaveStatusUtilities();
+  
+  const employeeId = DecryptEmployeeID();
 
-  const {
-    displayedData,
-    employeeId,
-    formatDate,
-    handleEdit,
-    onLeaveApprove,
-    onLeaveReject,
-    data,
-    page,
-    handleChangePage,
-    rowsPerPage,
-    handleChangeRowsPerPage,
-  } = StatusTable;
+  
+  const [data, setData] = useState<Row[]>([]); // Specify the type for data
+  const [employee, setEmployee] = useState<Employee[]>([]);
+  const navigate = useNavigate();
+  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
+  const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
+  
 
+  const handleEdit = (appliedLeaveTypeId: number | undefined) => {
+    const editUrl = appliedLeaveTypeId
+      ? `/leave/${appliedLeaveTypeId}`
+      : "/leave";
+    navigate(editUrl);
+  };
+  const handleUpdate = (appliedLeaveTypeId: number | undefined) => {
+    console.log(
+      "applied id = ",
+      appliedLeaveTypeId,
+      "value",
+      selectedLeaveStatusId
+    );
+  };
+  const handleSelectStatusChange = (
+    event: SelectChangeEvent<number>,
+    appliedLeaveTypeId: number | undefined
+  ) => {
+    const value =
+      typeof event.target.value === "string"
+        ? parseInt(event.target.value, 10)
+        : event.target.value;
+
+    setData((prevData) =>
+      prevData.map((row) => {
+        if (row.appliedLeaveTypeId === appliedLeaveTypeId) {
+          return { ...row, leaveStatusId: value };
+        }
+        return row;
+      })
+    );
+
+    // Update selectedLeaveStatusId
+    setSelectedLeaveStatusId(value);
+  };
+  console.log("table data", data);
+  useEffect(() => {
+    const FetchList = async () => {
+      try {
+        const fetchData = await GetAppliedLeavesByEmpIdAsync();
+        const fetched = fetchData.data;
+        const fetchemployee = await GetEmployeesAsync();
+
+        if (Array.isArray(fetched)) {
+          setData(fetched);
+        } else {
+          console.error("Invalid leave types data.");
+        }
+      } catch (error) {
+        console.error("Error fetching leave types:", (error as Error).message);
+      }
+    };
+    
+
+    const fetchLeaveTypes = async () => {
+      try {
+        const fetchedLeaveTypes = await getLeaveTypes();
+        const leaveTypesData = fetchedLeaveTypes.data;
+        if (Array.isArray(leaveTypesData)) {
+          setLeaveTypes(leaveTypesData);
+        } else {
+          console.error("Invalid leave types data.");
+        }
+      } catch (error) {
+        console.error("Error fetching leave types:", (error as Error).message);
+      }
+    };
+    FetchList();
+    fetchLeaveTypes();
+  }, []);
+  function formatDate(date: Date) {
+    const day = date.getDate().toString().padStart(2, "0");
+    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+    const year = date.getFullYear();
+
+    return `${day}/${month}/${year}`;
+  }
+
+
+  const fetchData = async () => {
+    try {
+      const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
+      const leavestatuss = LeaveStatus.data;
+      setLeaveStatus(leavestatuss);
+    } catch (error) {
+      console.error("Failed to fetch data: ", (error as Error).message);
+    }
+  };
+
+  const onLeaveApprove = async (appliedLeaveTypeId: number) => {
+    const isApproved = true;
+    const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
+
+    fetchData();
+  };
+  const onLeaveCancel = (appliedLeaveTypeId: number) => {
+    
+  };
+  const onLeaveReject = async (appliedLeaveTypeId: number) => {
+    const isApproved = true;
+    const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
+    fetchData();
+  };
+  const onLeaveEdit = (appliedLeaveTypeId: number) => {};
+  const onLeaveDelete = (appliedLeaveTypeId: number) => {};
+
+  useEffect(() => {
+    fetchData(); // Call fetchData when the component mounts
+  }, []);
   return (
-    <>
-      <div style={{ overflow: "auto", maxHeight: "500px" }}>
-        {" "}
-        {/* Adjust maxHeight to your preferred value */}
-        <TableContainer>
-          <Table sx={{ minWidth: 700 }} aria-label="simple table">
-            <TableHead className="tableHead">
-              <TableRow>
-                <TableCell sx={{ color: "white" }}>First Name</TableCell>
-                <TableCell sx={{ color: "white" }}>Leave Type</TableCell>
-                <TableCell sx={{ color: "white" }}>Start Date</TableCell>
-                <TableCell sx={{ color: "white" }}>End Date</TableCell>
-                <TableCell sx={{ color: "white" }}>Reason for Leave</TableCell>
-                <TableCell sx={{ color: "white" }}>Balance Leaves</TableCell>
-                <TableCell sx={{ color: "white" }}>Applied Days</TableCell>
-                <TableCell sx={{ color: "white" }}>Remaining Leaves</TableCell>
+    <TableContainer>
+      <Table sx={{ minWidth: 700 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>First Name</TableCell>
+            <TableCell>Leave Type</TableCell>
+            <TableCell>Start Date</TableCell>
+            <TableCell>End Date</TableCell>
+            <TableCell>Reason for Leave</TableCell>
+            <TableCell>Balance Leaves</TableCell>
+            <TableCell>Applied Days</TableCell>
+            <TableCell>Remaining Leaves</TableCell>
+            
+            <TableCell>Edit </TableCell>
+            <TableCell>Approve/Reject </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+  {data && data !== null
+    ? data.map((row: Row, key) => {
+        // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
+        const isCurrentUserLeave = row.employeeId.toString() === employeeId;
+       
 
-                <TableCell sx={{ color: "white" }}>Edit </TableCell>
-                <TableCell sx={{ color: "white" }}>Approve/Reject </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {displayedData && displayedData !== null
-                ? displayedData.map((row: StatusTableRow, key) => {
-                    // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
-                    const isCurrentUserLeave =
-                      row.employeeId.toString() === employeeId;
+        return (
+          <TableRow key={key}>
+            <TableCell>
+              {row.firstName} {row.lastName}
+            </TableCell>
+            <TableCell>{row.leaveTypeName}</TableCell>
+            <TableCell>
+              {row.startDate
+                ? formatDate(new Date(row.startDate))
+                : "No date available"}
+            </TableCell>
+            <TableCell>
+              {row.endDate
+                ? formatDate(new Date(row.endDate))
+                : "No date available"}
+            </TableCell>
+            <TableCell>{row.leaveReason}</TableCell>
+            <TableCell>{row.balanceLeave}</TableCell>
+            <TableCell>{row.applyLeaveDay}</TableCell>
+            <TableCell>{row.remaingLeave}</TableCell>
 
-                    return (
-                      <TableRow key={key}>
-                        <TableCell>
-                          {row.firstName} {row.lastName}
-                        </TableCell>
-                        <TableCell>{row.leaveTypeName}</TableCell>
-                        <TableCell>
-                          {row.startDate
-                            ? formatDate(new Date(row.startDate))
-                            : "No date available"}
-                        </TableCell>
-                        <TableCell>
-                          {row.endDate
-                            ? formatDate(new Date(row.endDate))
-                            : "No date available"}
-                        </TableCell>
-                        <TableCell>{row.leaveReason}</TableCell>
-                        <TableCell>{row.balanceLeave}</TableCell>
-                        <TableCell>{row.applyLeaveDay}</TableCell>
-                        <TableCell>{row.remaingLeave}</TableCell>
+            <TableCell>
+              {!row.isApproved && (
+                <IconButton
+                  aria-label="Edit"
+                  onClick={() => handleEdit(row.appliedLeaveTypeId || 0)}
+                  disabled={row.isApproved}
+                >
+                  <ModeEditOutlinedIcon />
+                </IconButton>
+    )}
+            </TableCell>
 
-                        <TableCell>
-                          {!row.isApproved && (
-                            <IconButton
-                              aria-label="Edit"
-                              onClick={() =>
-                                handleEdit(row.appliedLeaveTypeId || 0)
-                              }
-                              disabled={row.isApproved}
-                            >
-                              <ModeEditOutlinedIcon />
-                            </IconButton>
-                          )}
-                        </TableCell>
+            <TableCell className={row.isApproved ? 'approved-cell' : ''}>
+              {!isCurrentUserLeave && !row.isApproved && !row.isRejected && (
+                <>
+                  <IconButton
+                    aria-label="Approve"
+                    onClick={() => onLeaveApprove(row.appliedLeaveTypeId || 0)}
+                  >
+                    <DoneAllOutlinedIcon color="success" />
+                  </IconButton>
 
-                        <TableCell
-                          className={row.isApproved ? "approved-cell" : ""}
-                        >
-                          {!isCurrentUserLeave &&
-                            !row.isApproved &&
-                            !row.isRejected && (
-                              <>
-                                <IconButton
-                                  aria-label="Approve"
-                                  onClick={() =>
-                                    onLeaveApprove(row.appliedLeaveTypeId || 0)
-                                  }
-                                >
-                                  <DoneAllOutlinedIcon color="success" />
-                                </IconButton>
+                  <IconButton
+                    aria-label="Reject"
+                    onClick={() => onLeaveReject(row.appliedLeaveTypeId || 0)}
+                  >
+                    <ClearIcon color="error" />
+                  </IconButton>
+                </>
+              )}
 
-                                <IconButton
-                                  aria-label="Reject"
-                                  onClick={() =>
-                                    onLeaveReject(row.appliedLeaveTypeId || 0)
-                                  }
-                                >
-                                  <ClearIcon color="error" />
-                                </IconButton>
-                              </>
-                            )}
-
-                          {row.isApproved && row.isRejected ? (
-                            <>
-                              <IconButton aria-label="Approve">
-                                <Unpublished />
-                              </IconButton>
-                            </>
-                          ) : (
-                            <>
-                              {row.isApproved && !row.isRejected && "Approved"}
-                              {!row.isApproved && row.isRejected && "Rejected"}
-                            </>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                : "No data available"}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={data.length}
-          page={page}
-          onPageChange={handleChangePage}
-          rowsPerPage={rowsPerPage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
-      </div>
-    </>
+              {row.isApproved && row.isRejected ? (
+                <>
+                  <IconButton aria-label="Approve">
+                    <Unpublished />
+                  </IconButton>
+                </>
+              ) : (
+                <>
+                  {row.isApproved && !row.isRejected && "Approved"}
+                  {!row.isApproved && row.isRejected && "Rejected"}
+                </>
+              )}
+            </TableCell>
+          </TableRow>
+        );
+      })
+    : "No data available"}
+</TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 export default StatusTable;

@@ -41,6 +41,7 @@ import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import { EmployeeIDByLocalStorage } from "../../APIConfig";
 import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
 
+
 dayjs.extend(utc); // Extend Dayjs with UTC plugin
 interface LeaveFormProps {
   onSubmit: (formData: LeaveFormData) => void;
@@ -97,10 +98,13 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const handleCancel= () => {
     setFormData(initialFormData)
   }
-
+  const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
   const [errors, setErrors] = useState<Partial<Record<keyof LeaveFormData, string>>>({});
+
+  
+
   const {
     handleSelectChange,
     handleInputChange,
@@ -123,7 +127,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     setemployeeLeaves,
     errors,
     setErrors,
-    snackbar,initialFormData
+    snackbar,initialFormData,previousApplyLeave
   );
 
   useEffect(() => {
@@ -152,20 +156,38 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
           const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
           const applyLeaveTemp = applyLeaveData.data;
-          setFormData({
+          // setFormData({
+          //   appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
+          //   leaveTypeId: applyLeaveTemp.leaveTypeId,
+          //   leaveType: applyLeaveTemp.leaveType,
+          //   startDate: applyLeaveTemp.startDate,
+          //   endDate: applyLeaveTemp.endDate,
+          //   leaveReason: applyLeaveTemp.leaveReason,
+          //   applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+          //   remaingLeave: applyLeaveTemp.remaingLeave,
+          //   balanceLeave: applyLeaveTemp.balanceLeave,
+          //   leaveStatusId: applyLeaveTemp.leaveStatusId,
+          //   employeeId: applyLeaveTemp.employeeId,
+          //   isHalfDay: applyLeaveTemp.isHalfDay,
+          // });
+
+
+          setFormData(prevFormData => ({
+            ...prevFormData,
             appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-            leaveTypeId: applyLeaveTemp.leaveTypeId,
-            leaveType: applyLeaveTemp.leaveType,
-            startDate: applyLeaveTemp.startDate,
-            endDate: applyLeaveTemp.endDate,
-            leaveReason: applyLeaveTemp.leaveReason,
-            applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-            remaingLeave: applyLeaveTemp.remaingLeave,
-            balanceLeave: applyLeaveTemp.balanceLeave,
-            leaveStatusId: applyLeaveTemp.leaveStatusId,
-            employeeId: applyLeaveTemp.employeeId,
-            isHalfDay: applyLeaveTemp.isHalfDay,
-          });
+             leaveTypeId: applyLeaveTemp.leaveTypeId,
+             leaveType: applyLeaveTemp.leaveType,
+             startDate: applyLeaveTemp.startDate,
+             endDate: applyLeaveTemp.endDate,
+             leaveReason: applyLeaveTemp.leaveReason,
+             applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+             leaveStatusId: applyLeaveTemp.leaveStatusId,
+             employeeId: applyLeaveTemp.employeeId,
+             isHalfDay: applyLeaveTemp.isHalfDay,
+             //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
+             //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
+          }));
+          setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
         }
       } catch (error) {
         console.error("Failed to fetch data: ", (error as Error).message);
@@ -388,6 +410,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
         </Alert>
       </Snackbar>
       </form>
+     
+
     </>
   );
 };

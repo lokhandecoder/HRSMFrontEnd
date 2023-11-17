@@ -14,7 +14,7 @@ import EmployeesPage from "../Pages/EmployeesPage";
 import { UserRoleMapping } from "../Model/UserRoleMapping";
 import { GetUserRoleMappingsAsync } from "../Services/UserRoleMappingServices";
 import RoleAssign from "../Pages/RoleAssign";
-import LeaveApprovedPage from "../Pages/LeaveApprovedPage";
+import LeaveApprovedPage from '../Pages/LeaveApprovedPage';
 
 function RoutingPgae() {
   interface RouteConfig {
@@ -97,28 +97,24 @@ function RoutingPgae() {
             ))}
         </Routes> */}
 
-        <Routes>
-          {userRoleMappings
-            .filter((route) => route.roleAssignId == userrole)
-            .map((route, index) => {
-              const Component = mapElementToComponent(route.componentName);
-              if (Component) {
-                return (
-                  <Route
-                    key={index}
-                    path={route.routePath}
-                    element={<Component />}
-                  />
-                );
-              }
-              // Handle the case where the component mapping failed
-              return null;
-            })}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
-          <Route path="/updatepassword/:id" element={<UpdatePassword />} />
-          <Route path="/leaveapproved" element={<LeaveApprovedPage />} />
-        </Routes>
+<Routes>
+      {userRoleMappings
+      .filter((route)=> route.roleAssignId == userrole)
+      .map((route, index) => {
+        const Component = mapElementToComponent(route.componentName);
+        if (Component) {
+          return (
+            <Route key={index} path={route.routePath} element={<Component />} />
+          );
+        }
+        // Handle the case where the component mapping failed
+        return null;
+      })}
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
+      <Route path="/updatepassword/:id" element={<UpdatePassword />} />      
+      <Route path='/leaveapproved' element={<LeaveApprovedPage />} />
+    </Routes>
       </BrowserRouter>
     </>
   );

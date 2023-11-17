@@ -23,7 +23,7 @@ const LeaveApplyUtilities = (
   setBalanceLeave: any,
 
   employeeLeaves :EmployeeLeave[] ,setemployeeLeaves :any, errors:any,
-  setErrors :any, snackbar:any, initialFormData : any ) => {
+  setErrors :any, snackbar:any, initialFormData : any,previousApplyLeave:number ) => {
 
 
     const [loading, setLoading] = useState(false);
@@ -34,6 +34,10 @@ const LeaveApplyUtilities = (
 
     event.preventDefault();
 
+
+    //console.log({formData})
+
+   // return;
     const isValid = isFormDataValid(formData);
    // alert(isValid);
     if (!isValid) {
@@ -53,6 +57,7 @@ const LeaveApplyUtilities = (
       //setsubmitMessageOpen(true);
       snackbar.showSnackbar(message, 'success', { vertical: 'top', horizontal: 'center' }, 5000);
       setLoading(false);
+     if( formData.appliedLeaveTypeId ===0)
       handleClear();
     }else{
       //setsubmitMessageOpen(true);
@@ -182,7 +187,13 @@ const LeaveApplyUtilities = (
     const endDate = date2.getDay();
     const weekends = Math.floor((differenceInDays + startDate) / 7) * 2;
     differenceInDays -= weekends;
-    const finaldays = differenceInDays + 1;
+    let finaldays = differenceInDays + 1;
+
+    if (differenceInDays ===0){
+      finaldays = differenceInDays + 1;
+    }else{
+      finaldays = differenceInDays ;
+    }
     if (startDate === 6) differenceInDays--;
     if (startDate === 0) differenceInDays--;
     if (endDate === 6) differenceInDays--;
@@ -202,11 +213,19 @@ const LeaveApplyUtilities = (
   };
 
   const Test = () => {
+    
     if (formData.leaveTypeId > 0) {
-      const balanceLeave = GetBalanceLeaveByLeaveTypeId(
+      let balanceLeave = GetBalanceLeaveByLeaveTypeId(
         //GetEmployeeLeave(),
         formData.leaveTypeId
       );
+      console.log({formData});  
+      console.log({balanceLeave});
+
+      if (formData.appliedLeaveTypeId > 0 && balanceLeave !== null){
+        balanceLeave = balanceLeave + previousApplyLeave;
+      }
+
       //alert(balanceLeave);
       setFormData((prevFormData: LeaveFormData) => ({
         ...prevFormData,
@@ -218,6 +237,7 @@ const LeaveApplyUtilities = (
          applyLeave = 0.5
       }else{
          applyLeave =  differenceChecker();
+         console.log({applyLeave});
       }
      
      setFormData((prevFormData: LeaveFormData) => ({
@@ -225,10 +245,8 @@ const LeaveApplyUtilities = (
       applyLeaveDay: applyLeave,
       remaingLeave: prevFormData.balanceLeave -  applyLeave ,
     }));
-    // setFormData((prevFormData: LeaveFormData) => ({
-    //   ...prevFormData,
-    //   remaingLeave: prevFormData.balanceLeave -  prevFormData.applyLeave  ,
-    // }));
+   
+
 
     } else {
       setFormData((prevFormData: LeaveFormData) => ({
