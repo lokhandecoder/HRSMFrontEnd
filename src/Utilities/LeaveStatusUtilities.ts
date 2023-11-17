@@ -76,6 +76,18 @@ export const LeaveStatusUtilities = () => {
   //     // Update selectedLeaveStatusId
   //     setSelectedLeaveStatusId(value);
   //   };
+  const onLeaveApprove = async (appliedLeaveTypeId: number) => {
+    const isApproved = true;
+    const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
+
+    // fetchData();
+  };
+  const onLeaveCancel = (appliedLeaveTypeId: number) => {};
+  const onLeaveReject = async (appliedLeaveTypeId: number) => {
+    const isApproved = true;
+    const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
+    // fetchData();
+  };
   useEffect(() => {
     const FetchList = async () => {
       try {
@@ -93,22 +105,8 @@ export const LeaveStatusUtilities = () => {
       }
     };
 
-    // const fetchLeaveTypes = async () => {
-    //   try {
-    //     const fetchedLeaveTypes = await getLeaveTypes();
-    //     const leaveTypesData = fetchedLeaveTypes.data;
-    //     if (Array.isArray(leaveTypesData)) {
-    //       setLeaveTypes(leaveTypesData);
-    //     } else {
-    //       console.error("Invalid leave types data.");
-    //     }
-    //   } catch (error) {
-    //     console.error("Error fetching leave types:", (error as Error).message);
-    //   }
-    // };
     FetchList();
-    // fetchLeaveTypes();
-  }, []);
+  }, [ ]);
   function formatDate(date: Date) {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
@@ -127,18 +125,7 @@ export const LeaveStatusUtilities = () => {
   //   }
   // };
 
-  const onLeaveApprove = async (appliedLeaveTypeId: number) => {
-    const isApproved = true;
-    const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
 
-    // fetchData();
-  };
-  const onLeaveCancel = (appliedLeaveTypeId: number) => {};
-  const onLeaveReject = async (appliedLeaveTypeId: number) => {
-    const isApproved = true;
-    const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
-    // fetchData();
-  };
   const onLeaveEdit = (appliedLeaveTypeId: number) => {};
   const onLeaveDelete = (appliedLeaveTypeId: number) => {};
 

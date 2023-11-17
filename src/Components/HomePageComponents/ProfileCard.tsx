@@ -11,9 +11,11 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { GetEmployees } from "../../Database/EmployeeServices";
 import MainCard from "./MainCard";
 import PersonIcon from '@mui/icons-material/Person';
+import ProfileImageSetter from "./ProfileImageSetter";
 
 
 const employee = GetEmployees();
+const defaultImageURL = 'https://example.com/default-profile-image.jpg'; // Replace with your default image URL
 
 
 function ProfileCard() {
@@ -31,6 +33,8 @@ function ProfileCard() {
 
               
               {/* <ProfileImage /> */}
+              {/* <ProfileImageSetter /> */}
+              {/* <ProfileImageSetter defaultImage={defaultImageURL} /> */}
             </Grid>
           </Grid>
         </div>

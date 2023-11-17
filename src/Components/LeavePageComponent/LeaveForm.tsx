@@ -156,44 +156,27 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
           const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
           const applyLeaveTemp = applyLeaveData.data;
-          // setFormData({
-          //   appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-          //   leaveTypeId: applyLeaveTemp.leaveTypeId,
-          //   leaveType: applyLeaveTemp.leaveType,
-          //   startDate: applyLeaveTemp.startDate,
-          //   endDate: applyLeaveTemp.endDate,
-          //   leaveReason: applyLeaveTemp.leaveReason,
-          //   applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-          //   remaingLeave: applyLeaveTemp.remaingLeave,
-          //   balanceLeave: applyLeaveTemp.balanceLeave,
-          //   leaveStatusId: applyLeaveTemp.leaveStatusId,
-          //   employeeId: applyLeaveTemp.employeeId,
-          //   isHalfDay: applyLeaveTemp.isHalfDay,
-          // });
-
-
-          setFormData(prevFormData => ({
-            ...prevFormData,
+          setFormData({
             appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-             leaveTypeId: applyLeaveTemp.leaveTypeId,
-             leaveType: applyLeaveTemp.leaveType,
-             startDate: applyLeaveTemp.startDate,
-             endDate: applyLeaveTemp.endDate,
-             leaveReason: applyLeaveTemp.leaveReason,
-             applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-             leaveStatusId: applyLeaveTemp.leaveStatusId,
-             employeeId: applyLeaveTemp.employeeId,
-             isHalfDay: applyLeaveTemp.isHalfDay,
-             //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
-             //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
-          }));
-          setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
+            leaveTypeId: applyLeaveTemp.leaveTypeId,
+            leaveType: applyLeaveTemp.leaveType,
+            startDate: applyLeaveTemp.startDate,
+            endDate: applyLeaveTemp.endDate,
+            leaveReason: applyLeaveTemp.leaveReason,
+            applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+            remaingLeave: applyLeaveTemp.remaingLeave,
+            balanceLeave: applyLeaveTemp.balanceLeave,
+            leaveStatusId: applyLeaveTemp.leaveStatusId,
+            employeeId: applyLeaveTemp.employeeId,
+            isHalfDay: applyLeaveTemp.isHalfDay,
+          });
         }
       } catch (error) {
         console.error("Failed to fetch data: ", (error as Error).message);
       }
     };
 
+  useEffect(() => {
     fetchData();
   }, []);
 

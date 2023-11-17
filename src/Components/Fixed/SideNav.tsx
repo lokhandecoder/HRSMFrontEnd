@@ -28,6 +28,8 @@ import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import BadgeIcon from '@mui/icons-material/Badge';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import SideNavLink from "./SideNavLink";
+import { RoleByLocalStorage } from "../../APIConfig";
+import { GetLoginEmployeeByLocalStorage } from "../../Services/LocalStorageData";
 
 const drawerWidth = 240;
 
@@ -135,6 +137,40 @@ export default function MiniDrawer() {
     // navigate("/login")
   }
   const menuId = "primary-search-account-menu";
+  // interface StoredData {
+  //   employeeId: number;
+  //   roleAssignId: number;
+  //   userName?: string;
+  //   password?: string;
+  //   firtsName?: string;
+  //   lastName?: string;
+  //   token?: string;
+  //   refreshToken?: string;
+  //   refreshTokenExpiryTime?: string;
+  // }
+  
+  // let storedData: StoredData | null = null; // Declare storedData variable
+  
+  // const storedDataString = localStorage.getItem("Role");
+  
+  // if (storedDataString) {
+  //   storedData = JSON.parse(storedDataString);
+  
+  //   if (storedData !== null) {
+  //     if ('userName' in storedData && 'firtsName' in storedData && 'lastName' in storedData) {
+  //       // All necessary properties exist in storedData
+  //     } else {
+  //       console.log("One or more properties not found in stored data.");
+  //     }
+  //   } else {
+  //     console.log("Invalid data retrieved from localStorage.");
+  //   }
+  // } else {
+  //   console.log("No data found for 'Role' in localStorage.");
+  // }
+  
+  // Rendering the Menu component
+  const storedData = GetLoginEmployeeByLocalStorage();
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
@@ -151,11 +187,15 @@ export default function MiniDrawer() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      {/* <MenuItem onClick={handleMenuClose}>Profile</MenuItem> */}
-      {/* <MenuItem onClick={handleMenuClose}>My account</MenuItem> */}
+      <MenuItem>{storedData && storedData.firtsName ? storedData.firtsName + " " + storedData.lastName : ""}</MenuItem>
+      <MenuItem>{storedData && storedData.userName ? storedData.userName : ""}</MenuItem>
       <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
     </Menu>
   );
+  
+  
+
+
 
   return (
     <Box sx={{ display: "flex" }}>
