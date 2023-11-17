@@ -156,7 +156,24 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
           const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
           const applyLeaveTemp = applyLeaveData.data;
-          setFormData({
+          // setFormData({
+          //   appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
+          //   leaveTypeId: applyLeaveTemp.leaveTypeId,
+          //   leaveType: applyLeaveTemp.leaveType,
+          //   startDate: applyLeaveTemp.startDate,
+          //   endDate: applyLeaveTemp.endDate,
+          //   leaveReason: applyLeaveTemp.leaveReason,
+          //   applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+          //   remaingLeave: applyLeaveTemp.remaingLeave,
+          //   balanceLeave: applyLeaveTemp.balanceLeave,
+          //   leaveStatusId: applyLeaveTemp.leaveStatusId,
+          //   employeeId: applyLeaveTemp.employeeId,
+          //   isHalfDay: applyLeaveTemp.isHalfDay,
+          // });
+
+ /*Tedst*/ 
+          setFormData(prevFormData => ({
+            ...prevFormData,
             appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
             leaveTypeId: applyLeaveTemp.leaveTypeId,
             leaveType: applyLeaveTemp.leaveType,
