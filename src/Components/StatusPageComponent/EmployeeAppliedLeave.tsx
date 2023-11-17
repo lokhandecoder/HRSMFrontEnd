@@ -96,9 +96,12 @@ function EmployeeAppliedLeave() {
     const FetchList = async () => {
       try {
         const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
+        const employeeId = getDecryptedValueFromStorage("employeeID", 0);
+
+        //alert(employeeId);
 
         const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
-          roleAssignId
+          employeeId
         );
         const fetched = fetchData.data;
         const fetchemployee = await GetEmployeesAsync();
