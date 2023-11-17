@@ -93,45 +93,49 @@ function EmployeeAppliedLeave() {
   };
   console.log("table data", data);
   useEffect(() => {
-    const FetchList = async () => {
-      try {
-        const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
-        const employeeId = getDecryptedValueFromStorage("employeeID", 0);
-
-        //alert(employeeId);
-
-        const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
-          employeeId
-        );
-        const fetched = fetchData.data;
-        const fetchemployee = await GetEmployeesAsync();
-
-        if (Array.isArray(fetched)) {
-          setData(fetched);
-        } else {
-          console.error("Invalid leave types data.");
-        }
-      } catch (error) {
-        console.error("Error fetching leave types:", (error as Error).message);
-      }
-    };
-
-    const fetchLeaveTypes = async () => {
-      try {
-        const fetchedLeaveTypes = await getLeaveTypes();
-        const leaveTypesData = fetchedLeaveTypes.data;
-        if (Array.isArray(leaveTypesData)) {
-          setLeaveTypes(leaveTypesData);
-        } else {
-          console.error("Invalid leave types data.");
-        }
-      } catch (error) {
-        console.error("Error fetching leave types:", (error as Error).message);
-      }
-    };
+    
     FetchList();
     fetchLeaveTypes();
   }, []);
+
+
+  const FetchList = async () => {
+    try {
+      const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
+      const employeeId = getDecryptedValueFromStorage("employeeID", 0);
+
+      //alert(employeeId);
+
+      const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
+        employeeId
+      );
+      const fetched = fetchData.data;
+      const fetchemployee = await GetEmployeesAsync();
+
+      if (Array.isArray(fetched)) {
+        setData(fetched);
+      } else {
+        console.error("Invalid leave types data.");
+      }
+    } catch (error) {
+      console.error("Error fetching leave types:", (error as Error).message);
+    }
+  };
+
+  const fetchLeaveTypes = async () => {
+    try {
+      const fetchedLeaveTypes = await getLeaveTypes();
+      const leaveTypesData = fetchedLeaveTypes.data;
+      if (Array.isArray(leaveTypesData)) {
+        setLeaveTypes(leaveTypesData);
+      } else {
+        console.error("Invalid leave types data.");
+      }
+    } catch (error) {
+      console.error("Error fetching leave types:", (error as Error).message);
+    }
+  };
+
   function formatDate(date: Date) {
     const day = date.getDate().toString().padStart(2, "0");
     const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
@@ -176,6 +180,7 @@ function EmployeeAppliedLeave() {
       leaveAllocationId : 4,
       statusCode: statusCode,
     });
+    FetchList();
   };
 
 
