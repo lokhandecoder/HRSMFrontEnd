@@ -134,44 +134,41 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     formData.startDate,
     formData.isHalfDay,
   ]);
+  const fetchData = async () => {
+    try {
+      const [leaveTypesData, employeeLeaveData] = await Promise.all([
+        getLeaveTypes(),
+        GetEmployeeLeaveByEmployeeId(),
+      ]);
+      const leaveTypes = leaveTypesData.data;
+      setLeaveTypes(leaveTypes);
+      const employeeLeave = employeeLeaveData.data;
+      setemployeeLeaves(employeeLeave);
+      if (formData.appliedLeaveTypeId > 0) {
+        const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
+        const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
+        const applyLeaveTemp = applyLeaveData.data;
+        setFormData({
+          appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
+          leaveTypeId: applyLeaveTemp.leaveTypeId,
+          leaveType: applyLeaveTemp.leaveType,
+          startDate: applyLeaveTemp.startDate,
+          endDate: applyLeaveTemp.endDate,
+          leaveReason: applyLeaveTemp.leaveReason,
+          applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+          remaingLeave: applyLeaveTemp.remaingLeave,
+          balanceLeave: applyLeaveTemp.balanceLeave,
+          leaveStatusId: applyLeaveTemp.leaveStatusId,
+          employeeId: applyLeaveTemp.employeeId,
+          isHalfDay: applyLeaveTemp.isHalfDay,
+        });
+      }
+    } catch (error) {
+      console.error("Failed to fetch data: ", (error as Error).message);
+    }
+  };
 
   useEffect(() => {
-
-
-    const fetchData = async () => {
-      try {
-        const [leaveTypesData, employeeLeaveData] = await Promise.all([
-          getLeaveTypes(),
-          GetEmployeeLeaveByEmployeeId(),
-        ]);
-        const leaveTypes = leaveTypesData.data;
-        setLeaveTypes(leaveTypes);
-        const employeeLeave = employeeLeaveData.data;
-        setemployeeLeaves(employeeLeave);
-        if (formData.appliedLeaveTypeId > 0) {
-          const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
-          const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
-          const applyLeaveTemp = applyLeaveData.data;
-          setFormData({
-            appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-            leaveTypeId: applyLeaveTemp.leaveTypeId,
-            leaveType: applyLeaveTemp.leaveType,
-            startDate: applyLeaveTemp.startDate,
-            endDate: applyLeaveTemp.endDate,
-            leaveReason: applyLeaveTemp.leaveReason,
-            applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-            remaingLeave: applyLeaveTemp.remaingLeave,
-            balanceLeave: applyLeaveTemp.balanceLeave,
-            leaveStatusId: applyLeaveTemp.leaveStatusId,
-            employeeId: applyLeaveTemp.employeeId,
-            isHalfDay: applyLeaveTemp.isHalfDay,
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch data: ", (error as Error).message);
-      }
-    };
-
     fetchData();
   }, []);
 

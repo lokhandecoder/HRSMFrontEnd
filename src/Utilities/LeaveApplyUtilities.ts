@@ -190,16 +190,20 @@ const LeaveApplyUtilities = (
     if (formData.startDate > formData.endDate) {
       return 0;
     } else {
+    
       setdifference(finaldays);
       // setFormData((prevFormData: LeaveFormData) => ({
       //   ...prevFormData,
       //   difference: finaldays,
       // }));
+      console.log("diff: ", differenceInDays)
       console.log("Difference in days (excluding weekends):", finaldays);
     //  alert(finaldays);
       return finaldays;
     }
   };
+
+  
 
   const Test = () => {
     if (formData.leaveTypeId > 0) {
