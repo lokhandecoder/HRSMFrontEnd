@@ -2,6 +2,7 @@ import LayoutComponent from "../Components/Fixed/LayoutComponent";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import StatusTable from "../Components/StatusPageComponent/StatusTable";
+import EmployeeAppliedLeave from "../Components/StatusPageComponent/EmployeeAppliedLeave";
 
 
 function StatusPage() {

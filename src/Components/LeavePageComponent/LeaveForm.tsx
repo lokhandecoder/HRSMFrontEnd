@@ -174,11 +174,12 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
       } catch (error) {
         console.error("Failed to fetch data: ", (error as Error).message);
       }
-    };
+      fetchData();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+    }});
+
+  // useEffect(() => {
+  // }, []);
 
   return (
     <>
