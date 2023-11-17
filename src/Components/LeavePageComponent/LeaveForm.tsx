@@ -171,22 +171,24 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           //   isHalfDay: applyLeaveTemp.isHalfDay,
           // });
 
- /*Tedst*/ 
+ /*Tedst  asd*/ 
           setFormData(prevFormData => ({
             ...prevFormData,
             appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-            leaveTypeId: applyLeaveTemp.leaveTypeId,
-            leaveType: applyLeaveTemp.leaveType,
-            startDate: applyLeaveTemp.startDate,
-            endDate: applyLeaveTemp.endDate,
-            leaveReason: applyLeaveTemp.leaveReason,
-            applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-            remaingLeave: applyLeaveTemp.remaingLeave,
-            balanceLeave: applyLeaveTemp.balanceLeave,
-            leaveStatusId: applyLeaveTemp.leaveStatusId,
-            employeeId: applyLeaveTemp.employeeId,
-            isHalfDay: applyLeaveTemp.isHalfDay,
-          });
+             leaveTypeId: applyLeaveTemp.leaveTypeId,
+             leaveType: applyLeaveTemp.leaveType,
+             startDate: applyLeaveTemp.startDate,
+             endDate: applyLeaveTemp.endDate,
+             leaveReason: applyLeaveTemp.leaveReason,
+             applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+             leaveStatusId: applyLeaveTemp.leaveStatusId,
+             employeeId: applyLeaveTemp.employeeId,
+             isHalfDay: applyLeaveTemp.isHalfDay,
+             //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
+             //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
+          }));
+          setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
+           /*Tedst  asd*/ 
         }
       } catch (error) {
         console.error("Failed to fetch data: ", (error as Error).message);
