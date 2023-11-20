@@ -98,7 +98,7 @@ function EmployeeAppliedLeave() {
     // Update selectedLeaveStatusId
     setSelectedLeaveStatusId(value);
   };
-  console.log("table data", data);
+  // console.log("table data", data);
   useEffect(() => {
     
     FetchList();
@@ -198,7 +198,6 @@ function EmployeeAppliedLeave() {
       { vertical: "top", horizontal: "center" },
       5000
     );
-    // console.log("id : ",appliedLeaveTypeId)
     FetchList();
   };
 
