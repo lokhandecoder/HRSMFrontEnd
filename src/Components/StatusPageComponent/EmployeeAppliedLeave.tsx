@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { getLeaveStatus, getLeaveTypes } from "../../Services/LeaveType";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { LeaveStatus } from "../../Model/LeaveStatus";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import ClearIcon from "@mui/icons-material/Clear";
 
 import {
@@ -41,6 +43,8 @@ import { getDecryptedValueFromStorage } from "../../Utilities/LocalStorageEncryp
 import DoneOutlineOutlinedIcon from '@mui/icons-material/DoneOutlineOutlined';
 import CancelPresentationOutlinedIcon from '@mui/icons-material/CancelPresentationOutlined';
 import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
+import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
+import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 function EmployeeAppliedLeave() {
   const employeeId = DecryptEmployeeID();
 
@@ -50,6 +54,9 @@ function EmployeeAppliedLeave() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
+  const [ leaveAllocation, setLeaveAllocation] = useState<number>(0);
+  const snackbar = useCustomSnackbar();
+
 
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
@@ -91,7 +98,7 @@ function EmployeeAppliedLeave() {
     // Update selectedLeaveStatusId
     setSelectedLeaveStatusId(value);
   };
-  console.log("table data", data);
+  // console.log("table data", data);
   useEffect(() => {
     
     FetchList();
@@ -148,7 +155,12 @@ function EmployeeAppliedLeave() {
     try {
       const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
       const leavestatuss = LeaveStatus.data;
+
+      const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+      const leaveallocate = leaveAllocate.data.leaveAllocationId;
       setLeaveStatus(leavestatuss);
+      setLeaveAllocation(leaveallocate);
+      
     } catch (error) {
       console.error("Failed to fetch data: ", (error as Error).message);
     }
@@ -177,9 +189,15 @@ function EmployeeAppliedLeave() {
   const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : 11,
+      leaveAllocationId : 4,
       statusCode: statusCode,
     });
+    snackbar.showSnackbar(
+      data.message,
+      "success",
+      { vertical: "top", horizontal: "center" },
+      5000
+    );
     FetchList();
   };
 
@@ -343,6 +361,20 @@ function EmployeeAppliedLeave() {
             : "No data available"}
         </TableBody>
       </Table>
+      <Snackbar
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
+          onClose={snackbar.handleSnackbarClose}
+          anchorOrigin={snackbar.position}
+        >
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
     </TableContainer>
   );
 }

@@ -10,7 +10,7 @@ function StatusPage() {
     <>
       <LayoutComponent>
         <Card sx={{ minWidth: 275, mt: 3, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%", fontSize: "24px"}}>Empolyee History</h1> 
+          <h1 style={{ marginLeft: "1%", fontSize: "24px"}}>Employee History</h1> 
           <CardContent>
             {/* <StatusFilter />   */}
           <StatusTable />
@@ -19,7 +19,7 @@ function StatusPage() {
         </Card>
 
         <Card sx={{ minWidth: 275, mt: 3, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%", fontSize: "24px"}}>Manger History</h1> 
+          <h1 style={{ marginLeft: "1%", fontSize: "24px"}}>Manager History</h1> 
           <CardContent>
          
           <EmployeeAppliedLeave/>

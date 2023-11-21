@@ -44,6 +44,7 @@ import {
 } from "../../Utilities/LocalStorageEncryptionUtilities";
 import { AppliedLeave } from "../../Model/AppliedLeaveModel";
 import ConfirmationDialog from "../ConfirmationDialog";
+import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 function StatusTable() {
   const employeeId = DecryptEmployeeID();
 
@@ -53,6 +54,7 @@ function StatusTable() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
+  const [ leaveAllocation, setLeaveAllocation] = useState<number>(0);
   const [openConfirmation, setOpenConfirmation] = React.useState<boolean>(false);
 
   const[selectedAppliedLeaveTypeId , setSelectedAppliedLeaveTypeId] = useState<number>(0);
@@ -109,7 +111,7 @@ function StatusTable() {
      FetchList();
     }
   };
-  console.log("table data", data);
+  // console.log("table data", data);
   useEffect(() => {
    
     FetchList();
@@ -121,6 +123,9 @@ function StatusTable() {
       const fetchData = await GetAppliedLeavesByEmpIdAsync();
       const fetched = fetchData.data;
       const fetchemployee = await GetEmployeesAsync();
+      const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+      const leaveallocate = leaveAllocate.data.leaveAllocationId;
+      setLeaveAllocation(leaveallocate);
 
       if (Array.isArray(fetched)) {
         setData(fetched);
@@ -182,7 +187,7 @@ function StatusTable() {
   const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : 4,
+      leaveAllocationId : leaveAllocation,
       statusCode: statusCode,
     });
   };

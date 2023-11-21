@@ -57,7 +57,7 @@ const EmployeesPage = () => {
 
 
   const { employeeData, onEdit, roles, selectedReportingPersons } = employeesUtilities;
-  console.log(employeeData);
+  // console.log(employeeData);
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, employeeData.length - page * rowsPerPage);
 
 

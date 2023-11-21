@@ -66,7 +66,7 @@ const LeaveApplyUtilities = (
       snackbar.showSnackbar(message, 'warning', { vertical: 'top', horizontal: 'center' }, 5000);
     }
 
-    console.log({formData});
+    // console.log({formData});
 
   }
   const isFormDataValid = (formData: LeaveFormData) => {
@@ -261,7 +261,7 @@ const LeaveApplyUtilities = (
       }));
     }
    
-    console.log({formData});
+    // console.log({formData});
   };
 
   
