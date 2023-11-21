@@ -186,10 +186,11 @@ function EmployeeAppliedLeave() {
   //const onLeaveApprove = (appliedLeaveTypeId: number) => {};
 
 
+  console.log("Leave all", leaveAllocation)
   const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : 4,
+      leaveAllocationId : leaveAllocation,
       statusCode: statusCode,
     });
     snackbar.showSnackbar(
