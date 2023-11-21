@@ -177,7 +177,7 @@ function EmployeeAppliedLeave() {
   const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : 4,
+      leaveAllocationId : 11,
       statusCode: statusCode,
     });
     FetchList();

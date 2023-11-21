@@ -98,7 +98,7 @@ function RoutingPgae() {
         </Routes> */}
 
 <Routes>
-      {userRoleMappings
+      {userRoleMappings && userRoleMappings
       .filter((route)=> route.roleAssignId == userrole)
       .map((route, index) => {
         const Component = mapElementToComponent(route.componentName);
