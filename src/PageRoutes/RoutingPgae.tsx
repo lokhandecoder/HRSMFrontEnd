@@ -15,6 +15,7 @@ import { UserRoleMapping } from "../Model/UserRoleMapping";
 import { GetUserRoleMappingsAsync } from "../Services/UserRoleMappingServices";
 import RoleAssign from "../Pages/RoleAssign";
 import LeaveApprovedPage from '../Pages/LeaveApprovedPage';
+import AppliedLeaveUpdateStatusEmail from "../Pages/AppliedLeaveUpdateStatusEmail";
 
 function RoutingPgae() {
   interface RouteConfig {
@@ -110,10 +111,14 @@ function RoutingPgae() {
         // Handle the case where the component mapping failed
         return null;
       })}
+<Route path="/roleassign" element={<RoleAssign />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
       <Route path="/updatepassword/:id" element={<UpdatePassword />} />      
       <Route path='/leaveapproved' element={<LeaveApprovedPage />} />
+
+      <Route path="/appliedleavestatus/:code" element={<AppliedLeaveUpdateStatusEmail />} />   
+
     </Routes>
       </BrowserRouter>
     </>
