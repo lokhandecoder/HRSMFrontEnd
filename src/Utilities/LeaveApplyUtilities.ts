@@ -76,10 +76,22 @@ const LeaveApplyUtilities = (
     }
   
     // Check for null values and compare dates
+    // if (formData.startDate !== null && formData.endDate !== null) {
+    //   if (formData.startDate > formData.endDate) {
+    //     newErrors.startDate = 'Start date must be less than or equal to end date.';
+    //     newErrors.endDate = 'Start date must be less than or equal to end date.';
+    //   }
+    // }
     if (formData.startDate !== null && formData.endDate !== null) {
-      if (formData.startDate > formData.endDate) {
-        newErrors.startDate = 'Start date must be less than or equal to end date.';
+      const startdate = new Date(formData.startDate);
+      const enddate = new Date(formData.endDate);
+
+      if(!formData.isHalfDay){
+        if(enddate < startdate){
+              newErrors.startDate = 'Start date must be less than or equal to end date.';
         newErrors.endDate = 'Start date must be less than or equal to end date.';
+
+        }
       }
     }
 
