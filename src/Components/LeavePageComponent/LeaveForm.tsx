@@ -48,7 +48,7 @@ interface LeaveFormProps {
 }
 
 const employee = GetEmployeeLeave();
-console.log(employee);
+// console.log(employee);
 
 const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const snackbar = useCustomSnackbar();
@@ -59,16 +59,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const appliedLeaveTypeId = id ? parseInt(id, 10) : 0;
   const today = dayjs();
   const todayDate = today.toDate();
-
-
-
-  // const [snackbarDateValid, setsnackbarDateValid] = useState(false);
-  // const [snackbarLeavetype, setsnackLeavetype] = useState(false);
-  // const [snackbarOpen, setSnackbarOpen] = useState(false);
-  // const [submitMessageOpen, setsubmitMessageOpen] = useState(false);
-  console.log("Employeeeee ID", EMPIDD);
-
-
   const [difference, setdifference] = useState(0);
   const [balanceLeave, setBalanceLeave] = useState(0);
   const [applyLeaveDefaultValue, setApplyLeaveDefaultValue] = useState(1); // Default value for Apply Leave dropdown
