@@ -123,9 +123,9 @@ function StatusTable() {
       const fetchData = await GetAppliedLeavesByEmpIdAsync();
       const fetched = fetchData.data;
       const fetchemployee = await GetEmployeesAsync();
-      const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
-      const leaveallocate = leaveAllocate.data.leaveAllocationId;
-      setLeaveAllocation(leaveallocate);
+     //const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+    //  const leaveallocate = leaveAllocate.data.leaveAllocationId;
+     // setLeaveAllocation(leaveallocate);
 
       if (Array.isArray(fetched)) {
         setData(fetched);

@@ -156,10 +156,10 @@ function EmployeeAppliedLeave() {
       const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
       const leavestatuss = LeaveStatus.data;
 
-      const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
-      const leaveallocate = leaveAllocate.data.leaveAllocationId;
+     // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+    // const leaveallocate = leaveAllocate.data.leaveAllocationId;
       setLeaveStatus(leavestatuss);
-      setLeaveAllocation(leaveallocate);
+      //setLeaveAllocation(leaveallocate);
       
     } catch (error) {
       console.error("Failed to fetch data: ", (error as Error).message);
