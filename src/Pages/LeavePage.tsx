@@ -15,7 +15,7 @@ function LeavePage() {
     <>
      <LayoutComponent>
       <Box sx={{ mt: 4 }}/>
-      <LeavesCard />
+      {/* <LeavesCard /> */}
       <LeaveForm onSubmit={handleSubmit} />
      </LayoutComponent>
     </>

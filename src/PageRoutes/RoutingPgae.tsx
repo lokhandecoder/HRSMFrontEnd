@@ -113,6 +113,7 @@ function RoutingPgae() {
       })}
 <Route path="/roleassign" element={<RoleAssign />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/" element={<LoginPage />} />
       <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
       <Route path="/updatepassword/:id" element={<UpdatePassword />} />      
       <Route path='/leaveapproved' element={<LeaveApprovedPage />} />

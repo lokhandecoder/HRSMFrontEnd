@@ -190,6 +190,7 @@ function StatusTable() {
       leaveAllocationId : leaveAllocation,
       statusCode: statusCode,
     });
+    fetchData();
   };
 
   useEffect(() => {

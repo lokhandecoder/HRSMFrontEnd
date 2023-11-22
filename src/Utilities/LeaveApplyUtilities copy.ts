@@ -1,15 +1,13 @@
 import { SelectChangeEvent } from "@mui/material/Select";
 import { EmployeeLeave } from "../Model/EmployeeLeave";
-import { GetEmployeeLeave, LeaveType } from "../Database/LeaveType";
+import { GetEmployeeLeave } from "../Database/LeaveType";
 import { LeaveFormData } from "../Model/LeaveFormData";
 import { useState, useEffect } from "react";
 import { GetLeaveHistory } from "../Database/LeaveHIstory";
 import { Console } from "console";
 import axios from "axios";
-import { GetApplyLeaveById, createLeaveApply, updateLeaveApply } from "../Services/EmployeeLeaveApplyServices";
+import { createLeaveApply, updateLeaveApply } from "../Services/EmployeeLeaveApplyServices";
 import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
-import { getLeaveTypes } from "../Services/LeaveType";
-import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices";
 
 
 
@@ -25,16 +23,10 @@ const LeaveApplyUtilities = (
   setBalanceLeave: any,
 
   employeeLeaves :EmployeeLeave[] ,setemployeeLeaves :any, errors:any,
-  setErrors :any, snackbar:any, initialFormData : any, ) => {
+  setErrors :any, snackbar:any, initialFormData : any,previousApplyLeave:number ) => {
 
 
-  const [loading, setLoading] = useState(false);
-  const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
-  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
-
-  
-
-
+    const [loading, setLoading] = useState(false);
 
 
   const handleSubmit = async (event: React.FormEvent) => {
@@ -67,10 +59,9 @@ const LeaveApplyUtilities = (
       setLoading(false);
      if( formData.appliedLeaveTypeId ===0)
       handleClear();
-      fetchData();
     }else{
-     
-      fetchData();
+      //setsubmitMessageOpen(true);
+      //handleClear();
       setLoading(false);
       snackbar.showSnackbar(message, 'warning', { vertical: 'top', horizontal: 'center' }, 5000);
     }
@@ -284,48 +275,6 @@ const LeaveApplyUtilities = (
    
     // console.log({formData});
   };
-  const fetchData = async () => {
-    try {
-      const [leaveTypesData, employeeLeaveData] = await Promise.all([
-        getLeaveTypes(),
-        GetEmployeeLeaveByEmployeeId(),
-      ]);
-      const leaveTypes = leaveTypesData.data;
-      setLeaveTypes(leaveTypes);
-      const employeeLeave = employeeLeaveData.data;
-      setemployeeLeaves(employeeLeave);
-     
-      if (formData.appliedLeaveTypeId > 0) {
-        const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
-        const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
-        const applyLeaveTemp = applyLeaveData.data;
-       
-        setFormData((prevFormData : LeaveFormData) => ({
-          ...prevFormData,
-          appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-          leaveTypeId: applyLeaveTemp.leaveTypeId,
-          leaveType: applyLeaveTemp.leaveType,
-          startDate: applyLeaveTemp.startDate,
-          endDate: applyLeaveTemp.endDate,
-          leaveReason: applyLeaveTemp.leaveReason,
-          applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-          leaveStatusId: applyLeaveTemp.leaveStatusId,
-          employeeId: applyLeaveTemp.employeeId,
-          isHalfDay: applyLeaveTemp.isHalfDay,
-         
-        }));
-        setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
-        /*Tedst  asd*/
-      }
-    } catch (error) {
-      console.error("Failed to fetch data: ", (error as Error).message);
-    }
-  };
-  useEffect(() => {
-
-    fetchData();
-  }, []);
-
 
   
 
@@ -339,9 +288,6 @@ const LeaveApplyUtilities = (
     Test,
     loading,
     differenceChecker,
-    previousApplyLeave,
-    leaveTypes,
-
     // ValidateEmployeeById,
     handleIsHalfDayChange
   };

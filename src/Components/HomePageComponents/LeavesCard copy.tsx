@@ -14,9 +14,6 @@ import { EmployeeLeave } from "../../Model/EmployeeLeave";
 function  LeavesCard() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
-
-  
-
   useEffect(() => {
     const fetchData = async () => {
       try {
