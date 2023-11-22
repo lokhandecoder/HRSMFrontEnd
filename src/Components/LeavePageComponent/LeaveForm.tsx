@@ -85,7 +85,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     return day === 0 || day === 6;
   };
 
-  const handleCancel= () => {
+  const handleCancel = () => {
     setFormData(initialFormData)
   }
   const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
@@ -93,7 +93,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
   const [errors, setErrors] = useState<Partial<Record<keyof LeaveFormData, string>>>({});
 
-  
+
 
   const {
     handleSelectChange,
@@ -117,7 +117,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     setemployeeLeaves,
     errors,
     setErrors,
-    snackbar,initialFormData,previousApplyLeave
+    snackbar, initialFormData, previousApplyLeave
   );
 
   useEffect(() => {
@@ -161,24 +161,24 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           //   isHalfDay: applyLeaveTemp.isHalfDay,
           // });
 
- /*Tedst  asd*/ 
+          /*Tedst  asd*/
           setFormData(prevFormData => ({
             ...prevFormData,
             appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-             leaveTypeId: applyLeaveTemp.leaveTypeId,
-             leaveType: applyLeaveTemp.leaveType,
-             startDate: applyLeaveTemp.startDate,
-             endDate: applyLeaveTemp.endDate,
-             leaveReason: applyLeaveTemp.leaveReason,
-             applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-             leaveStatusId: applyLeaveTemp.leaveStatusId,
-             employeeId: applyLeaveTemp.employeeId,
-             isHalfDay: applyLeaveTemp.isHalfDay,
-             //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
-             //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
+            leaveTypeId: applyLeaveTemp.leaveTypeId,
+            leaveType: applyLeaveTemp.leaveType,
+            startDate: applyLeaveTemp.startDate,
+            endDate: applyLeaveTemp.endDate,
+            leaveReason: applyLeaveTemp.leaveReason,
+            applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+            leaveStatusId: applyLeaveTemp.leaveStatusId,
+            employeeId: applyLeaveTemp.employeeId,
+            isHalfDay: applyLeaveTemp.isHalfDay,
+            //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
+            //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
           }));
           setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
-           /*Tedst  asd*/ 
+          /*Tedst  asd*/
         }
       } catch (error) {
         console.error("Failed to fetch data: ", (error as Error).message);
@@ -227,7 +227,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     )}
                   </FormControl>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <FormControlLabel
                     control={
@@ -255,6 +255,11 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                           onChange={(date) => {
                             if (date) {
                               handleDateChange("startDate", date.toDate());
+
+                              // Update endDate if isHalfDay is true
+                              if (formData.isHalfDay) {
+                                handleDateChange("endDate", date.toDate());
+                              }
                             }
                           }}
                         />
@@ -265,6 +270,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
+
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={["DatePicker"]}>
@@ -294,7 +300,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                
+
 
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <TextField
@@ -308,17 +314,17 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
-                <TextField error={!!errors.applyLeaveDay}
-                      sx={{ mt: 1 }}
-                      id="AppliedLeaves"
-                      name="AppliedLeaves"
-                      label="Applied Leaves"
-                      // aria-readonly
-                      disabled
-                      value={formData.applyLeaveDay}
-                      fullWidth
-                      helperText={errors.applyLeaveDay || ''}
-                    />
+                  <TextField error={!!errors.applyLeaveDay}
+                    sx={{ mt: 1 }}
+                    id="AppliedLeaves"
+                    name="AppliedLeaves"
+                    label="Applied Leaves"
+                    // aria-readonly
+                    disabled
+                    value={formData.applyLeaveDay}
+                    fullWidth
+                    helperText={errors.applyLeaveDay || ''}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <TextField
@@ -355,15 +361,15 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               variant="contained"
               color="primary"
               disabled={loading} // Disable the button when loading
-              >
-                {loading ? (
-                  <div>
-                    Please wait...
-                    <CircularProgress size={24} />
-                  </div>
-                ) : (
-                  "Save"
-                )}
+            >
+              {loading ? (
+                <div>
+                  Please wait...
+                  <CircularProgress size={24} />
+                </div>
+              ) : (
+                "Save"
+              )}
             </Button>
             {/* Conditionally render the Cancel button when in edit mode */}
             {appliedLeaveTypeId > 0 && (
@@ -387,21 +393,21 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           </CardActions>
         </Card>
         <Snackbar
-        open={snackbar.open}
-        autoHideDuration={snackbar.duration}
-        onClose={snackbar.handleSnackbarClose}
-        anchorOrigin={snackbar.position}
-      >
-        <Alert
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
           onClose={snackbar.handleSnackbarClose}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={snackbar.position}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </form>
-     
+
 
     </>
   );
