@@ -52,7 +52,7 @@ const AppliedLeaveUpdateStatusEmail = () => {
   };
 
   return (
-    <div style={{ ...styles.container, backgroundColor: '#f0f0f0' }}>
+    <div style={{ ...styles.container, backgroundColor: '#85a4a6' }}>
       {confrim && confrim ? (
         // <div>{data?.message}</div>
         <Card
@@ -88,6 +88,7 @@ const AppliedLeaveUpdateStatusEmail = () => {
             justifyContent: "center",
             alignItems: "center",
             padding: 5,
+
           }}
         >
           <CardContent sx={{ textAlign: "center" }}>
