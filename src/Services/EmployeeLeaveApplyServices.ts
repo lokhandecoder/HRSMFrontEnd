@@ -131,6 +131,16 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
       throw new Error('Failed to update leave data: ' + (error as Error).message);
     }
   }
+  export async function AppliedLeaveUpdateStatusByEmailConfirmAsync(code: string): Promise<any> {
+    try {
+     
+      const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailConfirmAsync/${code}`);
+      return response.data;
+    } catch (error) {
+      throw new Error('Failed to update leave data: ' + (error as Error).message);
+    }
+  }
+
 
   export async function DeleteAppliedLeaveByIdAsync(id: number): Promise<{ data: any }> {
 
