@@ -44,6 +44,7 @@ function AddEmployee() {
     fieldErrors,
     snackbar,
     handleFieldChange,
+    handleDateChange,
     handleSubmit,
     loading,
   } = employeeUtilities;
@@ -67,18 +68,29 @@ function AddEmployee() {
                   <DemoContainer components={["DatePicker"]}>
                     <FormControl fullWidth>
                       <DatePicker
+                        views={["year", "month", "day"]}
                         label="Date of Joining"
                         value={
                           employeeData.dateOfJoining
                             ? dayjs(employeeData.dateOfJoining)
                             : null
                         }
-                        onChange={(date: Dayjs | null) => {
-                          const dateString = date
-                            ? date.format("DD-MM-YYYY")
-                            : null; // Convert Dayjs to a string or null
-                          handleFieldChange("dateOfJoining", dateString || ""); // Use an empty string for null values
+                        // onChange={(date: Dayjs | null) => {
+                        //   const dateString = date
+                        //     ? date.format("DD/MM/YYYY")
+                        //     : null; // Convert Dayjs to a string or null
+                        //   handleFieldChange("dateOfJoining", dateString || ""); // Use an empty string for null values
+                        // }}
+
+                        onChange={(date) => {
+                          
+                            // Only allow changing the end date if not half-day
+                            if (date) {
+                              handleDateChange("dateOfJoining", date.toDate());
+                            
+                          }
                         }}
+                        format="DD/MM/YYYY"
                       />
                     </FormControl>
                   </DemoContainer>
@@ -125,12 +137,21 @@ function AddEmployee() {
                             ? dayjs(employeeData.dateOfBirth)
                             : null
                         }
-                        onChange={(date: Dayjs | null) => {
-                          const dateString = date
-                            ? date.format("DD-MM-YYYY")
-                            : null; // Convert Dayjs to a string or null
-                          handleFieldChange("dateOfBirth", dateString || ""); // Use an empty string for null values
-                        }}
+                        // onChange={(date: Dayjs | null) => {
+                        //   const dateString = date
+                        //     ? date.format("DD/MM/YYYY")
+                        //     : null; // Convert Dayjs to a string or null
+                        //   handleFieldChange("dateOfBirth", dateString || ""); // Use an empty string for null values
+                        // }}
+                        onChange={(date) => {
+                          
+                          // Only allow changing the end date if not half-day
+                          if (date) {
+                            handleDateChange("dateOfBirth", date.toDate());
+                          
+                        }
+                      }}
+                        format="DD/MM/YYYY"
                       />
                     </FormControl>
                   </DemoContainer>

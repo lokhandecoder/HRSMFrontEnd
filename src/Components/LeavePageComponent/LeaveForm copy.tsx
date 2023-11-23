@@ -40,7 +40,6 @@ import { Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import { EmployeeIDByLocalStorage } from "../../APIConfig";
 import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
-import LeavesCard from "../HomePageComponents/LeavesCard";
 
 
 dayjs.extend(utc); // Extend Dayjs with UTC plugin
@@ -90,8 +89,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const handleCancel = () => {
     setFormData(initialFormData)
   }
-  // const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
-  // const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
+  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
   const [errors, setErrors] = useState<Partial<Record<keyof LeaveFormData, string>>>({});
 
@@ -105,9 +104,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     Test,
     handleSubmit,
     loading,
-    previousApplyLeave,
-    leaveTypes,
-
     handleIsHalfDayChange,
   } = LeaveApplyUtilities(
     formData,
@@ -134,46 +130,49 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     formData.isHalfDay,
   ]);
 
-  
+  useEffect(() => {
 
-  // const fetchData = async () => {
-  //   try {
-  //     const [leaveTypesData, employeeLeaveData] = await Promise.all([
-  //       getLeaveTypes(),
-  //       GetEmployeeLeaveByEmployeeId(),
-  //     ]);
-  //     const leaveTypes = leaveTypesData.data;
-  //     setLeaveTypes(leaveTypes);
-  //     const employeeLeave = employeeLeaveData.data;
-  //     setemployeeLeaves(employeeLeave);
-     
-  //     if (formData.appliedLeaveTypeId > 0) {
-  //       const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
-  //       const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
-  //       const applyLeaveTemp = applyLeaveData.data;
+
+    const fetchData = async () => {
+      try {
+        const [leaveTypesData, employeeLeaveData] = await Promise.all([
+          getLeaveTypes(),
+          GetEmployeeLeaveByEmployeeId(),
+        ]);
+        const leaveTypes = leaveTypesData.data;
+        setLeaveTypes(leaveTypes);
+        const employeeLeave = employeeLeaveData.data;
+        setemployeeLeaves(employeeLeave);
        
-  //       setFormData(prevFormData => ({
-  //         ...prevFormData,
-  //         appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-  //         leaveTypeId: applyLeaveTemp.leaveTypeId,
-  //         leaveType: applyLeaveTemp.leaveType,
-  //         startDate: applyLeaveTemp.startDate,
-  //         endDate: applyLeaveTemp.endDate,
-  //         leaveReason: applyLeaveTemp.leaveReason,
-  //         applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-  //         leaveStatusId: applyLeaveTemp.leaveStatusId,
-  //         employeeId: applyLeaveTemp.employeeId,
-  //         isHalfDay: applyLeaveTemp.isHalfDay,
+        if (formData.appliedLeaveTypeId > 0) {
+          const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
+          const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
+          const applyLeaveTemp = applyLeaveData.data;
          
-  //       }));
-  //       setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
-  //       /*Tedst  asd*/
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch data: ", (error as Error).message);
-  //   }
-  // };
+          setFormData(prevFormData => ({
+            ...prevFormData,
+            appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
+            leaveTypeId: applyLeaveTemp.leaveTypeId,
+            leaveType: applyLeaveTemp.leaveType,
+            startDate: applyLeaveTemp.startDate,
+            endDate: applyLeaveTemp.endDate,
+            leaveReason: applyLeaveTemp.leaveReason,
+            applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+            leaveStatusId: applyLeaveTemp.leaveStatusId,
+            employeeId: applyLeaveTemp.employeeId,
+            isHalfDay: applyLeaveTemp.isHalfDay,
+           
+          }));
+          setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
+          /*Tedst  asd*/
+        }
+      } catch (error) {
+        console.error("Failed to fetch data: ", (error as Error).message);
+      }
+    };
 
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -245,11 +244,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
 
                               // Update endDate if isHalfDay is true
                               if (formData.isHalfDay) {
-                                //handleDateChange("endDate", date.toDate());
-                                setFormData((prevFormData: LeaveFormData) => ({
-                                  ...prevFormData,
-                                  endDate: date.toDate(),
-                                }));
+                                handleDateChange("endDate", date.toDate());
                               }
                             }
                           }}

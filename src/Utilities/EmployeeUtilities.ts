@@ -24,6 +24,8 @@ export const EmployeeUtilities = (employeeId: number) => {
   const [genders, setGenders] = useState<GenderModel[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedReportingPersons, setSelectedReportingPersons] = useState<EmployeeModel[]>([]);
+  // const [dob, setDob] = useState({dateOfBirth: todayDate});
+  // const [doj, setDoj] = useState({dateOfJoining:todayDate});
 
 
 
@@ -34,8 +36,8 @@ export const EmployeeUtilities = (employeeId: number) => {
     employeeId: employeeId,
     firstName: "",
     lastName: "",
-    dateOfBirth: dayjs(todayDate).format("MM-DD-YYYY"),
-    dateOfJoining: dayjs(todayDate).format("MM-DD-YYYY"),
+    dateOfBirth: dayjs(todayDate).format("DD-MM-YYYY"),
+    dateOfJoining: dayjs(todayDate).format("DD-MM-YYYY"),
     emailAddress: "",
     mobileNo: "",
     genderId: 0,
@@ -58,6 +60,35 @@ export const EmployeeUtilities = (employeeId: number) => {
     setEmployeeData({ ...employeeData, [fieldName]: value });
     setFieldErrors((prev) => ({ ...prev, [fieldName]: null })); // Clear the error when the field changes
   };
+
+  const handleDateChange = (name: string, date: Date | null) => {
+    setEmployeeData({
+      ...employeeData,
+      [name]: date,
+    });
+    // differenceCehcker();
+
+    // Test()
+  };
+
+  // const handledob = (
+  //   fieldName: keyof EmployeeModel,
+  //   value: string | number | boolean
+  // ) => {
+  //   // setEmployeeData({ ...employeeData, [fieldName]: value });
+  //   setDob({...dob, [fieldName]: value})
+  //   setFieldErrors((prev) => ({ ...prev, [fieldName]: null })); // Clear the error when the field changes
+  // };
+
+  // const handle = (
+  //   fieldName: keyof EmployeeModel,
+  //   value: string | number | boolean
+  // ) => {
+  //   // setEmployeeData({ ...employeeData, [fieldName]: value });
+  //   setDob({...dob, [fieldName]: value})
+  //   setFieldErrors((prev) => ({ ...prev, [fieldName]: null })); // Clear the error when the field changes
+  // };
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -168,7 +199,7 @@ export const EmployeeUtilities = (employeeId: number) => {
     const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 
     // Date of Birth validation
-    if (dateOfBirth === null || dateOfBirth.trim() === "") {
+    if (dateOfBirth === null || dateOfBirth.toString() === "") {
       setFieldErrors((prev) => ({
         ...prev,
         dateOfBirth: "Date of Birth is required",
@@ -176,7 +207,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else if (
       !dayjs(dateOfBirth, { format: "DD/MM/YYYY" }).isValid() ||
-      !dateOfBirth.match(dateFormatRegex)
+      !dateOfBirth.toString().match(dateFormatRegex)
     ) {
       setFieldErrors((prev) => ({
         ...prev,
@@ -189,7 +220,7 @@ export const EmployeeUtilities = (employeeId: number) => {
     }
 
     // Date of Joining validation
-    if (dateOfJoining === null || dateOfJoining.trim() === "") {
+    if (dateOfJoining === null || dateOfJoining.toString() === "") {
       setFieldErrors((prev) => ({
         ...prev,
         dateOfJoining: "Date of Joining is required",
@@ -197,7 +228,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else if (
       !dayjs(dateOfJoining, { format: "DD/MM/YYYY" }).isValid() ||
-      !dateOfJoining.match(dateFormatRegex)
+      !dateOfJoining.toString().match(dateFormatRegex)
     ) {
       setFieldErrors((prev) => ({
         ...prev,
@@ -303,6 +334,7 @@ export const EmployeeUtilities = (employeeId: number) => {
     fieldErrors,
     snackbar,
     handleFieldChange,
+    handleDateChange,
     handleSubmit,
     loading,
   };
