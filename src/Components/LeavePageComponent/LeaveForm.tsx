@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CircularProgress from "@mui/material/CircularProgress";
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIcon from "@mui/icons-material/Clear";
 import axios from "axios";
 import {
   GetEmployeeLeave,
@@ -40,7 +40,7 @@ import { Checkbox, FormControlLabel, FormHelperText } from "@mui/material";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import { EmployeeIDByLocalStorage } from "../../APIConfig";
 import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
-
+import LeavesCard from "../HomePageComponents/LeavesCard";
 
 dayjs.extend(utc); // Extend Dayjs with UTC plugin
 interface LeaveFormProps {
@@ -48,7 +48,7 @@ interface LeaveFormProps {
 }
 
 const employee = GetEmployeeLeave();
-// console.log(employee);
+console.log(employee);
 
 const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const snackbar = useCustomSnackbar();
@@ -59,6 +59,13 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const appliedLeaveTypeId = id ? parseInt(id, 10) : 0;
   const today = dayjs();
   const todayDate = today.toDate();
+
+  // const [snackbarDateValid, setsnackbarDateValid] = useState(false);
+  // const [snackbarLeavetype, setsnackLeavetype] = useState(false);
+  // const [snackbarOpen, setSnackbarOpen] = useState(false);
+  // const [submitMessageOpen, setsubmitMessageOpen] = useState(false);
+  console.log("Employeeeee ID", EMPIDD);
+
   const [difference, setdifference] = useState(0);
   const [balanceLeave, setBalanceLeave] = useState(0);
   const [applyLeaveDefaultValue, setApplyLeaveDefaultValue] = useState(1); // Default value for Apply Leave dropdown
@@ -85,15 +92,15 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     return day === 0 || day === 6;
   };
 
-  const handleCancel= () => {
-    setFormData(initialFormData)
-  }
-  const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
-  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const handleCancel = () => {
+    setFormData(initialFormData);
+  };
+  // const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
+  // const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
-  const [errors, setErrors] = useState<Partial<Record<keyof LeaveFormData, string>>>({});
-
-  
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof LeaveFormData, string>>
+  >({});
 
   const {
     handleSelectChange,
@@ -103,7 +110,11 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     Test,
     handleSubmit,
     loading,
+    previousApplyLeave,
+    leaveTypes,
     handleIsHalfDayChange,
+ 
+
   } = LeaveApplyUtilities(
     formData,
     setFormData,
@@ -117,7 +128,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     setemployeeLeaves,
     errors,
     setErrors,
-    snackbar,initialFormData,previousApplyLeave
+    snackbar,
+    initialFormData,
   );
 
   useEffect(() => {
@@ -129,70 +141,73 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     formData.isHalfDay,
   ]);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const [leaveTypesData, employeeLeaveData] = await Promise.all([
+  //         getLeaveTypes(),
+  //         GetEmployeeLeaveByEmployeeId(),
+  //       ]);
+  //       const leaveTypes = leaveTypesData.data;
+  //       setLeaveTypes(leaveTypes);
+  //       const employeeLeave = employeeLeaveData.data;
+  //       setemployeeLeaves(employeeLeave);
+  //       if (formData.appliedLeaveTypeId > 0) {
+  //         const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
+  //         const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
+  //         const applyLeaveTemp = applyLeaveData.data;
+  //         // setFormData({
+  //         //   appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
+  //         //   leaveTypeId: applyLeaveTemp.leaveTypeId,
+  //         //   leaveType: applyLeaveTemp.leaveType,
+  //         //   startDate: applyLeaveTemp.startDate,
+  //         //   endDate: applyLeaveTemp.endDate,
+  //         //   leaveReason: applyLeaveTemp.leaveReason,
+  //         //   applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+  //         //   remaingLeave: applyLeaveTemp.remaingLeave,
+  //         //   balanceLeave: applyLeaveTemp.balanceLeave,
+  //         //   leaveStatusId: applyLeaveTemp.leaveStatusId,
+  //         //   employeeId: applyLeaveTemp.employeeId,
+  //         //   isHalfDay: applyLeaveTemp.isHalfDay,
+  //         // });
 
+  //         /*Tedst  asd*/
+  //         setFormData((prevFormData) => ({
+  //           ...prevFormData,
+  //           appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
+  //           leaveTypeId: applyLeaveTemp.leaveTypeId,
+  //           leaveType: applyLeaveTemp.leaveType,
+  //           startDate: applyLeaveTemp.startDate,
+  //           endDate: applyLeaveTemp.endDate,
+  //           leaveReason: applyLeaveTemp.leaveReason,
+  //           applyLeaveDay: applyLeaveTemp.applyLeaveDay,
+  //           leaveStatusId: applyLeaveTemp.leaveStatusId,
+  //           employeeId: applyLeaveTemp.employeeId,
+  //           isHalfDay: applyLeaveTemp.isHalfDay,
+  //           //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
+  //           //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
+  //         }));
+  //         setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
+  //         /*Tedst  asd*/
+  //       }
+  //     } catch (error) {
+  //       console.error("Failed to fetch data: ", (error as Error).message);
+  //     }
+  //   };
 
-    const fetchData = async () => {
-      try {
-        const [leaveTypesData, employeeLeaveData] = await Promise.all([
-          getLeaveTypes(),
-          GetEmployeeLeaveByEmployeeId(),
-        ]);
-        const leaveTypes = leaveTypesData.data;
-        setLeaveTypes(leaveTypes);
-        const employeeLeave = employeeLeaveData.data;
-        setemployeeLeaves(employeeLeave);
-        if (formData.appliedLeaveTypeId > 0) {
-          const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
-          const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
-          const applyLeaveTemp = applyLeaveData.data;
-          // setFormData({
-          //   appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-          //   leaveTypeId: applyLeaveTemp.leaveTypeId,
-          //   leaveType: applyLeaveTemp.leaveType,
-          //   startDate: applyLeaveTemp.startDate,
-          //   endDate: applyLeaveTemp.endDate,
-          //   leaveReason: applyLeaveTemp.leaveReason,
-          //   applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-          //   remaingLeave: applyLeaveTemp.remaingLeave,
-          //   balanceLeave: applyLeaveTemp.balanceLeave,
-          //   leaveStatusId: applyLeaveTemp.leaveStatusId,
-          //   employeeId: applyLeaveTemp.employeeId,
-          //   isHalfDay: applyLeaveTemp.isHalfDay,
-          // });
-
- /*Tedst  asd*/ 
-          setFormData(prevFormData => ({
-            ...prevFormData,
-            appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-             leaveTypeId: applyLeaveTemp.leaveTypeId,
-             leaveType: applyLeaveTemp.leaveType,
-             startDate: applyLeaveTemp.startDate,
-             endDate: applyLeaveTemp.endDate,
-             leaveReason: applyLeaveTemp.leaveReason,
-             applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-             leaveStatusId: applyLeaveTemp.leaveStatusId,
-             employeeId: applyLeaveTemp.employeeId,
-             isHalfDay: applyLeaveTemp.isHalfDay,
-             //remaingLeave: applyLeaveTemp.remaingLeave + 99 ,
-             //balanceLeave: applyLeaveTemp.balanceLeave + applyLeaveTemp.applyLeaveDay ,
-          }));
-          setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
-           /*Tedst  asd*/ 
-        }
-      } catch (error) {
-        console.error("Failed to fetch data: ", (error as Error).message);
-      }
-    };
-
-    fetchData();
-  }, []);
+  //   fetchData();
+  // }, []);
 
   return (
     <>
+
       <form onSubmit={handleSubmit}>
+      <LeavesCard handleSubmit={handleSubmit} />
+
         <Card sx={{ minWidth: 275, mt: 5, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Apply for Leave</h1>
+          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>
+            Apply for Leave
+          </h1>
           <CardContent>
             <Box sx={{ width: "100%" }}>
               <Grid
@@ -227,7 +242,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     )}
                   </FormControl>
                 </Grid>
-                
+
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <FormControlLabel
                     control={
@@ -254,7 +269,13 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                           }
                           onChange={(date) => {
                             if (date) {
-                              handleDateChange("startDate", date.toDate());
+                              if (formData.isHalfDay) {
+                                // Update both startDate and endDate if isHalfDay is true
+                                handleDateChange("startDate", date.toDate());
+                                handleDateChange("endDate", date.toDate());
+                              } else {
+                                handleDateChange("startDate", date.toDate());
+                              }
                             }
                           }}
                         />
@@ -294,7 +315,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                
 
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <TextField
@@ -308,17 +328,18 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
-                <TextField error={!!errors.applyLeaveDay}
-                      sx={{ mt: 1 }}
-                      id="AppliedLeaves"
-                      name="AppliedLeaves"
-                      label="Applied Leaves"
-                      // aria-readonly
-                      disabled
-                      value={formData.applyLeaveDay}
-                      fullWidth
-                      helperText={errors.applyLeaveDay || ''}
-                    />
+                  <TextField
+                    error={!!errors.applyLeaveDay}
+                    sx={{ mt: 1 }}
+                    id="AppliedLeaves"
+                    name="AppliedLeaves"
+                    label="Applied Leaves"
+                    // aria-readonly
+                    disabled
+                    value={formData.applyLeaveDay}
+                    fullWidth
+                    helperText={errors.applyLeaveDay || ""}
+                  />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <TextField
@@ -334,7 +355,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                 </Grid>
               </Grid>
             </Box>
-            <TextField error={!!errors.leaveReason}
+            <TextField
+              error={!!errors.leaveReason}
               sx={{ mt: 1 }}
               id="leaveReason"
               name="leaveReason"
@@ -343,8 +365,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               rows={4}
               value={formData.leaveReason}
               onChange={handleInputChange}
-              helperText={errors.leaveReason || ''}
-
+              helperText={errors.leaveReason || ""}
               fullWidth
             />
           </CardContent>
@@ -355,15 +376,15 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               variant="contained"
               color="primary"
               disabled={loading} // Disable the button when loading
-              >
-                {loading ? (
-                  <div>
-                    Please wait...
-                    <CircularProgress size={24} />
-                  </div>
-                ) : (
-                  "Save"
-                )}
+            >
+              {loading ? (
+                <div>
+                  Please wait...
+                  <CircularProgress size={24} />
+                </div>
+              ) : (
+                "Save"
+              )}
             </Button>
             {/* Conditionally render the Cancel button when in edit mode */}
             {appliedLeaveTypeId > 0 && (
@@ -387,22 +408,20 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           </CardActions>
         </Card>
         <Snackbar
-        open={snackbar.open}
-        autoHideDuration={snackbar.duration}
-        onClose={snackbar.handleSnackbarClose}
-        anchorOrigin={snackbar.position}
-      >
-        <Alert
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
           onClose={snackbar.handleSnackbarClose}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={snackbar.position}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </form>
-     
-
     </>
   );
 };

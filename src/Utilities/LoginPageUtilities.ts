@@ -16,8 +16,8 @@ interface FormData {
 export const LoginPageUtilities = () => {
 
   const [formData, setFormData] = useState<FormData>({
-    email: "anzar.ansari@wonderBiz.in",
-    password: "anzar@123",
+    email: "",
+    password: "",
   });
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const Navigate = useNavigate();

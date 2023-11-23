@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import DashBoardPage from "../Pages/DashBoardPage";
 import LeavePage from "../Pages/LeavePage";
 import StatusPage from "../Pages/StatusPage";
@@ -14,7 +14,7 @@ import EmployeesPage from "../Pages/EmployeesPage";
 import { UserRoleMapping } from "../Model/UserRoleMapping";
 import { GetUserRoleMappingsAsync } from "../Services/UserRoleMappingServices";
 import RoleAssign from "../Pages/RoleAssign";
-import LeaveApprovedPage from '../Pages/LeaveApprovedPage';
+import LeaveApprovedPage from "../Pages/LeaveApprovedPage";
 
 function RoutingPgae() {
   interface RouteConfig {
@@ -27,30 +27,32 @@ function RoutingPgae() {
     []
   );
   const [userrole, setuserrole] = useState(null);
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await GetUserRoleMappingsAsync();
-        setUserRoleMappings(response.data);
-        const roleid = localStorage.getItem("Role");
-        if (roleid) {
-          // Parse the JSON string back to an object
-          const parsedData = JSON.parse(roleid);
-          setuserrole(parsedData.roleAssignId);
-        } else {
-          setuserrole(null);
-        }
-        // setuserrole(loca)
-        //console.log("222222222222222222");
-      } catch (error) {
-        console.error(
-          "Error fetching user role mappings: " + (error as Error).message
-        );
-      }
-    }
+  console.log("user role value", userrole);
 
+  async function fetchData() {
+    try {
+      const response = await GetUserRoleMappingsAsync();
+      setUserRoleMappings(response.data);
+      const roleid = localStorage.getItem("Role");
+      if (roleid) {
+        // Parse the JSON string back to an object
+        const parsedData = JSON.parse(roleid);
+        setuserrole(parsedData.roleAssignId);
+      } else {
+        setuserrole(null);
+      }
+      // setuserrole(loca)
+      //console.log("222222222222222222");
+    } catch (error) {
+      console.error(
+        "Error fetching user role mappings: " + (error as Error).message
+      );
+    }
+  }
+  useEffect(() => {
     fetchData();
   }, []);
+  
 
   function mapElementToComponent(elementName: string) {
     switch (elementName) {
@@ -97,24 +99,28 @@ function RoutingPgae() {
             ))}
         </Routes> */}
 
-<Routes>
-      {userRoleMappings
-      .filter((route)=> route.roleAssignId == userrole)
-      .map((route, index) => {
-        const Component = mapElementToComponent(route.componentName);
-        if (Component) {
-          return (
-            <Route key={index} path={route.routePath} element={<Component />} />
-          );
-        }
-        // Handle the case where the component mapping failed
-        return null;
-      })}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
-      <Route path="/updatepassword/:id" element={<UpdatePassword />} />      
-      <Route path='/leaveapproved' element={<LeaveApprovedPage />} />
-    </Routes>
+        <Routes>
+          {userRoleMappings
+            .filter((route) => route.roleAssignId == userrole)
+            .map((route, index) => {
+              const Component = mapElementToComponent(route.componentName);
+              if (Component) {
+                return (
+                  <Route
+                    key={index}
+                    path={route.routePath}
+                    element={<Component />}
+                  />
+                );
+              }
+              return null;
+            })}
+            
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/forgotpassword" element={<ForgotPasswordPage />} />
+          <Route path="/updatepassword/:id" element={<UpdatePassword />} />
+          <Route path="/leaveapproved" element={<LeaveApprovedPage />} />
+        </Routes>
       </BrowserRouter>
     </>
   );

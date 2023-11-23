@@ -29,6 +29,7 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   }
   export async function updateLeaveApply(id: number, leaveForm: LeaveFormData): Promise<any> {
     try {
+      console.log("sendin data", leaveForm)
       const response = await axios.put(`${API_URL}appliedLeave/UpdateAppliedLeaveAsync/${id}`, leaveForm);
       return response.data;
     } catch (error) {

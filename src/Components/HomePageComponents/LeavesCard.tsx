@@ -10,8 +10,13 @@ import { GetEmployeeLeave, LeaveType } from "../../Database/LeaveType";
 import { GetEmployeeLeaveByEmployeeId } from "../../Services/EmployeeLeaveServices";
 import { getLeaveTypes } from "../../Services/LeaveType";
 import { EmployeeLeave } from "../../Model/EmployeeLeave";
+import { LeaveFormData } from "../../Model/LeaveFormData";
 
-function  LeavesCard() {
+interface LeavesCardProps {
+  handleSubmit: (formData: any) => void; // Adjust the type according to your form data type
+}
+
+function LeavesCard({ handleSubmit }: LeavesCardProps) {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
   useEffect(() => {
@@ -31,7 +36,7 @@ function  LeavesCard() {
     };
 
     fetchData();
-  }, []);
+  }, [handleSubmit]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>

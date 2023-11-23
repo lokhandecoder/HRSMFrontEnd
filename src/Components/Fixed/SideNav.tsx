@@ -132,6 +132,9 @@ export default function MiniDrawer() {
   const handleSignout = () => {
     localStorage.removeItem("EmployeeID");
     localStorage.removeItem("Role");
+    localStorage.removeItem("employeeID");
+    localStorage.removeItem("roleAssignId");
+    localStorage.removeItem("employeeObject");
     // window.location.reload()
     navigate("/login")
     // navigate("/login")

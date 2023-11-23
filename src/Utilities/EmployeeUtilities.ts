@@ -16,7 +16,7 @@ import { GetRoleAssignsAsync } from "../Services/RoleAssignServices";
 import { GetEmployeesAsync } from "../Services/EmployeeServices"; 
 export const EmployeeUtilities = (employeeId: number) => {
   const today = dayjs();
-  const todayDate = today.toDate();
+  const todayDate = today.format("YYYY-MM-DD");
   const snackbar = useCustomSnackbar();
 
   const [roles, setRoles] = useState<ColumnHeaderModel[]>([]);
@@ -30,12 +30,14 @@ export const EmployeeUtilities = (employeeId: number) => {
   const [fieldErrors, setFieldErrors] = useState<{
     [key: string]: string | null;
   }>({});
+//   const formattedDateOfBirth = dayjs(todayDate).format("YYYY-MM-DD");
+// const formattedDateOfJoining = dayjs(todayDate).format("YYYY-MM-DD");
   const [employeeData, setEmployeeData] = useState<EmployeeModel>({
     employeeId: employeeId,
     firstName: "",
     lastName: "",
-    dateOfBirth: dayjs(todayDate).format("MM-DD-YYYY"),
-    dateOfJoining: dayjs(todayDate).format("MM-DD-YYYY"),
+    dateOfBirth: dayjs(todayDate).format("YYYY-MM-DD"),
+    dateOfJoining: dayjs(todayDate).format("YYYY-MM-DD"),
     emailAddress: "",
     mobileNo: "",
     genderId: 0,
@@ -47,9 +49,8 @@ export const EmployeeUtilities = (employeeId: number) => {
     gender: null,
     role: null,
     reportingPerson: null
- 
-
   });
+
 
   const handleFieldChange = (
     fieldName: keyof EmployeeModel,
@@ -57,6 +58,8 @@ export const EmployeeUtilities = (employeeId: number) => {
   ) => {
     setEmployeeData({ ...employeeData, [fieldName]: value });
     setFieldErrors((prev) => ({ ...prev, [fieldName]: null })); // Clear the error when the field changes
+    console.log(employeeData?.dateOfBirth)
+
   };
 
   useEffect(() => {

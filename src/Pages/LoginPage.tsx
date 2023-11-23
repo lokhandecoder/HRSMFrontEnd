@@ -56,7 +56,7 @@ export default function LoginPage() {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
+              autoComplete="off"
               autoFocus
               error={!!fieldErrors.email}
               value={formData.email}
@@ -70,7 +70,7 @@ export default function LoginPage() {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="off"
               error={!!fieldErrors.password}
               value={formData.password}
               onChange={handleInputChange}
