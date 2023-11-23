@@ -43,6 +43,7 @@ import {
   setEncryptedValueInStorage,
 } from "../../Utilities/LocalStorageEncryptionUtilities";
 import { AppliedLeave } from "../../Model/AppliedLeaveModel";
+import TablePagination from "@mui/material/TablePagination";
 import ConfirmationDialog from "../ConfirmationDialog";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 function StatusTable() {
@@ -54,12 +55,31 @@ function StatusTable() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
-  const [ leaveAllocation, setLeaveAllocation] = useState<number>(0);
-  const [openConfirmation, setOpenConfirmation] = React.useState<boolean>(false);
+  const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
+  const [openConfirmation, setOpenConfirmation] =
+    React.useState<boolean>(false);
 
-  const[selectedAppliedLeaveTypeId , setSelectedAppliedLeaveTypeId] = useState<number>(0);
+  const [selectedAppliedLeaveTypeId, setSelectedAppliedLeaveTypeId] =
+    useState<number>(0);
 
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when changing rows per page
+  };
+
+  const lastIndex = (page + 1) * rowsPerPage;
+  const firstIndex = lastIndex - rowsPerPage;
+
+  const displayedData = data.slice(firstIndex, lastIndex);
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
       ? `/leave/${appliedLeaveTypeId}`
@@ -105,15 +125,16 @@ function StatusTable() {
   };
   const handleConfirmationClose = async (value: string) => {
     setOpenConfirmation(false);
-  
-    if (value=="yes"){
-     var response =  await DeleteAppliedLeaveByIdAsync(selectedAppliedLeaveTypeId);
-     FetchList();
+
+    if (value == "yes") {
+      var response = await DeleteAppliedLeaveByIdAsync(
+        selectedAppliedLeaveTypeId
+      );
+      FetchList();
     }
   };
   // console.log("table data", data);
   useEffect(() => {
-   
     FetchList();
     fetchLeaveTypes();
   }, []);
@@ -123,9 +144,9 @@ function StatusTable() {
       const fetchData = await GetAppliedLeavesByEmpIdAsync();
       const fetched = fetchData.data;
       const fetchemployee = await GetEmployeesAsync();
-     //const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
-    //  const leaveallocate = leaveAllocate.data.leaveAllocationId;
-     // setLeaveAllocation(leaveallocate);
+      //const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+      //  const leaveallocate = leaveAllocate.data.leaveAllocationId;
+      // setLeaveAllocation(leaveallocate);
 
       if (Array.isArray(fetched)) {
         setData(fetched);
@@ -183,11 +204,13 @@ function StatusTable() {
   const onLeaveEdit = (appliedLeaveTypeId: number) => {};
   const onLeaveDelete = (appliedLeaveTypeId: number) => {};
 
-
-  const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
+  const onLeaveStatusUpdate = async (
+    appliedLeaveTypeId: number,
+    statusCode: string
+  ) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : leaveAllocation,
+      leaveAllocationId: leaveAllocation,
       statusCode: statusCode,
     });
   };
@@ -221,16 +244,17 @@ function StatusTable() {
       case "APR":
         return (
           <Stack direction="row">
-          <Tooltip title="Cancel">
-            <IconButton
-              aria-label="Cancel"
-              onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0,"CAR")}
-            >
-              <CancelOutlinedIcon color="warning" />
-            </IconButton>
-          </Tooltip>
-         
-        </Stack>
+            <Tooltip title="Cancel">
+              <IconButton
+                aria-label="Cancel"
+                onClick={() =>
+                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "CAR")
+                }
+              >
+                <CancelOutlinedIcon color="warning" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
         );
       case "CAR":
         return (
@@ -241,33 +265,33 @@ function StatusTable() {
           // </IconButton>
           <></>
         );
-        case "REC":
-          return (
-            // <IconButton color="primary">
-            //   <IconButton aria-label="Approve">
-            //     <EditAttributesOutlined />
-            //   </IconButton>
-            // </IconButton>
-            <></>
-          ); 
-          case "APC":
-            return (
-              // <IconButton color="primary">
-              //   <IconButton aria-label="Approve">
-              //     <EditAttributesOutlined />
-              //   </IconButton>
-              // </IconButton>
-              <></>
-            );    
-            case "REJ":
-              return (
-                // <IconButton color="primary">
-                //   <IconButton aria-label="Approve">
-                //     <EditAttributesOutlined />
-                //   </IconButton>
-                // </IconButton>
-                <></>
-              );         
+      case "REC":
+        return (
+          // <IconButton color="primary">
+          //   <IconButton aria-label="Approve">
+          //     <EditAttributesOutlined />
+          //   </IconButton>
+          // </IconButton>
+          <></>
+        );
+      case "APC":
+        return (
+          // <IconButton color="primary">
+          //   <IconButton aria-label="Approve">
+          //     <EditAttributesOutlined />
+          //   </IconButton>
+          // </IconButton>
+          <></>
+        );
+      case "REJ":
+        return (
+          // <IconButton color="primary">
+          //   <IconButton aria-label="Approve">
+          //     <EditAttributesOutlined />
+          //   </IconButton>
+          // </IconButton>
+          <></>
+        );
       default:
         return (
           <IconButton color="primary">
@@ -280,69 +304,81 @@ function StatusTable() {
   }
   return (
     <>
-    <TableContainer>
-      <Table sx={{ minWidth: 700 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell>Leave Type</TableCell>
-            <TableCell>Start Date</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell>Reason for Leave</TableCell>
-            {/* <TableCell>Balance Leaves</TableCell> */}
-            <TableCell>Applied Days</TableCell>
-            {/* <TableCell>Remaining Leaves</TableCell> */}
+      <TableContainer>
+        <Table sx={{ minWidth: 700 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>First Name</TableCell>
+              <TableCell>Leave Type</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+              <TableCell>Reason for Leave</TableCell>
+              {/* <TableCell>Balance Leaves</TableCell> */}
+              <TableCell>Applied Days</TableCell>
+              {/* <TableCell>Remaining Leaves</TableCell> */}
 
-            <TableCell>Status </TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {data && data !== null
-            ? data.map((row: AppliedLeave, key) => {
-                // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
-                //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
+              <TableCell>Status </TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {displayedData && displayedData !== null
+              ? displayedData.map((row: AppliedLeave, key) => {
+                  // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
+                  //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
 
-                return (
-                  <TableRow key={key}>
-                    <TableCell>
-                      {row.firstName} {row.lastName}
-                    </TableCell>
-                    <TableCell>{row.leaveTypeName}</TableCell>
-                    <TableCell>
-                      {row.startDate
-                        ? formatDate(new Date(row.startDate))
-                        : "No date available"}
-                    </TableCell>
-                    <TableCell>
-                      {row.endDate
-                        ? formatDate(new Date(row.endDate))
-                        : "No date available"}
-                    </TableCell>
-                    <TableCell>{row.leaveReason}</TableCell>
-                    {/* <TableCell>{row.balanceLeave}</TableCell> */}
-                    <TableCell>{row.applyLeaveDay}</TableCell>
-                    {/* <TableCell>{row.remaingLeave}</TableCell> */}
+                  return (
+                    <TableRow key={key}>
+                      <TableCell>
+                        {row.firstName} {row.lastName}
+                      </TableCell>
+                      <TableCell>{row.leaveTypeName}</TableCell>
+                      <TableCell>
+                        {row.startDate
+                          ? formatDate(new Date(row.startDate))
+                          : "No date available"}
+                      </TableCell>
+                      <TableCell>
+                        {row.endDate
+                          ? formatDate(new Date(row.endDate))
+                          : "No date available"}
+                      </TableCell>
+                      <TableCell>{row.leaveReason}</TableCell>
+                      {/* <TableCell>{row.balanceLeave}</TableCell> */}
+                      <TableCell>{row.applyLeaveDay}</TableCell>
+                      {/* <TableCell>{row.remaingLeave}</TableCell> */}
 
-                    <TableCell>{row.leaveStatusName}</TableCell>
+                      <TableCell>{row.leaveStatusName}</TableCell>
 
-                    <TableCell>
-                      {renderIconButton(
-                        row.leaveStatusCode,
-                        row.appliedLeaveTypeId || 0
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            : "No data available"}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    
- <ConfirmationDialog isOpen = {openConfirmation} handleClose= {handleConfirmationClose}  message = "Are you sure you want to delete this leave" />
+                      <TableCell>
+                        {renderIconButton(
+                          row.leaveStatusCode,
+                          row.appliedLeaveTypeId || 0
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              : "No data available"}
+          </TableBody>
+        </Table>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
+          component="div"
+          count={data.length} // Pass the total number of rows
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableContainer>
+
+      <ConfirmationDialog
+        isOpen={openConfirmation}
+        handleClose={handleConfirmationClose}
+        message="Are you sure you want to delete this leave"
+      />
     </>
-    
   );
 }
 /*UnpublishedOutlinedIcon*/

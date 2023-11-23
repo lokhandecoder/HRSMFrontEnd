@@ -13,6 +13,8 @@ import { LeaveStatus } from "../../Model/LeaveStatus";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ClearIcon from "@mui/icons-material/Clear";
+import TablePagination from "@mui/material/TablePagination";
+
 
 import {
   AppliedLeaveUpdateStatusAsync,
@@ -40,9 +42,9 @@ import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import { AppliedLeave } from "../../Model/AppliedLeaveModel";
 import { getDecryptedValueFromStorage } from "../../Utilities/LocalStorageEncryptionUtilities";
-import DoneOutlineOutlinedIcon from '@mui/icons-material/DoneOutlineOutlined';
-import CancelPresentationOutlinedIcon from '@mui/icons-material/CancelPresentationOutlined';
-import DoneAllOutlinedIcon from '@mui/icons-material/DoneAllOutlined';
+import DoneOutlineOutlinedIcon from "@mui/icons-material/DoneOutlineOutlined";
+import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentationOutlined";
+import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 function EmployeeAppliedLeave() {
@@ -54,10 +56,25 @@ function EmployeeAppliedLeave() {
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
   const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
-  const [ leaveAllocation, setLeaveAllocation] = useState<number>(0);
+  const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
   const snackbar = useCustomSnackbar();
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
 
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
 
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // Reset to the first page when changing rows per page
+  };
+  const lastIndex = (page + 1) * rowsPerPage;
+  const firstIndex = lastIndex - rowsPerPage;
+  
+  const displayedData = data.slice(firstIndex, lastIndex);
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
       ? `/leave/${appliedLeaveTypeId}`
@@ -100,11 +117,9 @@ function EmployeeAppliedLeave() {
   };
   // console.log("table data", data);
   useEffect(() => {
-    
     FetchList();
     fetchLeaveTypes();
   }, []);
-
 
   const FetchList = async () => {
     try {
@@ -156,17 +171,19 @@ function EmployeeAppliedLeave() {
       const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
       const leavestatuss = LeaveStatus.data;
 
-     // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
-    // const leaveallocate = leaveAllocate.data.leaveAllocationId;
+      // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+      // const leaveallocate = leaveAllocate.data.leaveAllocationId;
       setLeaveStatus(leavestatuss);
       //setLeaveAllocation(leaveallocate);
-      
     } catch (error) {
       console.error("Failed to fetch data: ", (error as Error).message);
     }
   };
 
-  const onLeaveApprove = async (appliedLeaveTypeId: number, statusCode : string) => {
+  const onLeaveApprove = async (
+    appliedLeaveTypeId: number,
+    statusCode: string
+  ) => {
     const isApproved = true;
     const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
 
@@ -178,19 +195,21 @@ function EmployeeAppliedLeave() {
   //   const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
   //   fetchData();
   // };
-  
+
   //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
   //const onLeaveDelete = (appliedLeaveTypeId: number) => {};
 
   //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
   //const onLeaveApprove = (appliedLeaveTypeId: number) => {};
 
-
-  console.log("Leave all", leaveAllocation)
-  const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
+  console.log("Leave all", leaveAllocation);
+  const onLeaveStatusUpdate = async (
+    appliedLeaveTypeId: number,
+    statusCode: string
+  ) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : leaveAllocation,
+      leaveAllocationId: leaveAllocation,
       statusCode: statusCode,
     });
     snackbar.showSnackbar(
@@ -201,7 +220,6 @@ function EmployeeAppliedLeave() {
     );
     FetchList();
   };
-
 
   useEffect(() => {
     fetchData(); // Call fetchData when the component mounts
@@ -214,7 +232,9 @@ function EmployeeAppliedLeave() {
             <Tooltip title="Approve">
               <IconButton
                 aria-label="Approve"
-                onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0,"APR")}
+                onClick={() =>
+                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "APR")
+                }
               >
                 <DoneOutlineOutlinedIcon color="success" />
               </IconButton>
@@ -222,7 +242,9 @@ function EmployeeAppliedLeave() {
             <Tooltip title="Reject">
               <IconButton
                 aria-label="Reject"
-                onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REJ")}
+                onClick={() =>
+                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REJ")
+                }
               >
                 <CancelPresentationOutlinedIcon color="error" />
               </IconButton>
@@ -239,52 +261,58 @@ function EmployeeAppliedLeave() {
           <></>
         );
       case "REC":
-          return (
-            // <IconButton color="primary">
-            //   <IconButton aria-label="Approve">
-            //     <EditAttributesOutlined />
-            //   </IconButton>
-            // </IconButton>
-            <></>
-          ); 
-          case "APC":
-            return (
-              // <IconButton color="primary">
-              //   <IconButton aria-label="Approve">
-              //     <EditAttributesOutlined />
-              //   </IconButton>
-              // </IconButton>
-              <></>
-            );
-            case "REJ":
-              return (
-                // <IconButton color="primary">
-                //   <IconButton aria-label="Approve">
-                //     <EditAttributesOutlined />
-                //   </IconButton>
-                // </IconButton>
-                <></>
-              );  
-                    
-      case "CAR" :
-        return(<Stack direction="row">
-        <Tooltip title="Approve Cancel Request">
-          <IconButton
-            aria-label="Approve Cancel Request"
-            onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0,"APC")}
-          >
-            <DoneAllOutlinedIcon color="success" />
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Reject Cancel Request">
-          <IconButton
-            aria-label="Reject Cancel Request"
-            onClick={() => onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REC")}
-          >
-            <CancelOutlinedIcon color="error" />
-          </IconButton>
-        </Tooltip>
-      </Stack>)  
+        return (
+          // <IconButton color="primary">
+          //   <IconButton aria-label="Approve">
+          //     <EditAttributesOutlined />
+          //   </IconButton>
+          // </IconButton>
+          <></>
+        );
+      case "APC":
+        return (
+          // <IconButton color="primary">
+          //   <IconButton aria-label="Approve">
+          //     <EditAttributesOutlined />
+          //   </IconButton>
+          // </IconButton>
+          <></>
+        );
+      case "REJ":
+        return (
+          // <IconButton color="primary">
+          //   <IconButton aria-label="Approve">
+          //     <EditAttributesOutlined />
+          //   </IconButton>
+          // </IconButton>
+          <></>
+        );
+
+      case "CAR":
+        return (
+          <Stack direction="row">
+            <Tooltip title="Approve Cancel Request">
+              <IconButton
+                aria-label="Approve Cancel Request"
+                onClick={() =>
+                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "APC")
+                }
+              >
+                <DoneAllOutlinedIcon color="success" />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Reject Cancel Request">
+              <IconButton
+                aria-label="Reject Cancel Request"
+                onClick={() =>
+                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REC")
+                }
+              >
+                <CancelOutlinedIcon color="error" />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        );
       case "APPROVED":
         return (
           <IconButton color="primary">
@@ -322,8 +350,8 @@ function EmployeeAppliedLeave() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data && data !== null
-            ? data.map((row: AppliedLeave, key) => {
+        {displayedData && displayedData !== null
+    ? displayedData.map((row: AppliedLeave, key) => {
                 // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
                 //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
 
@@ -363,19 +391,28 @@ function EmployeeAppliedLeave() {
         </TableBody>
       </Table>
       <Snackbar
-          open={snackbar.open}
-          autoHideDuration={snackbar.duration}
+        open={snackbar.open}
+        autoHideDuration={snackbar.duration}
+        onClose={snackbar.handleSnackbarClose}
+        anchorOrigin={snackbar.position}
+      >
+        <Alert
           onClose={snackbar.handleSnackbarClose}
-          anchorOrigin={snackbar.position}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={snackbar.handleSnackbarClose}
-            severity={snackbar.severity}
-            sx={{ width: "100%" }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      <TablePagination
+  rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
+  component="div"
+  count={data.length} // Pass the total number of rows
+  rowsPerPage={rowsPerPage}
+  page={page}
+  onPageChange={handleChangePage}
+  onRowsPerPageChange={handleChangeRowsPerPage}
+/>
     </TableContainer>
   );
 }
