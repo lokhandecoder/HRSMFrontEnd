@@ -208,12 +208,14 @@ function StatusTable() {
     appliedLeaveTypeId: number,
     statusCode: string
   ) => {
+
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
       leaveAllocationId: leaveAllocation,
       statusCode: statusCode,
     });
-    fetchData();
+
+    FetchList();
   };
 
   useEffect(() => {

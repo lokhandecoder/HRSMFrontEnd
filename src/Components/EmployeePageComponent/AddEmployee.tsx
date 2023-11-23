@@ -301,7 +301,7 @@ function AddEmployee() {
                         key={repPerson.employeeId}
                         value={repPerson.employeeId}
                       >
-                        {repPerson.firstName}
+                        {repPerson.firstName}  {repPerson.lastName} ({repPerson.emailAddress})
                       </MenuItem>
                     ))}
                   </Select>
