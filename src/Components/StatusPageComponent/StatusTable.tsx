@@ -187,7 +187,7 @@ function StatusTable() {
   const onLeaveStatusUpdate = async (appliedLeaveTypeId: number, statusCode: string) => {
     const data = await AppliedLeaveUpdateStatusAsync({
       appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId : leaveAllocation,
+      leaveAllocationId : 14,
       statusCode: statusCode,
     });
   };
