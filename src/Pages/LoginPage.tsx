@@ -53,10 +53,10 @@ export default function LoginPage() {
               margin="normal"
               required
               fullWidth
+              autoComplete="off"
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="email"
               autoFocus
               error={!!fieldErrors.email}
               value={formData.email}
@@ -70,7 +70,7 @@ export default function LoginPage() {
               label="Password"
               type="password"
               id="password"
-              autoComplete="current-password"
+              autoComplete="off"
               error={!!fieldErrors.password}
               value={formData.password}
               onChange={handleInputChange}
