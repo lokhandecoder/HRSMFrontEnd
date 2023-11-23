@@ -182,6 +182,18 @@ export const EmployeeUtilities = (employeeId: number) => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
     return emailRegex.test(email);
   };
+
+  // Function to check if the date is in the correct format (DD/MM/YYYY)
+const isDateFormatValid = (dateString:string) => {
+  const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/; // DD/MM/YYYY format
+  return dateFormatRegex.test(dateString);
+};
+
+// Function to check if the date is a valid date using Day.js
+const isValidDate = (dateString:string) => {
+  return dayjs(dateString, 'DD/MM/YYYY', true).isValid();
+};
+
   const isFormValid = () => {
     const {
       firstName,
@@ -199,45 +211,81 @@ export const EmployeeUtilities = (employeeId: number) => {
     const dateFormatRegex = /^\d{2}\/\d{2}\/\d{4}$/;
 
     // Date of Birth validation
-    if (dateOfBirth === null || dateOfBirth.toString() === "") {
-      setFieldErrors((prev) => ({
-        ...prev,
-        dateOfBirth: "Date of Birth is required",
-      }));
-      valid = false;
-    } else if (
-      !dayjs(dateOfBirth, { format: "DD/MM/YYYY" }).isValid() ||
-      !dateOfBirth.toString().match(dateFormatRegex)
-    ) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        dateOfBirth: "Invalid date format for Date of Birth (dd/mm/yyyy)",
-      }));
-      valid = false;
-    } else {
-      setFieldErrors((prev) => ({ ...prev, dateOfBirth: null }));
-      valid = true;
-    }
+    // if (dateOfBirth === null || dateOfBirth.toString() === "") {
+    //   setFieldErrors((prev) => ({
+    //     ...prev,
+    //     dateOfBirth: "Date of Birth is required",
+    //   }));
+    //   valid = false;
+    // } else if (
+    //   !dayjs(dateOfBirth, { format: "DD/MM/YYYY" }).isValid() ||
+    //   !dateOfBirth.toString().match(dateFormatRegex)
+    // ) {
+    //   setFieldErrors((prev) => ({
+    //     ...prev,
+    //     dateOfBirth: "Invalid date format for Date of Birth (dd/mm/yyyy)",
+    //   }));
+    //   valid = false;
+    // } else {
+    //   setFieldErrors((prev) => ({ ...prev, dateOfBirth: null }));
+    //   valid = true;
+    // }
 
     // Date of Joining validation
-    if (dateOfJoining === null || dateOfJoining.toString() === "") {
-      setFieldErrors((prev) => ({
-        ...prev,
-        dateOfJoining: "Date of Joining is required",
-      }));
-      valid = false;
-    } else if (
-      !dayjs(dateOfJoining, { format: "DD/MM/YYYY" }).isValid() ||
-      !dateOfJoining.toString().match(dateFormatRegex)
-    ) {
-      setFieldErrors((prev) => ({
-        ...prev,
-        dateOfJoining: "Invalid date format for Date of Joining (dd/mm/yyyy)",
-      }));
-      valid = false;
-    } else {
+    // if (dateOfJoining === null || dateOfJoining.toString() === "") {
+    //   setFieldErrors((prev) => ({
+    //     ...prev,
+    //     dateOfJoining: "Date of Joining is required",
+    //   }));
+    //   valid = false;
+    // } else if (
+    //   !dayjs(dateOfJoining, { format: "DD/MM/YYYY" }).isValid() ||
+    //   !dateOfJoining.toString().match(dateFormatRegex)
+    // ) {
+    //   setFieldErrors((prev) => ({
+    //     ...prev,
+    //     dateOfJoining: "Invalid date format for Date of Joining (dd/mm/yyyy)",
+    //   }));
+    //   valid = false;
+    // } else {
+    //   setFieldErrors((prev) => ({ ...prev, dateOfJoining: null }));
+    //   valid = true;
+    // }
+
+
+
+    const formatteddateOfJoining= dayjs(dateOfJoining).format('DD/MM/YYYY'); // Format the date
+    const isFormatValid = isDateFormatValid(formatteddateOfJoining);
+    const isValid = isValidDate(formatteddateOfJoining);
+
+    const formatteddateOfBirth= dayjs(dateOfBirth).format('DD/MM/YYYY'); // Format the date
+    const isFormatValiddob = isDateFormatValid(formatteddateOfBirth);
+    const isValiddob = isValidDate(formatteddateOfBirth);
+
+    //alert(formatteddateOfJoining);
+    
+    //alert(isFormatValid);
+    //alert(isValid);
+
+    if (isFormatValid && isValid) {
       setFieldErrors((prev) => ({ ...prev, dateOfJoining: null }));
-      valid = true;
+     // valid = true;
+    }else{
+        setFieldErrors((prev) => ({
+        ...prev,
+        dateOfJoining: "Invalid date format for Date of Joining (dd/mm/yyyy) Or " +  formatteddateOfJoining,
+      }));
+      valid = false;
+    }
+    if (isFormatValiddob && isValiddob) {
+      setFieldErrors((prev) => ({ ...prev, dateOfBirth: null }));
+     // valid = true;
+    }else{
+        setFieldErrors((prev) => ({
+        ...prev,
+        dateOfBirth: "Invalid date format for Date of Birth (dd/mm/yyyy) Or " +  formatteddateOfBirth,
+      }));
+      valid = false;
     }
 
     if (firstName.trim() === "") {
@@ -248,7 +296,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, firstName: null }));
-      valid = true;
+      //valid = true;
     }
 
     if (lastName.trim() === "") {
@@ -259,7 +307,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, lastName: null }));
-      valid = true;
+      //valid = true;
     }
     if (emailAddress.trim() === "") {
       setFieldErrors((prev) => ({
@@ -275,7 +323,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, emailAddress: null }));
-      valid = true;
+    //  valid = true;
     }
 
     if (mobileNo.trim() === "") {
@@ -283,7 +331,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, mobileNo: null }));
-      valid = true;
+     // valid = true;
     }
 
     if (genderId === 0) {
@@ -291,7 +339,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, genderId: null }));
-      valid = true;
+      //valid = true;
     }
 
     if (roleAssignId === 0) {
@@ -299,7 +347,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, roleAssignId: null}));
-      valid = true;
+     // valid = true;
     }
 
     if (reportingPersonId === 0) {
@@ -307,7 +355,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, reportingPersonId: null}));
-      valid = true;
+      //valid = true;
     }
 
 
@@ -319,7 +367,7 @@ export const EmployeeUtilities = (employeeId: number) => {
       valid = false;
     } else {
       setFieldErrors((prev) => ({ ...prev, designationId: null }));
-      valid = true;
+     // valid = true;
     }
 
     return valid;
