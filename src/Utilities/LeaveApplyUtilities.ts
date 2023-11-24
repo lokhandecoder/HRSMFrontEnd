@@ -150,6 +150,12 @@ const LeaveApplyUtilities = (
 
         }
       }
+      if (isPublicHoliday(startdate)) {
+        newErrors.startDate = 'Start date cannot be a public holiday.';
+      }
+      if (isPublicHoliday(enddate)) {
+        newErrors.endDate = 'End date cannot be a public holiday.';
+      }
     }
 
   
