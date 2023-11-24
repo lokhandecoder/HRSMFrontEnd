@@ -210,11 +210,11 @@ const LeaveApplyUtilities = (
     differenceInDays -= weekends;
     let finaldays = differenceInDays + 1;
 
-    if (differenceInDays ===0){
-      finaldays = differenceInDays + 1;
-    }else{
-      finaldays = differenceInDays ;
-    }
+    // if (differenceInDays ===0){
+    //   finaldays = differenceInDays + 1;
+    // }else{
+    //   finaldays = differenceInDays ;
+    // }
     if (startDate === 6) differenceInDays--;
     if (startDate === 0) differenceInDays--;
     if (endDate === 6) differenceInDays--;
@@ -228,7 +228,7 @@ const LeaveApplyUtilities = (
       //   ...prevFormData,
       //   difference: finaldays,
       // }));
-      console.log("diff: ", differenceInDays)
+      // console.log("diff: ", differenceInDays)
       console.log("Difference in days (excluding weekends):", finaldays);
     //  alert(finaldays);
       return finaldays;
