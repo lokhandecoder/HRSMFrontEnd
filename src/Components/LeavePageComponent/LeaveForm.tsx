@@ -11,7 +11,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import CircularProgress from "@mui/material/CircularProgress";
-import ClearIcon from '@mui/icons-material/Clear';
+import ClearIcon from "@mui/icons-material/Clear";
 import axios from "axios";
 import {
   GetEmployeeLeave,
@@ -41,12 +41,13 @@ import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import { EmployeeIDByLocalStorage } from "../../APIConfig";
 import { DecryptEmployeeID } from "../../Services/EncryptEmplyeeID";
 import LeavesCard from "../HomePageComponents/LeavesCard";
-
+import { Holiday } from "../HomePageComponents/UpcomingHolidays";
+import { GetHolidaysAsync } from "../../Services/HolidaysServices";
 
 dayjs.extend(utc); // Extend Dayjs with UTC plugin
 interface LeaveFormProps {
   onSubmit: (formData: LeaveFormData) => void;
- // employeeLeavesCount: any[];
+  // employeeLeavesCount: any[];
 }
 
 const employee = GetEmployeeLeave();
@@ -81,6 +82,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     isHalfDay: false,
   };
   const [formData, setFormData] = useState<LeaveFormData>(initialFormData);
+  // const [publicHolidaysList, setPublicHolidaysList] = useState<string[]>([]);
   const isWeekend = (date: Dayjs) => {
     const day = date.day();
 
@@ -88,14 +90,14 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   };
 
   const handleCancel = () => {
-    setFormData(initialFormData)
-  }
+    setFormData(initialFormData);
+  };
   // const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
   // const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
-  const [errors, setErrors] = useState<Partial<Record<keyof LeaveFormData, string>>>({});
-
-
+  const [errors, setErrors] = useState<
+    Partial<Record<keyof LeaveFormData, string>>
+  >({});
 
   const {
     handleSelectChange,
@@ -107,8 +109,10 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     loading,
     previousApplyLeave,
     leaveTypes,
-
     handleIsHalfDayChange,
+    publicHolidaysList,
+    isPublicHoliday,
+    
   } = LeaveApplyUtilities(
     formData,
     setFormData,
@@ -122,7 +126,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     setemployeeLeaves,
     errors,
     setErrors,
-    snackbar, initialFormData,
+    snackbar,
+    initialFormData,
   );
 
   useEffect(() => {
@@ -134,52 +139,14 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     formData.isHalfDay,
   ]);
 
-  
-
-  // const fetchData = async () => {
-  //   try {
-  //     const [leaveTypesData, employeeLeaveData] = await Promise.all([
-  //       getLeaveTypes(),
-  //       GetEmployeeLeaveByEmployeeId(),
-  //     ]);
-  //     const leaveTypes = leaveTypesData.data;
-  //     setLeaveTypes(leaveTypes);
-  //     const employeeLeave = employeeLeaveData.data;
-  //     setemployeeLeaves(employeeLeave);
-     
-  //     if (formData.appliedLeaveTypeId > 0) {
-  //       const applyLeaveId = formData.appliedLeaveTypeId; // Replace with the actual apply leave ID
-  //       const applyLeaveData = await GetApplyLeaveById(applyLeaveId);
-  //       const applyLeaveTemp = applyLeaveData.data;
-       
-  //       setFormData(prevFormData => ({
-  //         ...prevFormData,
-  //         appliedLeaveTypeId: applyLeaveTemp.appliedLeaveTypeId,
-  //         leaveTypeId: applyLeaveTemp.leaveTypeId,
-  //         leaveType: applyLeaveTemp.leaveType,
-  //         startDate: applyLeaveTemp.startDate,
-  //         endDate: applyLeaveTemp.endDate,
-  //         leaveReason: applyLeaveTemp.leaveReason,
-  //         applyLeaveDay: applyLeaveTemp.applyLeaveDay,
-  //         leaveStatusId: applyLeaveTemp.leaveStatusId,
-  //         employeeId: applyLeaveTemp.employeeId,
-  //         isHalfDay: applyLeaveTemp.isHalfDay,
-         
-  //       }));
-  //       setPreviousApplyLeave(applyLeaveTemp.applyLeaveDay);
-  //       /*Tedst  asd*/
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to fetch data: ", (error as Error).message);
-  //   }
-  // };
-
 
   return (
     <>
       <form onSubmit={handleSubmit}>
         <Card sx={{ minWidth: 275, mt: 5, boxShadow: 5 }}>
-          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Apply for Leave</h1>
+          <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>
+            Apply for Leave
+          </h1>
           <CardContent>
             <Box sx={{ width: "100%" }}>
               <Grid
@@ -233,7 +200,9 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                       <FormControl fullWidth error={!!errors.startDate}>
                         <DatePicker
                           label="Start Date"
-                          shouldDisableDate={isWeekend}
+                          shouldDisableDate={(date) =>
+                            isWeekend(date) || isPublicHoliday(date.toDate())
+                          }
                           value={
                             formData.startDate
                               ? dayjs.utc(formData.startDate)
@@ -268,7 +237,9 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                       <FormControl fullWidth error={!!errors.endDate}>
                         <DatePicker
                           label="End Date"
-                          shouldDisableDate={isWeekend}
+                          shouldDisableDate={(date) =>
+                            isWeekend(date) || isPublicHoliday(date.toDate())
+                          }
                           value={
                             formData.endDate
                               ? dayjs.utc(formData.endDate)
@@ -292,7 +263,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                   </LocalizationProvider>
                 </Grid>
 
-
                 <Grid item xs={12} sm={4} md={3} lg={2}>
                   <TextField
                     sx={{ mt: 1 }}
@@ -305,7 +275,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                   />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
-                  <TextField error={!!errors.applyLeaveDay}
+                  <TextField
+                    error={!!errors.applyLeaveDay}
                     sx={{ mt: 1 }}
                     id="AppliedLeaves"
                     name="AppliedLeaves"
@@ -314,7 +285,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                     disabled
                     value={formData.applyLeaveDay}
                     fullWidth
-                    helperText={errors.applyLeaveDay || ''}
+                    helperText={errors.applyLeaveDay || ""}
                   />
                 </Grid>
                 <Grid item xs={12} sm={4} md={3} lg={2}>
@@ -331,7 +302,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                 </Grid>
               </Grid>
             </Box>
-            <TextField error={!!errors.leaveReason}
+            <TextField
+              error={!!errors.leaveReason}
               sx={{ mt: 1 }}
               id="leaveReason"
               name="leaveReason"
@@ -340,8 +312,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               rows={4}
               value={formData.leaveReason}
               onChange={handleInputChange}
-              helperText={errors.leaveReason || ''}
-
+              helperText={errors.leaveReason || ""}
               fullWidth
             />
           </CardContent>
@@ -398,8 +369,6 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
           </Alert>
         </Snackbar>
       </form>
-
-
     </>
   );
 };

@@ -10,6 +10,8 @@ import { GetApplyLeaveById, createLeaveApply, updateLeaveApply } from "../Servic
 import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
 import { getLeaveTypes } from "../Services/LeaveType";
 import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices";
+import { GetHolidaysAsync } from "../Services/HolidaysServices";
+import dayjs from "dayjs"; // Import dayjs library
 
 
 
@@ -31,8 +33,54 @@ const LeaveApplyUtilities = (
   const [loading, setLoading] = useState(false);
   const [previousApplyLeave, setPreviousApplyLeave] = useState(0);
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [publicHolidaysList, setPublicHolidaysList] = useState<string[]>([]);
 
-  
+
+  // const FetchHolidayList = async () => {
+  //   try {
+  //     const fetchData = await GetHolidaysAsync();
+  //     const fetched = fetchData.data;
+  //     if (Array.isArray(fetched)) {
+  //       const holidayDates: string[] = fetched.map((holiday) => {
+  //         const date = new Date(holiday.holidayDate);
+  //         return date.toISOString().split("T")[0];
+  //       });
+  //       console.log("Holiday Dates (yyyy-mm-dd):", holidayDates);
+  //       setPublicHolidaysList(holidayDates);
+  //     } else {
+  //       console.error("Invalid holidays data.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching leave types:", (error as Error).message);
+  //   }
+  // };
+  const FetchHolidayList = async () => {
+    try {
+      const fetchData = await GetHolidaysAsync();
+      const fetched = fetchData.data;
+      if (Array.isArray(fetched)) {
+        const holidayDates = fetched.map((holiday) => {
+          const date = dayjs(holiday.holidayDate); // Create a dayjs object from the holiday date
+          return date.format("YYYY-MM-DD"); // Format the date to "YYYY-MM-DD"
+        });
+        console.log("Holiday Dates (yyyy-mm-dd):", holidayDates);
+        setPublicHolidaysList(holidayDates);
+      } else {
+        console.error("Invalid holidays data.");
+      }
+    } catch (error) {
+      console.error("Error fetching leave types:", (error as Error).message);
+    }
+  };
+
+
+  const isPublicHoliday = (date: Date) => {
+    // Convert the input date to a comparable format (e.g., YYYY-MM-DD)
+    const dateString = date.toISOString().split("T")[0];
+
+    // Check if the date is present in the public holidays list
+    return publicHolidaysList.some((holiday) => holiday === dateString);
+  };
 
 
 
@@ -195,45 +243,80 @@ const LeaveApplyUtilities = (
     const balance =balanceLeave ? balanceLeave.balanceLeaves : 0;
     return balance;
   };
-  const differenceChecker = () => {
-    const date1 = new Date(formData.startDate);
-    const date2 = new Date(formData.endDate);
-    const differenceInMilliseconds = Math.abs(
-      date2.getTime() - date1.getTime()
-    );
-    let differenceInDays = Math.ceil(
-      differenceInMilliseconds / (1000 * 3600 * 24)
-    );
-    const startDate = date1.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
-    const endDate = date2.getDay();
-    const weekends = Math.floor((differenceInDays + startDate) / 7) * 2;
-    differenceInDays -= weekends;
-    let finaldays = differenceInDays + 1;
+  // const differenceChecker = () => {
+  //   const date1 = new Date(formData.startDate);
+  //   const date2 = new Date(formData.endDate);
+  //   const differenceInMilliseconds = Math.abs(
+  //     date2.getTime() - date1.getTime()
+  //   );
+  //   let differenceInDays = Math.ceil(
+  //     differenceInMilliseconds / (1000 * 3600 * 24)
+  //   );
+  //   const startDate = date1.getDay(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+  //   const endDate = date2.getDay();
+  //   const weekends = Math.floor((differenceInDays + startDate) / 7) * 2;
+  //   differenceInDays -= weekends;
+  //   let finaldays = differenceInDays + 1;
 
-    // if (differenceInDays ===0){
-    //   finaldays = differenceInDays + 1;
-    // }else{
-    //   finaldays = differenceInDays ;
-    // }
-    if (startDate === 6) differenceInDays--;
-    if (startDate === 0) differenceInDays--;
-    if (endDate === 6) differenceInDays--;
-    if (differenceInDays < 0) differenceInDays = 0;
-    if (formData.startDate > formData.endDate) {
+  //   // if (differenceInDays ===0){
+  //   //   finaldays = differenceInDays + 1;
+  //   // }else{
+  //   //   finaldays = differenceInDays ;
+  //   // }
+  //   if (startDate === 6) differenceInDays--;
+  //   if (startDate === 0) differenceInDays--;
+  //   if (endDate === 6) differenceInDays--;
+  //   if (differenceInDays < 0) differenceInDays = 0;
+  //   if (formData.startDate > formData.endDate) {
+  //     return 0;
+  //   } else {
+    
+  //     setdifference(finaldays);
+  //     // setFormData((prevFormData: LeaveFormData) => ({
+  //     //   ...prevFormData,
+  //     //   difference: finaldays,
+  //     // }));
+  //     // console.log("diff: ", differenceInDays)
+  //     console.log("Difference in days (excluding weekends):", finaldays);
+  //   //  alert(finaldays);
+  //     return finaldays;
+  //   }
+  // };
+
+  const differenceChecker = () => {
+    const date1 = dayjs(formData.startDate);
+    const date2 = dayjs(formData.endDate);
+    const differenceInDays = date2.diff(date1, 'day') + 1; // Including both start and end days
+    const startDate = date1.day(); // 0 for Sunday, 1 for Monday, ..., 6 for Saturday
+    const endDate = date2.day();
+  
+    // Calculate weekends between the dates
+    const weekends = Math.floor((differenceInDays + startDate - 1) / 7) * 2;
+    
+    // Calculate the number of public holidays between the start and end dates
+    const publicHolidaysBetween = Array.from({ length: differenceInDays }, (_, index) =>
+      date1.add(index, 'day')
+    ).filter(date => isPublicHoliday(date.toDate()));
+  
+    const publicHolidaysCount = publicHolidaysBetween.length;
+  
+    // Calculate final days excluding weekends and public holidays
+    let finaldays = differenceInDays - weekends - publicHolidaysCount;
+  
+    // Adjust for specific start and end dates if necessary
+    if (startDate === 0 || startDate === 6) finaldays--;
+    if (endDate === 6) finaldays--;
+  
+    if (formData.startDate > formData.endDate || finaldays < 0) {
       return 0;
     } else {
-    
       setdifference(finaldays);
-      // setFormData((prevFormData: LeaveFormData) => ({
-      //   ...prevFormData,
-      //   difference: finaldays,
-      // }));
-      // console.log("diff: ", differenceInDays)
-      console.log("Difference in days (excluding weekends):", finaldays);
-    //  alert(finaldays);
+      console.log("Difference in days (excluding weekends and public holidays):", finaldays);
       return finaldays;
     }
   };
+  
+  
 
   
 
@@ -324,6 +407,7 @@ const LeaveApplyUtilities = (
   useEffect(() => {
 
     fetchData();
+    FetchHolidayList();
   }, []);
 
 
@@ -341,6 +425,8 @@ const LeaveApplyUtilities = (
     differenceChecker,
     previousApplyLeave,
     leaveTypes,
+    publicHolidaysList,
+    isPublicHoliday,
 
     // ValidateEmployeeById,
     handleIsHalfDayChange
