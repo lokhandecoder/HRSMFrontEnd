@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
 import dayjs, { Dayjs } from "dayjs";
+import CircularProgress from "@mui/material/CircularProgress";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -40,7 +41,10 @@ function AccountingYear() {
     isWeekend,
     handleTextFieldChange,
     handleSubmit,
+    loading,
     snackbar,
+    startDateFinancialYear,
+    endDateFinancialYear,
   } = Accountingyear;
 
   return (
@@ -63,6 +67,7 @@ function AccountingYear() {
                       <FormControl fullWidth>
                         <DatePicker
                           label="Start Date"
+                          minDate={endDateFinancialYear ? dayjs(endDateFinancialYear) : undefined}
                           shouldDisableDate={isWeekend}
                           value={dayjs(formData.financialYear.startDate)} // Convert string to Dayjs object
                           onChange={(date) => handleChange("startDate", date)}
@@ -78,6 +83,7 @@ function AccountingYear() {
                         <DatePicker
                           label="End Date"
                           shouldDisableDate={isWeekend}
+                          minDate={endDateFinancialYear ? dayjs(endDateFinancialYear) : undefined}
                           value={dayjs(formData.financialYear.endDate)} // Convert string to Dayjs object
                           onChange={(date) => handleChange("endDate", date)}
                         />
@@ -148,13 +154,21 @@ function AccountingYear() {
               size="large"
               variant="contained"
               color="primary"
+              disabled={loading} // Disable the button when loading
+
             >
-              Save
+             {loading ? (
+              <div>
+                Please wait...
+                <CircularProgress size={24} />
+              </div>
+            ) : (
+              "Save"
+            )}
             </Button>
           </CardActions>
         </Card>
-      </form>
-      <Snackbar
+        <Snackbar
         open={snackbar.open}
         autoHideDuration={snackbar.duration}
         onClose={snackbar.handleSnackbarClose}
@@ -168,6 +182,8 @@ function AccountingYear() {
           {snackbar.message}
         </Alert>
       </Snackbar>
+      </form>
+      
     </LayoutComponent>
   );
 }

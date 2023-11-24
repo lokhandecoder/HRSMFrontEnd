@@ -7,11 +7,19 @@ import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
 import dayjs, { Dayjs } from "dayjs";
 import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices";
 import { API_URL } from "../APIConfig";
+import { GetActiveFinancialYearsAsync } from "../Services/FinancialyearServices";
+import { FinancialYearModel } from "../Model/FinancialYearModel";
 
 export const AccountingYearUtilities = () => {
   const snackbar = useCustomSnackbar();
   const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  const [loading, setLoading] = useState(false);
   const [employeeLeaves, setemployeeLeaves] = useState<EmployeeLeave[]>([]);
+  const [startDateFinancialYear, setStartDateFinancialYear] =
+    useState<Date | null>(null);
+  const [endDateFinancialYear, setEndDateFinancialYear] = useState<Date | null>(
+    null
+  );
   //   const [formData, setFormData] = useState<{
   //     startDate: string;
   //     endDate: string;
@@ -23,6 +31,35 @@ export const AccountingYearUtilities = () => {
   //     endDate: "",
   //     leavetype: {},
   //   });
+  const FetchFinancialYear = async () => {
+    try {
+      const fetchData = await GetActiveFinancialYearsAsync();
+      const fetched = fetchData.data;
+      if (Array.isArray(fetched)) {
+        const formattedDates: FinancialYearModel[] = fetched.map(
+          (financialYear) => {
+            const startDate = dayjs(financialYear.startDate).toDate(); // Convert to Date object
+            const endDate = dayjs(financialYear.endDate).toDate(); // Convert to Date object
+
+            return {
+              financialYearId: financialYear.financialYearId, // Replace with the actual financialYearId
+              startDate: startDate,
+              endDate: endDate,
+              activeYear: financialYear.activeYear, // Replace with the actual activeYear
+            };
+          }
+        );
+
+        console.log("format date", formattedDates);
+        setStartDateFinancialYear(formattedDates[0].startDate);
+        setEndDateFinancialYear(formattedDates[0].endDate);
+      } else {
+        console.error("Invalid financial year data.");
+      }
+    } catch (error) {
+      console.error("Error fetching financial year:", (error as Error).message);
+    }
+  };
   const [formData, setFormData] = useState<{
     financialYear: {
       startDate: string;
@@ -49,8 +86,8 @@ export const AccountingYearUtilities = () => {
       value === null
         ? ""
         : typeof value === "string"
-          ? value
-          : value.format("YYYY-MM-DD");
+        ? value
+        : value.format("YYYY-MM-DD");
 
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -82,7 +119,8 @@ export const AccountingYearUtilities = () => {
     const newValue = e.target.value;
 
     // Convert the value to a number if the fieldName is a number
-    const numericValue = typeof fieldName === 'number' ? parseInt(newValue, 10) : newValue;
+    const numericValue =
+      typeof fieldName === "number" ? parseInt(newValue, 10) : newValue;
 
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -93,12 +131,8 @@ export const AccountingYearUtilities = () => {
     }));
   };
 
-
-
-
-
-
   const handleSubmit = (event: React.FormEvent) => {
+    setLoading(true);
     event.preventDefault();
     console.log("Form submitted with data:", formData);
 
@@ -121,9 +155,21 @@ export const AccountingYearUtilities = () => {
               { vertical: "top", horizontal: "center" },
               5000
             );
+            setLoading(false);
           }
-          // Check if the response indicates an error
+          if (res.data && res.data.status === 200) {
+            const errorMessage = res.data.message || "All Set Accounting Year";
 
+            snackbar.showSnackbar(
+              errorMessage,
+              "success",
+              { vertical: "top", horizontal: "center" },
+              5000
+            );
+            setLoading(false);
+          }
+
+          // Check if the response indicates an error
         } else {
           // Assume success
           snackbar.showSnackbar(
@@ -132,6 +178,7 @@ export const AccountingYearUtilities = () => {
             { vertical: "top", horizontal: "center" },
             5000
           );
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -148,30 +195,26 @@ export const AccountingYearUtilities = () => {
           { vertical: "top", horizontal: "center" },
           5000
         );
+        setLoading(false);
       });
   };
-
-
-
-
-
+  const fetchData = async () => {
+    try {
+      const [leaveTypesData, employeeLeaveData] = await Promise.all([
+        getLeaveTypes(),
+        GetEmployeeLeaveByEmployeeId(),
+      ]);
+      const leaveTypes = leaveTypesData.data;
+      setLeaveTypes(leaveTypes);
+      const employeeLeave = employeeLeaveData.data;
+      setemployeeLeaves(employeeLeave);
+    } catch (error) {
+      console.error("Failed to fetch data: ", (error as Error).message);
+    }
+  };
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [leaveTypesData, employeeLeaveData] = await Promise.all([
-          getLeaveTypes(),
-          GetEmployeeLeaveByEmployeeId(),
-        ]);
-        const leaveTypes = leaveTypesData.data;
-        setLeaveTypes(leaveTypes);
-        const employeeLeave = employeeLeaveData.data;
-        setemployeeLeaves(employeeLeave);
-      } catch (error) {
-        console.error("Failed to fetch data: ", (error as Error).message);
-      }
-    };
-
     fetchData();
+    FetchFinancialYear();
   }, []);
 
   return {
@@ -182,6 +225,10 @@ export const AccountingYearUtilities = () => {
     isWeekend,
     handleTextFieldChange,
     handleSubmit,
+    loading,
     snackbar,
+    startDateFinancialYear,
+    endDateFinancialYear,
+
   };
 };
