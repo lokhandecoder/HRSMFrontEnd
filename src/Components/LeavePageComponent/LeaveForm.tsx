@@ -112,6 +112,9 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     handleIsHalfDayChange,
     publicHolidaysList,
     isPublicHoliday,
+    startDateFinancialYear,
+    endDateFinancialYear,
+
     
   } = LeaveApplyUtilities(
     formData,
@@ -200,6 +203,8 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                       <FormControl fullWidth error={!!errors.startDate}>
                         <DatePicker
                           label="Start Date"
+                          minDate={startDateFinancialYear ? dayjs(startDateFinancialYear) : undefined}
+                          maxDate={endDateFinancialYear ? dayjs(endDateFinancialYear) : undefined}
                           shouldDisableDate={(date) =>
                             isWeekend(date) || isPublicHoliday(date.toDate())
                           }
@@ -237,8 +242,11 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
                       <FormControl fullWidth error={!!errors.endDate}>
                         <DatePicker
                           label="End Date"
+                          // minDate={}
+                          minDate={startDateFinancialYear ? dayjs(startDateFinancialYear) : undefined}
+                          maxDate={endDateFinancialYear ? dayjs(endDateFinancialYear) : undefined}
                           shouldDisableDate={(date) =>
-                            isWeekend(date) || isPublicHoliday(date.toDate())
+                            isWeekend(date) || isPublicHoliday(date.toDate()) 
                           }
                           value={
                             formData.endDate
