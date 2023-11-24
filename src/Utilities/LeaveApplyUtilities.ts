@@ -42,8 +42,11 @@ const LeaveApplyUtilities = (
   const [financialYearDates, setFinancialYearDates] = useState<
     FinancialYearModel[]
   >([]);
-  const [startDateFinancialYear, setStartDateFinancialYear] = useState<Date | null>(null);
-  const [endDateFinancialYear, setEndDateFinancialYear] = useState<Date | null>(null);
+  const [startDateFinancialYear, setStartDateFinancialYear] =
+    useState<Date | null>(null);
+  const [endDateFinancialYear, setEndDateFinancialYear] = useState<Date | null>(
+    null
+  );
 
   const FetchHolidayList = async () => {
     try {
@@ -73,7 +76,7 @@ const LeaveApplyUtilities = (
           (financialYear) => {
             const startDate = dayjs(financialYear.startDate).toDate(); // Convert to Date object
             const endDate = dayjs(financialYear.endDate).toDate(); // Convert to Date object
-   
+
             return {
               financialYearId: financialYear.financialYearId, // Replace with the actual financialYearId
               startDate: startDate,
@@ -87,7 +90,6 @@ const LeaveApplyUtilities = (
         setFinancialYearDates(formattedDates);
         setStartDateFinancialYear(formattedDates[0].startDate);
         setEndDateFinancialYear(formattedDates[0].endDate);
-
       } else {
         console.error("Invalid financial year data.");
       }
@@ -100,6 +102,31 @@ const LeaveApplyUtilities = (
     const dateString = date.toISOString().split("T")[0];
     return publicHolidaysList.some((holiday) => holiday === dateString);
   };
+
+  const verifyStartdateFinancialYear = (date: Date) => {
+    console.log("provided date", date);
+    console.log("financail year date ", startDateFinancialYear);
+  };
+
+  // const isPublicHolidayForFinancialYear = (date: Date | null) => {
+  //   if (date === null) {
+  //     return false; // Handle null case as needed
+  //   }
+
+  //   const dateString = date.toISOString().split("T")[0];
+
+  //   // Ensure startDateFinancialYear is an array before using some()
+  //   if (Array.isArray(startDateFinancialYear)) {
+  //     return startDateFinancialYear.some((holiday) => {
+  //       if (holiday instanceof Date) {
+  //         return holiday.toISOString().split("T")[0] === dateString;
+  //       }
+  //       return false;
+  //     });
+  //   }
+
+  //   return false;
+  // };
 
   const handleSubmit = async (event: React.FormEvent) => {
     setLoading(true);
@@ -162,6 +189,34 @@ const LeaveApplyUtilities = (
       }
       if (isPublicHoliday(enddate)) {
         newErrors.endDate = "End date cannot be a public holiday.";
+      }
+      if (
+        startDateFinancialYear &&
+        endDateFinancialYear &&
+        startdate < startDateFinancialYear
+      ) {
+        newErrors.startDate =
+          "Start date is before the financial year start date.";
+      } else if (
+        startDateFinancialYear &&
+        endDateFinancialYear &&
+        startdate > endDateFinancialYear
+      ) {
+        newErrors.startDate =
+          "Start date is after the financial year end date.";
+      }
+      if (
+        startDateFinancialYear &&
+        endDateFinancialYear &&
+        enddate < startDateFinancialYear
+      ) {
+        newErrors.endDate = "End date is before the financial year start date.";
+      } else if (
+        startDateFinancialYear &&
+        endDateFinancialYear &&
+        enddate > endDateFinancialYear
+      ) {
+        newErrors.endDate = "End date is after the financial year end date.";
       }
     }
 
