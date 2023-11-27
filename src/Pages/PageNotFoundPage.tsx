@@ -6,7 +6,7 @@ function PageNotFoundPage() {
 
   const navigate = useNavigate();
   const handleLogin = () => {
-    navigate("/login");
+    window.location.href = "/login";
   }
   return (
     <>
