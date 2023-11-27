@@ -11,7 +11,11 @@ import { AppliedLeaveUpdateStatus } from "../Model/AppliedLeaveModel";
 export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ data: LeaveFormData }> {
 
     try {
-      const response = await axios.get<{data:LeaveFormData}>(`${API_URL}appliedLeave/GetAppliedLeaveByIdAsync/${appliedLeaveTypeId}`);
+      const response = await axios.get<{data:LeaveFormData}>(`${API_URL}appliedLeave/GetAppliedLeaveByIdAsync/${appliedLeaveTypeId}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch leave data: ' + (error as Error).message);
@@ -20,7 +24,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
 
   export async function createLeaveApply(leaveForm: LeaveFormData): Promise<any> {
     try {
-      const response = await axios.post(`${API_URL}appliedLeave/CreateAppliedLeaveAsync`, leaveForm);
+      const response = await axios.post(`${API_URL}appliedLeave/CreateAppliedLeaveAsync`, leaveForm,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -29,7 +37,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   }
   export async function updateLeaveApply(id: number, leaveForm: LeaveFormData): Promise<any> {
     try {
-      const response = await axios.put(`${API_URL}appliedLeave/UpdateAppliedLeaveAsync/${id}`, leaveForm);
+      const response = await axios.put(`${API_URL}appliedLeave/UpdateAppliedLeaveAsync/${id}`, leaveForm,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -37,7 +49,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   }
   export async function GetAppliedLeavesAsync(): Promise<any> {
     try {
-      const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesAsync`);
+      const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesAsync`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -47,7 +63,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
     try {
       const empID = DecryptEmployeeID();
      // const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByReportingPersonIdAsync/${empID}`);
-     const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByEmpIdAsync/${empID}`);
+     const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByEmpIdAsync/${empID}`,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -58,7 +78,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
     try {
       //const empID = DecryptEmployeeID();
      // const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByReportingPersonIdAsync/${empID}`);
-     const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByReportingPersonIdAsync/${reportingPersonId}`);
+     const response = await axios.get(`${API_URL}appliedLeave/GetAppliedLeavesByReportingPersonIdAsync/${reportingPersonId}`,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -67,7 +91,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
 
   export async function updateLeaveStatus(id: number, leaveForm: LeaveFormData): Promise<any> {
     try {
-      const response = await axios.put(`${API_URL}UpdateAppliedLeaveAsync/${id}`, leaveForm);
+      const response = await axios.put(`${API_URL}UpdateAppliedLeaveAsync/${id}`, leaveForm,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -76,7 +104,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
 
   export async function UpdateIsRejectedAsync(appliedLeaveTypeId: number, isRejected: boolean): Promise<any> {
     try {
-      const response = await axios.get(`${API_URL}AppliedLeave/UpdateIsRejectedAsync/${appliedLeaveTypeId}/${isRejected}`);
+      const response = await axios.get(`${API_URL}AppliedLeave/UpdateIsRejectedAsync/${appliedLeaveTypeId}/${isRejected}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -86,7 +118,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   export async function UpdateIsApprovedAsync(appliedLeaveTypeId: number, isApproved: boolean): Promise<any> {
     try {
      
-      const response = await axios.get(`${API_URL}AppliedLeave/UpdateIsApprovedAsync/${appliedLeaveTypeId}/${isApproved}`);
+      const response = await axios.get(`${API_URL}AppliedLeave/UpdateIsApprovedAsync/${appliedLeaveTypeId}/${isApproved}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -95,7 +131,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
 
   export async function UpdateIsApprovedCancelAsync(appliedLeaveTypeId: number, isApproved: boolean): Promise<any> {
     try {
-      const response = await axios.put(`${API_URL}AppliedLeave/UpdateIsApprovedCancelAsync/${appliedLeaveTypeId}/${isApproved}`);
+      const response = await axios.put(`${API_URL}AppliedLeave/UpdateIsApprovedCancelAsync/${appliedLeaveTypeId}/${isApproved}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -104,7 +144,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
 
   export async function AppliedLeaveUpdateStatusAsync(updateStatus: AppliedLeaveUpdateStatus): Promise<any> {
     try {
-      const response = await axios.post(`${API_URL}appliedLeave/AppliedLeaveUpdateStatusAsync`, updateStatus);
+      const response = await axios.post(`${API_URL}appliedLeave/AppliedLeaveUpdateStatusAsync`, updateStatus,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       console.log(response.data);
       return response.data;
     } catch (error) {
