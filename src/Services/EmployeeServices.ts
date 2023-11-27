@@ -20,7 +20,11 @@ export const createEmployee = async (employeeData: EmployeeModel) => {
 
     const response = await axios.post(
       `${API_URL}Employee/CreateEmployeeAsync`,
-      employeeData
+      employeeData,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      }
     );
 
     return response.data; // Assuming response contains the actual data
@@ -51,7 +55,11 @@ export const updateEmployee = async (employeeData: EmployeeModel) => {
 
     const response = await axios.post(
       `${API_URL}Employee/UpdateEmployeeAsync`,
-      employeeData
+      employeeData,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      }
     );
 
     return response.data; // Assuming response contains the actual data
