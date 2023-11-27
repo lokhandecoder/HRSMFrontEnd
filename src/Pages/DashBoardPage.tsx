@@ -18,7 +18,7 @@ function DashBoardPage() {
           <Grid item xs={8}>
             <ProfileCard />
             {/* <ProfileCard /> */}
-            {/* <LeavesCard /> */}
+            <LeavesCard />
           </Grid>
           <Grid item xs={4}>
             <UpcomingHolidays />

@@ -37,7 +37,7 @@ function  LeavesCard() {
   }, []);
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, mt : 2 }}>
       <Grid container spacing={2}>
         {leaveTypes.map((leaveType, key) => {
           const matchingEmployeeLeave = employeeLeaves && employeeLeaves.find(
