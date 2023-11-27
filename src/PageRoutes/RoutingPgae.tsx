@@ -128,7 +128,7 @@ function RoutingPgae() {
                     // Handle the case where the component mapping failed
                     return null;
                   })}
-              <Route path="/roleassign" element={<RoleAssign />} />
+              {/* <Route path="/roleassign" element={<RoleAssign />} /> */}
               <Route
                 path="/appliedleavestatus/:code"
                 element={<AppliedLeaveUpdateStatusEmail />}

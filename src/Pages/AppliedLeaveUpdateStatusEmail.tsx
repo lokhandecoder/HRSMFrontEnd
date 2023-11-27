@@ -17,6 +17,7 @@ const AppliedLeaveUpdateStatusEmail = () => {
   const [data, setData] = useState({ status: 200, message: "" }); // Specify the type for data
   //const [count, setCount] = useState(0);
   const [confrim, setConfrim] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const renderAfterCalled = useRef(false);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ const AppliedLeaveUpdateStatusEmail = () => {
       );
       setData(receivedData);
       //setCount(1);
+
       renderAfterCalled.current = true;
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -39,20 +41,26 @@ const AppliedLeaveUpdateStatusEmail = () => {
   };
   const handleConfirm = async () => {
     try {
+      setLoading(true); // Hide loader after confirmation
       const receivedData = await AppliedLeaveUpdateStatusByEmailConfirmAsync(
         code || ""
       );
       setData(receivedData);
       //setCount(1);
       setConfrim(true);
+
       renderAfterCalled.current = true;
     } catch (error) {
       console.error("Error fetching data:", error);
+      setLoading(false); // Hide loader after confirmation
+
+    } finally {
+      setLoading(false); // Hide loader after confirmation
     }
   };
 
   return (
-    <div style={{ ...styles.container, backgroundColor: '#85a4a6' }}>
+    <div style={{ ...styles.container, backgroundColor: "#85a4a6" }}>
       {confrim && confrim ? (
         // <div>{data?.message}</div>
         <Card
@@ -88,7 +96,6 @@ const AppliedLeaveUpdateStatusEmail = () => {
             justifyContent: "center",
             alignItems: "center",
             padding: 5,
-
           }}
         >
           <CardContent sx={{ textAlign: "center" }}>
@@ -101,8 +108,12 @@ const AppliedLeaveUpdateStatusEmail = () => {
             </Typography>
           </CardContent>
           <CardActions sx={{ justifyContent: "center" }}>
-            <button style={styles.button} onClick={handleConfirm}>
-              Yes
+            <button
+              style={styles.button}
+              onClick={handleConfirm}
+              disabled={isLoading}
+            >
+              {isLoading ? "Loading..." : "Yes"}
             </button>
           </CardActions>
         </Card>
