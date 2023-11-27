@@ -145,6 +145,10 @@ function RoutingPgae() {
               <Route path="/updatepassword/:id" element={<UpdatePassword />} />
               <Route path="/leaveapproved" element={<LeaveApprovedPage />} />
               <Route path="/404NOtFound" element={<PageNotFoundPage />} />
+              <Route
+                path="/appliedleavestatus/:code"
+                element={<AppliedLeaveUpdateStatusEmail />}
+              />
             </>
           )}
         </Routes>
