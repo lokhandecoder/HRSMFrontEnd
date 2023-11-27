@@ -68,6 +68,7 @@ export const LoginPageUtilities = () => {
             const roleAssignId = response.data.data.roleAssignId.toString();
             const encryptedEmployeeId = encryptData(employeeId, secretKey_global);
             localStorage.setItem("EmployeeID", encryptedEmployeeId);
+            localStorage.setItem("Token", response.data.data.token);
           // alert(JSON.stringify(response.data.data));
 
 

@@ -1,4 +1,4 @@
-import { API_URL, EmployeeIDByLocalStorage } from "../APIConfig";
+import { API_URL, EmployeeIDByLocalStorage, TokenByLocalStorage } from "../APIConfig";
 import { LeaveFormData } from "../Model/LeaveFormData";import axios from "axios";
 import { DecryptEmployeeID } from "./EncryptEmplyeeID";
 import { AppliedLeaveUpdateStatus } from "../Model/AppliedLeaveModel";
@@ -125,7 +125,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   export async function AppliedLeaveUpdateStatusByEmailAsync(code: string): Promise<any> {
     try {
      
-      const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailAsync/${code}`);
+      const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailAsync/${code}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -134,7 +138,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   export async function AppliedLeaveUpdateStatusByEmailConfirmAsync(code: string): Promise<any> {
     try {
      
-      const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailConfirmAsync/${code}`);
+      const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailConfirmAsync/${code}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
@@ -145,7 +153,11 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
   export async function DeleteAppliedLeaveByIdAsync(id: number): Promise<{ data: any }> {
 
     try {
-      const response = await axios.delete(`${API_URL}appliedLeave/DeleteAppliedLeaveByIdAsync/${id}`);
+      const response = await axios.delete(`${API_URL}appliedLeave/DeleteAppliedLeaveByIdAsync/${id}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch leave data: ' + (error as Error).message);

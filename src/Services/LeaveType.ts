@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { LeaveType } from '../Database/LeaveType';
 import { LeaveStatus } from '../Model/LeaveStatus';
-import { API_URL } from '../APIConfig';
+import { API_URL, TokenByLocalStorage } from '../APIConfig';
 
 
 //https://leaveapplication14.azurewebsites.net/api/LeaveType/GetAllLeaveTypes
@@ -17,7 +17,11 @@ import { API_URL } from '../APIConfig';
 export async function getLeaveTypes(): Promise<{ data: LeaveType[] }> {
   try {
   //  const response = await axios.get<LeaveType[]>(`${API_URL}/GetAllLeaveTypes`);
-  const response = await axios.get<{ data: LeaveType[] }>(`${API_URL}LeaveType/GetAllLeaveTypes`);
+  const response = await axios.get<{ data: LeaveType[] }>(`${API_URL}LeaveType/GetAllLeaveTypes`,{
+    headers: {
+      Authorization: `Bearer ${TokenByLocalStorage}`,
+    },
+  });
 
     return response.data;
     
@@ -35,7 +39,11 @@ export async function getLeaveStatus(): Promise<{ data: LeaveStatus[] }> {
   try {
     
   //  const response = await axios.get<LeaveType[]>(`${API_URL}/GetAllLeaveTypes`);
-  const response = await axios.get<{ data: LeaveStatus[] }>(`${API_URL}LeaveStatus/GetLeaveStatusesAsync`);
+  const response = await axios.get<{ data: LeaveStatus[] }>(`${API_URL}LeaveStatus/GetLeaveStatusesAsync`,{
+    headers: {
+      Authorization: `Bearer ${TokenByLocalStorage}`,
+    },
+  });
     return response.data;
     
   } catch (error) {

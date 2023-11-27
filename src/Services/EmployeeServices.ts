@@ -1,5 +1,5 @@
 import { GenderModel } from "../Model/GenderModel";
-import { API_URL } from "../APIConfig";
+import { API_URL, TokenByLocalStorage } from "../APIConfig";
 import { EmployeeModel } from "../Model/EmployeeModel";
 import dayjs, { Dayjs } from "dayjs"; // Import dayjs
 import axios, { AxiosResponse, AxiosError } from "axios";
@@ -70,7 +70,14 @@ export const updateEmployee = async (employeeData: EmployeeModel) => {
 
 export async function GetEmployeeByIdAsync(employeeId :number): Promise<{ data: EmployeeModel}> {
   try {
-    const response = await axios.get(`${API_URL}Employee/GetEmployeeByIdAsync/${employeeId}`);
+
+    // const token = localStorage.getItem("Token"); // Replace 'YOUR_BEARER_TOKEN' with your actual bearer token
+
+    const response = await axios.get(`${API_URL}Employee/GetEmployeeByIdAsync/${employeeId}`,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
     //console.log(response);
     return response.data;
   } catch (error) {
@@ -81,7 +88,11 @@ export async function GetEmployeeByIdAsync(employeeId :number): Promise<{ data: 
 
 export async function GetEmployeesAsync(): Promise<{ data: EmployeeModel[]}> {
   try {
-    const response = await axios.get(`${API_URL}Employee/GetEmployeesAsync`);
+    const response = await axios.get(`${API_URL}Employee/GetEmployeesAsync`,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
     //console.log(response);
     return response.data;
   } catch (error) {
@@ -91,7 +102,7 @@ export async function GetEmployeesAsync(): Promise<{ data: EmployeeModel[]}> {
 
 export const EmployeeLoginAsync = async (data: LoginModel) => {
   try {
-    const response = await axios.post(`${API_URL}auth/login/`, data);
+    const response = await axios.post(`${API_URL}auth/login/`);
     return response.data;
   } catch (error) {
     throw error;

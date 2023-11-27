@@ -1,12 +1,16 @@
 import axios from "axios";
-import { API_URL } from "../APIConfig";
+import { API_URL, TokenByLocalStorage } from "../APIConfig";
 import { RowHeaderModel, ColumnHeaderModel } from "../Model/RoleAssignModels";
 import { UserRoleMapping } from "../Model/UserRoleMapping";
 import { EmployeeModel } from "../Model/EmployeeModel";
 
 export async function GetRoleAssignsAsync(): Promise<{ data: ColumnHeaderModel[] }> {
     try {
-      const response = await axios.get(`${API_URL}RoleAssign/GetRoleAssignsAsync/`);
+      const response = await axios.get(`${API_URL}RoleAssign/GetRoleAssignsAsync/`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch role assigns data: ' + (error as Error).message);
@@ -16,7 +20,11 @@ export async function GetRoleAssignsAsync(): Promise<{ data: ColumnHeaderModel[]
 
   export async function GetApplicationPagesAsync(): Promise<{ data: RowHeaderModel[] }> {
     try {
-      const response = await axios.get(`${API_URL}ApplicationPage/GetApplicationPagesAsync/`);
+      const response = await axios.get(`${API_URL}ApplicationPage/GetApplicationPagesAsync/`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw new Error('Failed to fetch application pages data: ' + (error as Error).message);
@@ -28,7 +36,11 @@ export async function GetRoleAssignsAsync(): Promise<{ data: ColumnHeaderModel[]
   
   export const createUserRoleMappingsAsync = async (data: UserRoleMapping) => {
     try {
-      const response = await axios.post(`${API_URL}UserRoleMapping/CreateUserRoleMappingsAsync/`, data);
+      const response = await axios.post(`${API_URL}UserRoleMapping/CreateUserRoleMappingsAsync/`, data,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
       return response.data;
     } catch (error) {
       throw error;
