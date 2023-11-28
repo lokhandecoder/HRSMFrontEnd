@@ -6,9 +6,11 @@ import { getLeaveTypes } from "../Services/LeaveType";
 import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
 import dayjs, { Dayjs } from "dayjs";
 import { GetEmployeeLeaveByEmployeeId } from "../Services/EmployeeLeaveServices";
-import { API_URL } from "../APIConfig";
+import { API_URL, TokenByLocalStorage } from "../APIConfig";
 import { GetActiveFinancialYearsAsync } from "../Services/FinancialyearServices";
 import { FinancialYearModel } from "../Model/FinancialYearModel";
+// import { GetActiveFinancialYearsAsync } from "../Services/FinancialyearServices";
+// import { FinancialYearModel } from "../Model/FinancialYearModel";
 
 export const AccountingYearUtilities = () => {
   const snackbar = useCustomSnackbar();
@@ -139,7 +141,11 @@ export const AccountingYearUtilities = () => {
     axios
       .post(
         `${API_URL}FinancialYearSetup/CreateLeaveAllocationForAllLeaveTypes`,
-        formData
+        formData,{
+          headers: {
+            Authorization: `Bearer ${TokenByLocalStorage}`,
+          },
+        }
       )
       .then((res) => {
         console.log("API Response:", res);
