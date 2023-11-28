@@ -137,8 +137,8 @@ export default function MiniDrawer() {
     localStorage.removeItem("employeeObject");
     localStorage.removeItem("employeeID");
 
-    // window.location.reload()
-    navigate("/login")
+    window.location.href = "/login";
+    // navigate("/login")
     // navigate("/login")
   }
   const menuId = "primary-search-account-menu";
