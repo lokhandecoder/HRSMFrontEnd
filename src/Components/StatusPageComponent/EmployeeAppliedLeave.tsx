@@ -48,213 +48,220 @@ import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import ConfrimationDialogWithComment from "../ConfrimationDialogWithComment";
+import { EmployeeAppliedLeaveUtilities } from "../../Utilities/StatusPageUtilities/EmployeeAppliedLeaveUtilities";
 function EmployeeAppliedLeave() {
-  const employeeId = DecryptEmployeeID();
+  const appliedleaveutility = EmployeeAppliedLeaveUtilities();
 
-  const [data, setData] = useState<AppliedLeave[]>([]); // Specify the type for data
-  const [employee, setEmployee] = useState<Employee[]>([]);
-  const navigate = useNavigate();
-  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
-  const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
-  const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
-  const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
-  const snackbar = useCustomSnackbar();
-  const [page, setPage] = useState(0);
-  const [openConfirmation, setOpenConfirmation] =
-    React.useState<boolean>(false);
-  const [openConfirmationSure, setOpenConfirmationSure] =
-    React.useState<boolean>(false);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
+  const {
+    onLeaveStatusUpdate,
+        displayedData,
+        formatDate,
+        snackbar,
+        data,
+        rowsPerPage,
+        page,
+        handleChangePage,
+        handleChangeRowsPerPage,
+        openConfirmation,
+        handleConfirmationClose,
+  } = appliedleaveutility;
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  // const employeeId = DecryptEmployeeID();
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to the first page when changing rows per page
-  };
-  const lastIndex = (page + 1) * rowsPerPage;
-  const firstIndex = lastIndex - rowsPerPage;
+  // const [data, setData] = useState<AppliedLeave[]>([]); // Specify the type for data
+  // const [employee, setEmployee] = useState<Employee[]>([]);
+  // const navigate = useNavigate();
+  // const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  // const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
+  // const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
+  // const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
+  // const snackbar = useCustomSnackbar();
+  // const [page, setPage] = useState(0);
+  // const [openConfirmation, setOpenConfirmation] =
+  //   React.useState<boolean>(false);
+  // const [openConfirmationSure, setOpenConfirmationSure] =
+  //   React.useState<boolean>(false);
+  // const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
 
-  const displayedData = data.slice(firstIndex, lastIndex);
-  const handleEdit = (appliedLeaveTypeId: number | undefined) => {
-    const editUrl = appliedLeaveTypeId
-      ? `/leave/${appliedLeaveTypeId}`
-      : "/leave";
-    navigate(editUrl);
-  };
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage);
+  // };
 
-  const handleDelete = (appliedLeaveTypeId: number | undefined) => {
-    alert(appliedLeaveTypeId);
-  };
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0); // Reset to the first page when changing rows per page
+  // };
+  // const lastIndex = (page + 1) * rowsPerPage;
+  // const firstIndex = lastIndex - rowsPerPage;
 
-  const handleUpdate = (appliedLeaveTypeId: number | undefined) => {
-    console.log(
-      "applied id = ",
-      appliedLeaveTypeId,
-      "value",
-      selectedLeaveStatusId
-    );
-  };
-  const handleSelectStatusChange = (
-    event: SelectChangeEvent<number>,
-    appliedLeaveTypeId: number | undefined
-  ) => {
-    const value =
-      typeof event.target.value === "string"
-        ? parseInt(event.target.value, 10)
-        : event.target.value;
+  // const displayedData = data.slice(firstIndex, lastIndex);
+  // const handleEdit = (appliedLeaveTypeId: number | undefined) => {
+  //   const editUrl = appliedLeaveTypeId
+  //     ? `/leave/${appliedLeaveTypeId}`
+  //     : "/leave";
+  //   navigate(editUrl);
+  // };
 
-    setData((prevData) =>
-      prevData.map((row) => {
-        if (row.appliedLeaveTypeId === appliedLeaveTypeId) {
-          return { ...row, leaveStatusId: value };
-        }
-        return row;
-      })
-    );
+  // const handleDelete = (appliedLeaveTypeId: number | undefined) => {
+  //   alert(appliedLeaveTypeId);
+  // };
 
-    // Update selectedLeaveStatusId
-    setSelectedLeaveStatusId(value);
-  };
-  // console.log("table data", data);
-  useEffect(() => {
-    FetchList();
-    fetchLeaveTypes();
-  }, []);
+  // const handleUpdate = (appliedLeaveTypeId: number | undefined) => {
+  //   console.log(
+  //     "applied id = ",
+  //     appliedLeaveTypeId,
+  //     "value",
+  //     selectedLeaveStatusId
+  //   );
+  // };
+  // const handleSelectStatusChange = (
+  //   event: SelectChangeEvent<number>,
+  //   appliedLeaveTypeId: number | undefined
+  // ) => {
+  //   const value =
+  //     typeof event.target.value === "string"
+  //       ? parseInt(event.target.value, 10)
+  //       : event.target.value;
 
-  const FetchList = async () => {
-    try {
-      const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
-      const employeeId = getDecryptedValueFromStorage("employeeID", 0);
+  //   setData((prevData) =>
+  //     prevData.map((row) => {
+  //       if (row.appliedLeaveTypeId === appliedLeaveTypeId) {
+  //         return { ...row, leaveStatusId: value };
+  //       }
+  //       return row;
+  //     })
+  //   );
 
-      //alert(employeeId);
+  //   // Update selectedLeaveStatusId
+  //   setSelectedLeaveStatusId(value);
+  // };
+  // // console.log("table data", data);
+  // useEffect(() => {
+  //   FetchList();
+  //   fetchLeaveTypes();
+  // }, []);
 
-      const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
-        employeeId
-      );
-      const fetched = fetchData.data;
-      const fetchemployee = await GetEmployeesAsync();
+  // const FetchList = async () => {
+  //   try {
+  //     const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
+  //     const employeeId = getDecryptedValueFromStorage("employeeID", 0);
 
-      if (Array.isArray(fetched)) {
-        setData(fetched);
-      } else {
-        console.error("Invalid leave types data.");
-      }
-    } catch (error) {
-      console.error("Error fetching leave types:", (error as Error).message);
-    }
-  };
+  //     //alert(employeeId);
 
-  const fetchLeaveTypes = async () => {
-    try {
-      const fetchedLeaveTypes = await getLeaveTypes();
-      const leaveTypesData = fetchedLeaveTypes.data;
-      if (Array.isArray(leaveTypesData)) {
-        setLeaveTypes(leaveTypesData);
-      } else {
-        console.error("Invalid leave types data.");
-      }
-    } catch (error) {
-      console.error("Error fetching leave types:", (error as Error).message);
-    }
-  };
+  //     const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
+  //       employeeId
+  //     );
+  //     const fetched = fetchData.data;
+  //     const fetchemployee = await GetEmployeesAsync();
 
-  function formatDate(date: Date) {
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
+  //     if (Array.isArray(fetched)) {
+  //       setData(fetched);
+  //     } else {
+  //       console.error("Invalid leave types data.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching leave types:", (error as Error).message);
+  //   }
+  // };
 
-    return `${day}/${month}/${year}`;
-  }
+  // const fetchLeaveTypes = async () => {
+  //   try {
+  //     const fetchedLeaveTypes = await getLeaveTypes();
+  //     const leaveTypesData = fetchedLeaveTypes.data;
+  //     if (Array.isArray(leaveTypesData)) {
+  //       setLeaveTypes(leaveTypesData);
+  //     } else {
+  //       console.error("Invalid leave types data.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching leave types:", (error as Error).message);
+  //   }
+  // };
 
-  const fetchData = async () => {
-    try {
-      const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
-      const leavestatuss = LeaveStatus.data;
+  // function formatDate(date: Date) {
+  //   const day = date.getDate().toString().padStart(2, "0");
+  //   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+  //   const year = date.getFullYear();
 
-      // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
-      // const leaveallocate = leaveAllocate.data.leaveAllocationId;
-      setLeaveStatus(leavestatuss);
-      //setLeaveAllocation(leaveallocate);
-    } catch (error) {
-      console.error("Failed to fetch data: ", (error as Error).message);
-    }
-  };
+  //   return `${day}/${month}/${year}`;
+  // }
 
-  const onLeaveApprove = async (
-    appliedLeaveTypeId: number,
-    statusCode: string
-  ) => {
-    const isApproved = true;
-    const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
+  // const fetchData = async () => {
+  //   try {
+  //     const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
+  //     const leavestatuss = LeaveStatus.data;
 
-    fetchData();
-  };
-  const onLeaveCancel = (appliedLeaveTypeId: number) => {};
+  //     // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+  //     // const leaveallocate = leaveAllocate.data.leaveAllocationId;
+  //     setLeaveStatus(leavestatuss);
+  //     //setLeaveAllocation(leaveallocate);
+  //   } catch (error) {
+  //     console.error("Failed to fetch data: ", (error as Error).message);
+  //   }
+  // };
 
-  const [currentAppliedLeaveTypeId, setCurrentAppliedLeaveTypeId] = useState(0);
-  const [currentAppliedLeaveStatusCode, setCurrentAppliedLeaveStatusCode] =
-    useState("APP");
-  const handleConfirmationClose = async (value: string) => {
-    setOpenConfirmation(false);
+  // const onLeaveApprove = async (
+  //   appliedLeaveTypeId: number,
+  //   statusCode: string
+  // ) => {
+  //   const isApproved = true;
+  //   const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
 
-    if (value == "yes") {
-      const data = await AppliedLeaveUpdateStatusAsync({
-        appliedLeaveTypeId: currentAppliedLeaveTypeId,
-        leaveAllocationId: leaveAllocation,
-        statusCode: currentAppliedLeaveStatusCode,
-      });
-      snackbar.showSnackbar(
-        data.message,
-        "success",
-        { vertical: "top", horizontal: "center" },
-        5000
-      );
-      FetchList();
-    }
-  };
-  const onLeaveStatusUpdate = async (
-    appliedLeaveTypeId: number,
-    statusCode: string
-  ) => {
-    // alert("Hey Amit");
-    setOpenConfirmation(true);
-    // const data = await AppliedLeaveUpdateStatusAsync({
-    //   appliedLeaveTypeId: appliedLeaveTypeId,
-    //   leaveAllocationId: leaveAllocation,
-    //   statusCode: statusCode,
-    // });
-    // snackbar.showSnackbar(
-    //   data.message,
-    //   "success",
-    //   { vertical: "top", horizontal: "center" },
-    //   5000
-    // );
+  //   fetchData();
+  // };
+  // const onLeaveCancel = (appliedLeaveTypeId: number) => {};
 
-    setCurrentAppliedLeaveTypeId(appliedLeaveTypeId);
-    setCurrentAppliedLeaveStatusCode(statusCode);
+  // const [currentAppliedLeaveTypeId, setCurrentAppliedLeaveTypeId] = useState(0);
+  // const [currentAppliedLeaveStatusCode, setCurrentAppliedLeaveStatusCode] =
+  //   useState("APP");
+  // const handleConfirmationClose = async (value: string) => {
+  //   setOpenConfirmation(false);
 
-    FetchList();
-  };
-  const Message = [
-    {
-      code : "APR",
-      codeName : "Approve"
-    },
-    {
-      code : "REJ",
-      codeName : "Reject"
-    },
+  //   if (value == "yes") {
+  //     const data = await AppliedLeaveUpdateStatusAsync({
+  //       appliedLeaveTypeId: currentAppliedLeaveTypeId,
+  //       leaveAllocationId: leaveAllocation,
+  //       statusCode: currentAppliedLeaveStatusCode,
+  //     });
+  //     snackbar.showSnackbar(
+  //       data.message,
+  //       "success",
+  //       { vertical: "top", horizontal: "center" },
+  //       5000
+  //     );
+  //     FetchList();
+  //   }
+  // };
+  // const onLeaveStatusUpdate = async (
+  //   appliedLeaveTypeId: number,
+  //   statusCode: string
+  // ) => {
+  //   // alert("Hey Amit");
+  //   setOpenConfirmation(true);
+  //   // const data = await AppliedLeaveUpdateStatusAsync({
+  //   //   appliedLeaveTypeId: appliedLeaveTypeId,
+  //   //   leaveAllocationId: leaveAllocation,
+  //   //   statusCode: statusCode,
+  //   // });
+  //   // snackbar.showSnackbar(
+  //   //   data.message,
+  //   //   "success",
+  //   //   { vertical: "top", horizontal: "center" },
+  //   //   5000
+  //   // );
 
-  ]
+  //   setCurrentAppliedLeaveTypeId(appliedLeaveTypeId);
+  //   setCurrentAppliedLeaveStatusCode(statusCode);
 
-  useEffect(() => {
-    fetchData(); // Call fetchData when the component mounts
-  }, []);
+  //   FetchList();
+  // };
+
+
+  // useEffect(() => {
+  //   fetchData(); // Call fetchData when the component mounts
+  // }, []);
 
   function renderIconButton(statusCode: string, appliedLeaveTypeId: number) {
     switch (statusCode) {
