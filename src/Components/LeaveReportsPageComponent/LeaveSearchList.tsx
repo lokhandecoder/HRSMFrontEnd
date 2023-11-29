@@ -60,6 +60,7 @@ function LeaveSearchList({ employeeLeaveReport }: LeaveSearchListProps) {
       XLSX.writeFile(workbook, "employee_leaves_report.xlsx");
     }
   };
+  console.log("Data from API", employeeLeaveReport);
 
   return (
     <>
@@ -68,7 +69,7 @@ function LeaveSearchList({ employeeLeaveReport }: LeaveSearchListProps) {
           <Table sx={{ minWidth: 700 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>First Name</TableCell>
+                <TableCell>Name</TableCell>
                 <TableCell>Leave Type</TableCell>
                 <TableCell>Start Date</TableCell>
                 <TableCell>End Date</TableCell>
@@ -83,14 +84,14 @@ function LeaveSearchList({ employeeLeaveReport }: LeaveSearchListProps) {
                   (row: EmployeeLeavesReportResponse, key: number) => (
                     <TableRow key={key}>
                       <TableCell>
-                        {row.firstName} {row.lastName}
+                      {row.employee.firstName} {row.employee.lastName}
                       </TableCell>
-                      <TableCell>{row.leaveTypeName}</TableCell>
+                      <TableCell>{row.leaveType.leaveTypeName}</TableCell>
                       <TableCell>{row.startDate}</TableCell>
                       <TableCell>{row.endDate}</TableCell>
                       <TableCell>{row.leaveReason}</TableCell>
                       <TableCell>{row.applyLeaveDay}</TableCell>
-                      <TableCell>{row.leaveStatusName}</TableCell>
+                      <TableCell>{row.leaveStatus.leaveStatusName}</TableCell>
                     </TableRow>
                   )
                 )

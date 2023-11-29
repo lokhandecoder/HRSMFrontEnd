@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../APIConfig";
+import { API_URL, TokenByLocalStorage } from "../APIConfig";
 import { EmployeeLeavesReportResponse } from "../Model/EmployeeLeavesReportResponse";
 import { EmployeeReportRequest } from "../Model/EmployeeReportRequest";
 
@@ -87,7 +87,11 @@ import { EmployeeReportRequest } from "../Model/EmployeeReportRequest";
 export async function GetLeavesReportAsync(employeeData: EmployeeReportRequest): Promise<{ data: EmployeeLeavesReportResponse[]  }> {
 
   try {
-    const response = await axios.post<{data:EmployeeLeavesReportResponse[] }>(`${API_URL}leaveReport/GetLeavesReportAsync/`,employeeData);
+    const response = await axios.post<{data:EmployeeLeavesReportResponse[] }>(`${API_URL}leaveReport/GetLeavesReportAsync/`,employeeData,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
    // console.log(response.data);
     return response.data;
   } catch (error) {

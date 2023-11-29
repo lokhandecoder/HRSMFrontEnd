@@ -1,6 +1,10 @@
 export interface EmployeeLeavesReportResponse {
     appliedLeaveTypeId: number;
     employeeId: number;
+    employee : {
+      firstName: string;
+      lastName: string;
+    }
     firstName: string;
     lastName: string;
     startDate: string;
@@ -15,5 +19,11 @@ export interface EmployeeLeavesReportResponse {
     isRejected: boolean;
     leaveStatusName: string;
     leaveStatusCode: string;
+    leaveType : {
+      leaveTypeName: string;
+    }
+    leaveStatus: {
+      leaveStatusName : string;
+    }
   }
 
