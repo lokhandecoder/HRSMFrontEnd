@@ -25,7 +25,7 @@ import {
   createUserRoleMappingsAsync,
 } from "../Services/RoleAssignServices";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../APIConfig";
+import { API_URL, TokenByLocalStorage } from "../APIConfig";
 import axios from "axios";
 import { GetUserRoleMappingsAsync } from "../Services/UserRoleMappingServices";
 
@@ -115,7 +115,11 @@ function RoleAssign() {
     try {
       await axios.post(
         `${API_URL}UserRoleMapping/CreateUserRoleMappingsAsync/`,
-        selectedData
+        selectedData, {
+          headers: {
+            Authorization: `Bearer ${TokenByLocalStorage}`,
+          },
+        }
       );
 
       console.log("Data saved successfully");

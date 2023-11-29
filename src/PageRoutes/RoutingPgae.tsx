@@ -17,6 +17,7 @@ import RoleAssign from "../Pages/RoleAssign";
 import LeaveApprovedPage from "../Pages/LeaveApprovedPage";
 import AppliedLeaveUpdateStatusEmail from "../Pages/AppliedLeaveUpdateStatusEmail";
 import PageNotFoundPage from "../Pages/PageNotFoundPage";
+import LeaveReportsPage from "../Pages/LeaveReportsPage";
 
 function RoutingPgae() {
   interface RouteConfig {
@@ -91,6 +92,8 @@ function RoutingPgae() {
         return RoleAssign;
       case "LeaveApprovedPage":
         return LeaveApprovedPage;
+      case "LeaveReportsPage":
+        return LeaveReportsPage;
       default:
         return null; // Return a default component or handle the error
     }
