@@ -1,156 +1,123 @@
-// import React, { useState, useEffect } from "react";
-// import Table from "@mui/material/Table";
-// import TableBody from "@mui/material/TableBody";
-// import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-// import TableContainer from "@mui/material/TableContainer";
-// import TableHead from "@mui/material/TableHead";
-// import TableRow from "@mui/material/TableRow";
-// import TablePagination from "@mui/material/TablePagination";
-// import { LeaveSearchUtlilities } from "../../Utilities/LeaveSearchUtlilities";
-// import { AppliedLeave } from "../../Model/AppliedLeaveModel";
-// import dayjs, { Dayjs } from "dayjs";
-// import { EmployeeLeavesReportResponse } from "../../Model/EmployeeLeavesReportResponse";
-
-// function LeaveSearchList() {
-//     const leavesearch = LeaveSearchUtlilities();
-
-//   const {
-//     handleSubmit,
-//     isWeekend,
-//     formData,
-//     handleChange,
-//     // employeeNames,
-//     // leaveStatuses,
-//     loading,
-//     snackbar,
-//     employeeLeaveReport,
-//     formatDate,
-//     setresponseList,
-//   } = leavesearch;
-//   const today = dayjs();
-//   const todayDate = today.toDate();
-//  // const [fetchlist, setfetchlist] = useState(responseList);
-//   console.log("Hello Anzar" , {employeeLeaveReport});
-
-//   // const fetchlist = () => {
-//   //   return responseList && responseList !== null ? (
-//   //     responseList.map((row: AppliedLeave, key: number) => (
-//   //       <TableRow key={key}>
-//   //       <TableCell>
-//   //         {row.firstName} {row.lastName}
-//   //       </TableCell>
-//   //       <TableCell>{row.leaveTypeName}</TableCell>
-//   //       <TableCell>
-//   //         {row.startDate
-//   //           ? formatDate(new Date(row.startDate))
-//   //           : "No date available"}
-//   //       </TableCell>
-//   //       <TableCell>
-//   //         {row.endDate
-//   //           ? formatDate(new Date(row.endDate))
-//   //           : "No date available"}
-//   //       </TableCell>
-//   //       <TableCell>{row.leaveReason}</TableCell>
-//   //       <TableCell>{row.applyLeaveDay}</TableCell>
-
-//   //       <TableCell>{row.leaveStatusName}</TableCell>
-
-//   //       {/* <TableCell>
-//   //         {renderIconButton(
-//   //           row.leaveStatusCode,
-//   //           row.appliedLeaveTypeId || 0
-//   //         )}
-//   //       </TableCell> */}
-//   //     </TableRow>
-//   //     ))
-//   //   ) : (
-//   //     <TableRow>
-//   //       <TableCell colSpan={7}>No data available</TableCell>
-//   //     </TableRow>
-//   //   );
-//   // };
+import React, { useState, useEffect } from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import TablePagination from "@mui/material/TablePagination";
+import { LeaveSearchUtlilities } from "../../Utilities/LeaveSearchUtlilities";
+import { AppliedLeave } from "../../Model/AppliedLeaveModel";
+import dayjs, { Dayjs } from "dayjs";
+import { EmployeeLeavesReportResponse } from "../../Model/EmployeeLeavesReportResponse";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import Button from "@mui/material/Button";
+import * as XLSX from "xlsx"; // Import xlsx library
 
 
-  
-
-//   return (
-//     <>
-//     <TableContainer>
-//         <Table sx={{ minWidth: 700 }} aria-label="simple table">
-//           <TableHead>
-//             <TableRow>
-//               <TableCell>First Name</TableCell>
-//               <TableCell>Leave Type</TableCell>
-//               <TableCell>Start Date</TableCell>
-//               <TableCell>End Date</TableCell>
-//               <TableCell>Reason for Leave</TableCell>
-//               {/* <TableCell>Balance Leaves</TableCell> */}
-//               <TableCell>Applied Days</TableCell>
-//               {/* <TableCell>Remaining Leaves</TableCell> */}
-
-//               <TableCell>Status </TableCell>
-//               {/* <TableCell>Action</TableCell> */}
-//             </TableRow>
-//           </TableHead>
-//           <TableBody>
-//             {
-//               employeeLeaveReport && employeeLeaveReport.length != 0 ? (
-//                 employeeLeaveReport.map((row: EmployeeLeavesReportResponse, key: number) => (
-//                   <TableRow key={key}>
-//                   <TableCell>
-//                     {row.firstName} {row.lastName}
-//                   </TableCell>
-//                   <TableCell>{row.leaveTypeName}</TableCell>
-//                   <TableCell>
-//                     {row.startDate
-//                       ? formatDate(new Date(row.startDate))
-//                       : "No date available"}
-//                   </TableCell>
-//                   <TableCell>
-//                     {row.endDate
-//                       ? formatDate(new Date(row.endDate))
-//                       : "No date available"}
-//                   </TableCell>
-//                   <TableCell>{row.leaveReason}</TableCell>
-//                   <TableCell>{row.applyLeaveDay}</TableCell>
-          
-//                   <TableCell>{row.leaveStatusName}</TableCell>
-          
-//                   {/* <TableCell>
-//                     {renderIconButton(
-//                       row.leaveStatusCode,
-//                       row.appliedLeaveTypeId || 0
-//                     )}
-//                   </TableCell> */}
-//                 </TableRow>
-//                 ))
-//               ) : (
-//                 <TableRow>
-//                   <TableCell colSpan={7}>No data available 223</TableCell>
-//                 </TableRow>
-//               )
-//             }
-//           </TableBody>
-//         </Table>
-//         {/* <TablePagination
-//           rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
-//           component="div"
-//           count={data.length} // Pass the total number of rows
-//         //   rowsPerPage={rowsPerPage}
-//         //   page={page}
-//         //   onPageChange={handleChangePage}
-//         //   onRowsPerPageChange={handleChangeRowsPerPage}
-//         /> */}
-//       </TableContainer></>
-
-//   )
-// }
-
-// export default LeaveSearchList
 
 
-const LeaveSearchList = () => {
-  return (  <></>);
+interface LeaveSearchListProps {
+  employeeLeaveReport: EmployeeLeavesReportResponse[]; // Replace YourEmployeeLeaveReportType with the actual type
 }
- 
+
+
+
+function LeaveSearchList({ employeeLeaveReport }: LeaveSearchListProps) {
+  const handleExportToExcel = () => {
+    if (employeeLeaveReport && employeeLeaveReport.length > 0) {
+      const columnsToExport: string[] = [
+        "firstName",
+        "lastName",
+        "leaveTypeName",
+        "startDate",
+        "endDate",
+        "leaveReason",
+        "applyLeaveDay",
+        "leaveStatusName",
+      ];
+  
+      const dataToExport = employeeLeaveReport.map((record) => {
+        const filteredRecord: any = {};
+        columnsToExport.forEach((column) => {
+          if (record.hasOwnProperty(column)) {
+            filteredRecord[column] = (record as any)[column];
+          }
+        });
+        return filteredRecord;
+      });
+  
+      // Convert data to XLSX format
+      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+  
+      // Create a workbook
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Employee_Leaves_Report");
+  
+      // Save the workbook as an Excel file
+      XLSX.writeFile(workbook, "employee_leaves_report.xlsx");
+    }
+  };
+
+  return (
+    <>
+      <Card sx={{ minWidth: 275, mt: 5, boxShadow: 5 }}>
+        <TableContainer>
+          <Table sx={{ minWidth: 700 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>First Name</TableCell>
+                <TableCell>Leave Type</TableCell>
+                <TableCell>Start Date</TableCell>
+                <TableCell>End Date</TableCell>
+                <TableCell>Reason for Leave</TableCell>
+                <TableCell>Applied Days</TableCell>
+                <TableCell>Status </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {employeeLeaveReport && employeeLeaveReport.length != 0 ? (
+                employeeLeaveReport.map(
+                  (row: EmployeeLeavesReportResponse, key: number) => (
+                    <TableRow key={key}>
+                      <TableCell>
+                        {row.firstName} {row.lastName}
+                      </TableCell>
+                      <TableCell>{row.leaveTypeName}</TableCell>
+                      <TableCell>{row.startDate}</TableCell>
+                      <TableCell>{row.endDate}</TableCell>
+                      <TableCell>{row.leaveReason}</TableCell>
+                      <TableCell>{row.applyLeaveDay}</TableCell>
+                      <TableCell>{row.leaveStatusName}</TableCell>
+                    </TableRow>
+                  )
+                )
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={7}>No data available </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <CardActions style={{ justifyContent: "right" }}>
+          <Button
+            type="submit"
+            size="large"
+            variant="contained"
+            color="primary"
+            onClick={handleExportToExcel} // Call handleExportToExcel function on button click
+            sx={{ mt: 2, marginRight: 2 }} // Add margin to the right
+            disabled={!employeeLeaveReport || employeeLeaveReport.length === 0} // Disable button if no data available
+          >
+            Export to Excel
+          </Button>
+        </CardActions>
+      </Card>
+    </>
+  );
+}
+
 export default LeaveSearchList;

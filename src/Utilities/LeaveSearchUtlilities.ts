@@ -97,61 +97,8 @@ export const LeaveSearchUtlilities = () => {
     
         return `${day}/${month}/${year}`;
       }
-       // Function to handle export to Excel
-  const handleExportToExcel = () => {
-    if (employeeLeaveReport && employeeLeaveReport.length > 0) {
-      const columnsToExport: string[] = [
-        "firstName",
-        "lastName",
-        "leaveTypeName",
-        "startDate",
-        "endDate",
-        "leaveReason",
-        "applyLeaveDay",
-        "leaveStatusName",
-      ];
-  
-      const dataToExport = employeeLeaveReport.map((record) => {
-        const filteredRecord: any = {};
-        columnsToExport.forEach((column) => {
-          if (record.hasOwnProperty(column)) {
-            filteredRecord[column] = (record as any)[column];
-          }
-        });
-        return filteredRecord;
-      });
-  
-      // Convert data to XLSX format
-      const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-  
-      // Create a workbook
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Employee_Leaves_Report");
-  
-      // Save the workbook as an Excel file
-      XLSX.writeFile(workbook, "employee_leaves_report.xlsx");
-    }
-  };
-
-      
-
-  // return {
-  //   handleSubmit,
-  //   isWeekend,
-  //   formData,
-  //   handleChange,
-  //   employeeNames,
-  //   leaveStatuses,
-  //   loading,
-  //   snackbar,
-  //   employeeLeaveReport,
-  //   formatDate,
-  //   setresponseList,
 
 
-
-  // };
-
-  return {handleEmployeeLeaveReportSearch, employeeLeaveReport, employeeNames, leaveStatuses,handleChange,formData, handleExportToExcel}
+  return {handleEmployeeLeaveReportSearch, employeeLeaveReport, employeeNames, leaveStatuses,handleChange,formData}
 
 };
