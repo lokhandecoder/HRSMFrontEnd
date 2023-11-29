@@ -14,7 +14,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ClearIcon from "@mui/icons-material/Clear";
 import TablePagination from "@mui/material/TablePagination";
-
+import ConfirmationDialog from "../ConfirmationDialog";
 
 import {
   AppliedLeaveUpdateStatusAsync,
@@ -47,183 +47,222 @@ import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentati
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
+import ConfrimationDialogWithComment from "../ConfrimationDialogWithComment";
+import { EmployeeAppliedLeaveUtilities } from "../../Utilities/StatusPageUtilities/EmployeeAppliedLeaveUtilities";
 function EmployeeAppliedLeave() {
-  const employeeId = DecryptEmployeeID();
+  const appliedleaveutility = EmployeeAppliedLeaveUtilities();
 
-  const [data, setData] = useState<AppliedLeave[]>([]); // Specify the type for data
-  const [employee, setEmployee] = useState<Employee[]>([]);
-  const navigate = useNavigate();
-  const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
-  const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
-  const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
-  const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
-  const snackbar = useCustomSnackbar();
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
+  const {
+    onLeaveStatusUpdate,
+        displayedData,
+        formatDate,
+        snackbar,
+        data,
+        rowsPerPage,
+        page,
+        handleChangePage,
+        handleChangeRowsPerPage,
+        openConfirmation,
+        handleConfirmationClose,
+  } = appliedleaveutility;
 
-  const handleChangePage = (event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  // const employeeId = DecryptEmployeeID();
 
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to the first page when changing rows per page
-  };
-  const lastIndex = (page + 1) * rowsPerPage;
-  const firstIndex = lastIndex - rowsPerPage;
-  
-  const displayedData = data.slice(firstIndex, lastIndex);
-  const handleEdit = (appliedLeaveTypeId: number | undefined) => {
-    const editUrl = appliedLeaveTypeId
-      ? `/leave/${appliedLeaveTypeId}`
-      : "/leave";
-    navigate(editUrl);
-  };
+  // const [data, setData] = useState<AppliedLeave[]>([]); // Specify the type for data
+  // const [employee, setEmployee] = useState<Employee[]>([]);
+  // const navigate = useNavigate();
+  // const [leaveTypes, setLeaveTypes] = useState<LeaveType[]>([]);
+  // const [leaveStatus, setLeaveStatus] = useState<LeaveStatus[]>([]);
+  // const [selectedLeaveStatusId, setSelectedLeaveStatusId] = useState<number>(0);
+  // const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
+  // const snackbar = useCustomSnackbar();
+  // const [page, setPage] = useState(0);
+  // const [openConfirmation, setOpenConfirmation] =
+  //   React.useState<boolean>(false);
+  // const [openConfirmationSure, setOpenConfirmationSure] =
+  //   React.useState<boolean>(false);
+  // const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
 
-  const handleDelete = (appliedLeaveTypeId: number | undefined) => {
-    alert(appliedLeaveTypeId);
-  };
-
-  const handleUpdate = (appliedLeaveTypeId: number | undefined) => {
-    console.log(
-      "applied id = ",
-      appliedLeaveTypeId,
-      "value",
-      selectedLeaveStatusId
-    );
-  };
-  const handleSelectStatusChange = (
-    event: SelectChangeEvent<number>,
-    appliedLeaveTypeId: number | undefined
-  ) => {
-    const value =
-      typeof event.target.value === "string"
-        ? parseInt(event.target.value, 10)
-        : event.target.value;
-
-    setData((prevData) =>
-      prevData.map((row) => {
-        if (row.appliedLeaveTypeId === appliedLeaveTypeId) {
-          return { ...row, leaveStatusId: value };
-        }
-        return row;
-      })
-    );
-
-    // Update selectedLeaveStatusId
-    setSelectedLeaveStatusId(value);
-  };
-  // console.log("table data", data);
-  useEffect(() => {
-    FetchList();
-    fetchLeaveTypes();
-  }, []);
-
-  const FetchList = async () => {
-    try {
-      const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
-      const employeeId = getDecryptedValueFromStorage("employeeID", 0);
-
-      //alert(employeeId);
-
-      const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
-        employeeId
-      );
-      const fetched = fetchData.data;
-      const fetchemployee = await GetEmployeesAsync();
-
-      if (Array.isArray(fetched)) {
-        setData(fetched);
-      } else {
-        console.error("Invalid leave types data.");
-      }
-    } catch (error) {
-      console.error("Error fetching leave types:", (error as Error).message);
-    }
-  };
-
-  const fetchLeaveTypes = async () => {
-    try {
-      const fetchedLeaveTypes = await getLeaveTypes();
-      const leaveTypesData = fetchedLeaveTypes.data;
-      if (Array.isArray(leaveTypesData)) {
-        setLeaveTypes(leaveTypesData);
-      } else {
-        console.error("Invalid leave types data.");
-      }
-    } catch (error) {
-      console.error("Error fetching leave types:", (error as Error).message);
-    }
-  };
-
-  function formatDate(date: Date) {
-    const day = date.getDate().toString().padStart(2, "0");
-    const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
-    const year = date.getFullYear();
-
-    return `${day}/${month}/${year}`;
-  }
-
-  const fetchData = async () => {
-    try {
-      const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
-      const leavestatuss = LeaveStatus.data;
-
-      // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
-      // const leaveallocate = leaveAllocate.data.leaveAllocationId;
-      setLeaveStatus(leavestatuss);
-      //setLeaveAllocation(leaveallocate);
-    } catch (error) {
-      console.error("Failed to fetch data: ", (error as Error).message);
-    }
-  };
-
-  const onLeaveApprove = async (
-    appliedLeaveTypeId: number,
-    statusCode: string
-  ) => {
-    const isApproved = true;
-    const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
-
-    fetchData();
-  };
-  const onLeaveCancel = (appliedLeaveTypeId: number) => {};
-  // const onLeaveReject = async (appliedLeaveTypeId: number, statusCode : string) => {
-  //   const isApproved = true;
-  //   const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
-  //   fetchData();
+  // const handleChangePage = (event: unknown, newPage: number) => {
+  //   setPage(newPage);
   // };
 
-  //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
-  //const onLeaveDelete = (appliedLeaveTypeId: number) => {};
+  // const handleChangeRowsPerPage = (
+  //   event: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   setRowsPerPage(parseInt(event.target.value, 10));
+  //   setPage(0); // Reset to the first page when changing rows per page
+  // };
+  // const lastIndex = (page + 1) * rowsPerPage;
+  // const firstIndex = lastIndex - rowsPerPage;
 
-  //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
-  //const onLeaveApprove = (appliedLeaveTypeId: number) => {};
+  // const displayedData = data.slice(firstIndex, lastIndex);
+  // const handleEdit = (appliedLeaveTypeId: number | undefined) => {
+  //   const editUrl = appliedLeaveTypeId
+  //     ? `/leave/${appliedLeaveTypeId}`
+  //     : "/leave";
+  //   navigate(editUrl);
+  // };
 
-  console.log("Leave all", leaveAllocation);
-  const onLeaveStatusUpdate = async (
-    appliedLeaveTypeId: number,
-    statusCode: string
-  ) => {
-    const data = await AppliedLeaveUpdateStatusAsync({
-      appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId: leaveAllocation,
-      statusCode: statusCode,
-    });
-    snackbar.showSnackbar(
-      data.message,
-      "success",
-      { vertical: "top", horizontal: "center" },
-      5000
-    );
-    FetchList();
-  };
+  // const handleDelete = (appliedLeaveTypeId: number | undefined) => {
+  //   alert(appliedLeaveTypeId);
+  // };
 
-  useEffect(() => {
-    fetchData(); // Call fetchData when the component mounts
-  }, []);
+  // const handleUpdate = (appliedLeaveTypeId: number | undefined) => {
+  //   console.log(
+  //     "applied id = ",
+  //     appliedLeaveTypeId,
+  //     "value",
+  //     selectedLeaveStatusId
+  //   );
+  // };
+  // const handleSelectStatusChange = (
+  //   event: SelectChangeEvent<number>,
+  //   appliedLeaveTypeId: number | undefined
+  // ) => {
+  //   const value =
+  //     typeof event.target.value === "string"
+  //       ? parseInt(event.target.value, 10)
+  //       : event.target.value;
+
+  //   setData((prevData) =>
+  //     prevData.map((row) => {
+  //       if (row.appliedLeaveTypeId === appliedLeaveTypeId) {
+  //         return { ...row, leaveStatusId: value };
+  //       }
+  //       return row;
+  //     })
+  //   );
+
+  //   // Update selectedLeaveStatusId
+  //   setSelectedLeaveStatusId(value);
+  // };
+  // // console.log("table data", data);
+  // useEffect(() => {
+  //   FetchList();
+  //   fetchLeaveTypes();
+  // }, []);
+
+  // const FetchList = async () => {
+  //   try {
+  //     const roleAssignId = getDecryptedValueFromStorage("roleAssignId", 0);
+  //     const employeeId = getDecryptedValueFromStorage("employeeID", 0);
+
+  //     //alert(employeeId);
+
+  //     const fetchData = await GetAppliedLeavesByReportingPersonIdAsync(
+  //       employeeId
+  //     );
+  //     const fetched = fetchData.data;
+  //     const fetchemployee = await GetEmployeesAsync();
+
+  //     if (Array.isArray(fetched)) {
+  //       setData(fetched);
+  //     } else {
+  //       console.error("Invalid leave types data.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching leave types:", (error as Error).message);
+  //   }
+  // };
+
+  // const fetchLeaveTypes = async () => {
+  //   try {
+  //     const fetchedLeaveTypes = await getLeaveTypes();
+  //     const leaveTypesData = fetchedLeaveTypes.data;
+  //     if (Array.isArray(leaveTypesData)) {
+  //       setLeaveTypes(leaveTypesData);
+  //     } else {
+  //       console.error("Invalid leave types data.");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching leave types:", (error as Error).message);
+  //   }
+  // };
+
+  // function formatDate(date: Date) {
+  //   const day = date.getDate().toString().padStart(2, "0");
+  //   const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are zero-based
+  //   const year = date.getFullYear();
+
+  //   return `${day}/${month}/${year}`;
+  // }
+
+  // const fetchData = async () => {
+  //   try {
+  //     const [LeaveStatus] = await Promise.all([getLeaveStatus()]);
+  //     const leavestatuss = LeaveStatus.data;
+
+  //     // const [leaveAllocate] = await Promise.all([GetActiveLeaveAllocationAsync()])
+  //     // const leaveallocate = leaveAllocate.data.leaveAllocationId;
+  //     setLeaveStatus(leavestatuss);
+  //     //setLeaveAllocation(leaveallocate);
+  //   } catch (error) {
+  //     console.error("Failed to fetch data: ", (error as Error).message);
+  //   }
+  // };
+
+  // const onLeaveApprove = async (
+  //   appliedLeaveTypeId: number,
+  //   statusCode: string
+  // ) => {
+  //   const isApproved = true;
+  //   const data = await UpdateIsApprovedAsync(appliedLeaveTypeId, isApproved);
+
+  //   fetchData();
+  // };
+  // const onLeaveCancel = (appliedLeaveTypeId: number) => {};
+
+  // const [currentAppliedLeaveTypeId, setCurrentAppliedLeaveTypeId] = useState(0);
+  // const [currentAppliedLeaveStatusCode, setCurrentAppliedLeaveStatusCode] =
+  //   useState("APP");
+  // const handleConfirmationClose = async (value: string) => {
+  //   setOpenConfirmation(false);
+
+  //   if (value == "yes") {
+  //     const data = await AppliedLeaveUpdateStatusAsync({
+  //       appliedLeaveTypeId: currentAppliedLeaveTypeId,
+  //       leaveAllocationId: leaveAllocation,
+  //       statusCode: currentAppliedLeaveStatusCode,
+  //     });
+  //     snackbar.showSnackbar(
+  //       data.message,
+  //       "success",
+  //       { vertical: "top", horizontal: "center" },
+  //       5000
+  //     );
+  //     FetchList();
+  //   }
+  // };
+  // const onLeaveStatusUpdate = async (
+  //   appliedLeaveTypeId: number,
+  //   statusCode: string
+  // ) => {
+  //   // alert("Hey Amit");
+  //   setOpenConfirmation(true);
+  //   // const data = await AppliedLeaveUpdateStatusAsync({
+  //   //   appliedLeaveTypeId: appliedLeaveTypeId,
+  //   //   leaveAllocationId: leaveAllocation,
+  //   //   statusCode: statusCode,
+  //   // });
+  //   // snackbar.showSnackbar(
+  //   //   data.message,
+  //   //   "success",
+  //   //   { vertical: "top", horizontal: "center" },
+  //   //   5000
+  //   // );
+
+  //   setCurrentAppliedLeaveTypeId(appliedLeaveTypeId);
+  //   setCurrentAppliedLeaveStatusCode(statusCode);
+
+  //   FetchList();
+  // };
+
+
+  // useEffect(() => {
+  //   fetchData(); // Call fetchData when the component mounts
+  // }, []);
+
   function renderIconButton(statusCode: string, appliedLeaveTypeId: number) {
     switch (statusCode) {
       case "APP":
@@ -332,88 +371,95 @@ function EmployeeAppliedLeave() {
     }
   }
   return (
-    <TableContainer>
-      <Table sx={{ minWidth: 700 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell>Leave Type</TableCell>
-            <TableCell>Start Date</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell>Reason for Leave</TableCell>
-            {/* <TableCell>Balance Leaves</TableCell> */}
-            <TableCell>Applied Days</TableCell>
-            {/* <TableCell>Remaining Leaves</TableCell> */}
+    <>
+      <TableContainer>
+        <Table sx={{ minWidth: 700 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>First Name</TableCell>
+              <TableCell>Leave Type</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+              <TableCell>Reason for Leave</TableCell>
+              {/* <TableCell>Balance Leaves</TableCell> */}
+              <TableCell>Applied Days</TableCell>
+              {/* <TableCell>Remaining Leaves</TableCell> */}
 
-            <TableCell>Status </TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {displayedData && displayedData !== null
-    ? displayedData.map((row: AppliedLeave, key) => {
-                // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
-                //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
+              <TableCell>Status </TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {displayedData && displayedData !== null
+              ? displayedData.map((row: AppliedLeave, key) => {
+                  // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
+                  //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
 
-                return (
-                  <TableRow key={key}>
-                    <TableCell>
-                      {row.firstName} {row.lastName}
-                    </TableCell>
-                    <TableCell>{row.leaveTypeName}</TableCell>
-                    <TableCell>
-                      {row.startDate
-                        ? formatDate(new Date(row.startDate))
-                        : "No date available"}
-                    </TableCell>
-                    <TableCell>
-                      {row.endDate
-                        ? formatDate(new Date(row.endDate))
-                        : "No date available"}
-                    </TableCell>
-                    <TableCell>{row.leaveReason}</TableCell>
-                    {/* <TableCell>{row.balanceLeave}</TableCell> */}
-                    <TableCell>{row.applyLeaveDay}</TableCell>
-                    {/* <TableCell>{row.remaingLeave}</TableCell> */}
+                  return (
+                    <TableRow key={key}>
+                      <TableCell>
+                        {row.firstName} {row.lastName}
+                      </TableCell>
+                      <TableCell>{row.leaveTypeName}</TableCell>
+                      <TableCell>
+                        {row.startDate
+                          ? formatDate(new Date(row.startDate))
+                          : "No date available"}
+                      </TableCell>
+                      <TableCell>
+                        {row.endDate
+                          ? formatDate(new Date(row.endDate))
+                          : "No date available"}
+                      </TableCell>
+                      <TableCell>{row.leaveReason}</TableCell>
+                      {/* <TableCell>{row.balanceLeave}</TableCell> */}
+                      <TableCell>{row.applyLeaveDay}</TableCell>
+                      {/* <TableCell>{row.remaingLeave}</TableCell> */}
 
-                    <TableCell>{row.leaveStatusName}</TableCell>
+                      <TableCell>{row.leaveStatusName}</TableCell>
 
-                    <TableCell>
-                      {renderIconButton(
-                        row.leaveStatusCode,
-                        row.appliedLeaveTypeId || 0
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            : "No data available"}
-        </TableBody>
-      </Table>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={snackbar.duration}
-        onClose={snackbar.handleSnackbarClose}
-        anchorOrigin={snackbar.position}
-      >
-        <Alert
+                      <TableCell>
+                        {renderIconButton(
+                          row.leaveStatusCode,
+                          row.appliedLeaveTypeId || 0
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              : "No data available"}
+          </TableBody>
+        </Table>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
           onClose={snackbar.handleSnackbarClose}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={snackbar.position}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-      <TablePagination
-  rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
-  component="div"
-  count={data.length} // Pass the total number of rows
-  rowsPerPage={rowsPerPage}
-  page={page}
-  onPageChange={handleChangePage}
-  onRowsPerPageChange={handleChangeRowsPerPage}
-/>
-    </TableContainer>
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
+          component="div"
+          count={data.length} // Pass the total number of rows
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableContainer>
+      <ConfrimationDialogWithComment
+        isOpen={openConfirmation}
+        handleClose={handleConfirmationClose}
+        message=" "
+      />
+    </>
   );
 }
 /*UnpublishedOutlinedIcon*/
