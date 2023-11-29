@@ -14,7 +14,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import ClearIcon from "@mui/icons-material/Clear";
 import TablePagination from "@mui/material/TablePagination";
-
+import ConfirmationDialog from "../ConfirmationDialog";
 
 import {
   AppliedLeaveUpdateStatusAsync,
@@ -47,6 +47,7 @@ import CancelPresentationOutlinedIcon from "@mui/icons-material/CancelPresentati
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
+import ConfrimationDialogWithComment from "../ConfrimationDialogWithComment";
 function EmployeeAppliedLeave() {
   const employeeId = DecryptEmployeeID();
 
@@ -59,6 +60,10 @@ function EmployeeAppliedLeave() {
   const [leaveAllocation, setLeaveAllocation] = useState<number>(0);
   const snackbar = useCustomSnackbar();
   const [page, setPage] = useState(0);
+  const [openConfirmation, setOpenConfirmation] =
+    React.useState<boolean>(false);
+  const [openConfirmationSure, setOpenConfirmationSure] =
+    React.useState<boolean>(false);
   const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -73,7 +78,7 @@ function EmployeeAppliedLeave() {
   };
   const lastIndex = (page + 1) * rowsPerPage;
   const firstIndex = lastIndex - rowsPerPage;
-  
+
   const displayedData = data.slice(firstIndex, lastIndex);
   const handleEdit = (appliedLeaveTypeId: number | undefined) => {
     const editUrl = appliedLeaveTypeId
@@ -190,40 +195,67 @@ function EmployeeAppliedLeave() {
     fetchData();
   };
   const onLeaveCancel = (appliedLeaveTypeId: number) => {};
-  // const onLeaveReject = async (appliedLeaveTypeId: number, statusCode : string) => {
-  //   const isApproved = true;
-  //   const data = await UpdateIsRejectedAsync(appliedLeaveTypeId, isApproved);
-  //   fetchData();
-  // };
 
-  //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
-  //const onLeaveDelete = (appliedLeaveTypeId: number) => {};
+  const [currentAppliedLeaveTypeId, setCurrentAppliedLeaveTypeId] = useState(0);
+  const [currentAppliedLeaveStatusCode, setCurrentAppliedLeaveStatusCode] =
+    useState("APP");
+  const handleConfirmationClose = async (value: string) => {
+    setOpenConfirmation(false);
 
-  //const onLeaveEdit = (appliedLeaveTypeId: number) => {};
-  //const onLeaveApprove = (appliedLeaveTypeId: number) => {};
-
-  console.log("Leave all", leaveAllocation);
+    if (value == "yes") {
+      const data = await AppliedLeaveUpdateStatusAsync({
+        appliedLeaveTypeId: currentAppliedLeaveTypeId,
+        leaveAllocationId: leaveAllocation,
+        statusCode: currentAppliedLeaveStatusCode,
+      });
+      snackbar.showSnackbar(
+        data.message,
+        "success",
+        { vertical: "top", horizontal: "center" },
+        5000
+      );
+      FetchList();
+    }
+  };
   const onLeaveStatusUpdate = async (
     appliedLeaveTypeId: number,
     statusCode: string
   ) => {
-    const data = await AppliedLeaveUpdateStatusAsync({
-      appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId: leaveAllocation,
-      statusCode: statusCode,
-    });
-    snackbar.showSnackbar(
-      data.message,
-      "success",
-      { vertical: "top", horizontal: "center" },
-      5000
-    );
+    // alert("Hey Amit");
+    setOpenConfirmation(true);
+    // const data = await AppliedLeaveUpdateStatusAsync({
+    //   appliedLeaveTypeId: appliedLeaveTypeId,
+    //   leaveAllocationId: leaveAllocation,
+    //   statusCode: statusCode,
+    // });
+    // snackbar.showSnackbar(
+    //   data.message,
+    //   "success",
+    //   { vertical: "top", horizontal: "center" },
+    //   5000
+    // );
+
+    setCurrentAppliedLeaveTypeId(appliedLeaveTypeId);
+    setCurrentAppliedLeaveStatusCode(statusCode);
+
     FetchList();
   };
+  const Message = [
+    {
+      code : "APR",
+      codeName : "Approve"
+    },
+    {
+      code : "REJ",
+      codeName : "Reject"
+    },
+
+  ]
 
   useEffect(() => {
     fetchData(); // Call fetchData when the component mounts
   }, []);
+
   function renderIconButton(statusCode: string, appliedLeaveTypeId: number) {
     switch (statusCode) {
       case "APP":
@@ -332,88 +364,95 @@ function EmployeeAppliedLeave() {
     }
   }
   return (
-    <TableContainer>
-      <Table sx={{ minWidth: 700 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>First Name</TableCell>
-            <TableCell>Leave Type</TableCell>
-            <TableCell>Start Date</TableCell>
-            <TableCell>End Date</TableCell>
-            <TableCell>Reason for Leave</TableCell>
-            {/* <TableCell>Balance Leaves</TableCell> */}
-            <TableCell>Applied Days</TableCell>
-            {/* <TableCell>Remaining Leaves</TableCell> */}
+    <>
+      <TableContainer>
+        <Table sx={{ minWidth: 700 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>First Name</TableCell>
+              <TableCell>Leave Type</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
+              <TableCell>Reason for Leave</TableCell>
+              {/* <TableCell>Balance Leaves</TableCell> */}
+              <TableCell>Applied Days</TableCell>
+              {/* <TableCell>Remaining Leaves</TableCell> */}
 
-            <TableCell>Status </TableCell>
-            <TableCell>Action</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-        {displayedData && displayedData !== null
-    ? displayedData.map((row: AppliedLeave, key) => {
-                // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
-                //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
+              <TableCell>Status </TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {displayedData && displayedData !== null
+              ? displayedData.map((row: AppliedLeave, key) => {
+                  // Check if the employeeId from the logged-in user matches the employeeId from appliedLeave
+                  //const isCurrentUserLeave = row.employeeId.toString() === employeeId;
 
-                return (
-                  <TableRow key={key}>
-                    <TableCell>
-                      {row.firstName} {row.lastName}
-                    </TableCell>
-                    <TableCell>{row.leaveTypeName}</TableCell>
-                    <TableCell>
-                      {row.startDate
-                        ? formatDate(new Date(row.startDate))
-                        : "No date available"}
-                    </TableCell>
-                    <TableCell>
-                      {row.endDate
-                        ? formatDate(new Date(row.endDate))
-                        : "No date available"}
-                    </TableCell>
-                    <TableCell>{row.leaveReason}</TableCell>
-                    {/* <TableCell>{row.balanceLeave}</TableCell> */}
-                    <TableCell>{row.applyLeaveDay}</TableCell>
-                    {/* <TableCell>{row.remaingLeave}</TableCell> */}
+                  return (
+                    <TableRow key={key}>
+                      <TableCell>
+                        {row.firstName} {row.lastName}
+                      </TableCell>
+                      <TableCell>{row.leaveTypeName}</TableCell>
+                      <TableCell>
+                        {row.startDate
+                          ? formatDate(new Date(row.startDate))
+                          : "No date available"}
+                      </TableCell>
+                      <TableCell>
+                        {row.endDate
+                          ? formatDate(new Date(row.endDate))
+                          : "No date available"}
+                      </TableCell>
+                      <TableCell>{row.leaveReason}</TableCell>
+                      {/* <TableCell>{row.balanceLeave}</TableCell> */}
+                      <TableCell>{row.applyLeaveDay}</TableCell>
+                      {/* <TableCell>{row.remaingLeave}</TableCell> */}
 
-                    <TableCell>{row.leaveStatusName}</TableCell>
+                      <TableCell>{row.leaveStatusName}</TableCell>
 
-                    <TableCell>
-                      {renderIconButton(
-                        row.leaveStatusCode,
-                        row.appliedLeaveTypeId || 0
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            : "No data available"}
-        </TableBody>
-      </Table>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={snackbar.duration}
-        onClose={snackbar.handleSnackbarClose}
-        anchorOrigin={snackbar.position}
-      >
-        <Alert
+                      <TableCell>
+                        {renderIconButton(
+                          row.leaveStatusCode,
+                          row.appliedLeaveTypeId || 0
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              : "No data available"}
+          </TableBody>
+        </Table>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
           onClose={snackbar.handleSnackbarClose}
-          severity={snackbar.severity}
-          sx={{ width: "100%" }}
+          anchorOrigin={snackbar.position}
         >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-      <TablePagination
-  rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
-  component="div"
-  count={data.length} // Pass the total number of rows
-  rowsPerPage={rowsPerPage}
-  page={page}
-  onPageChange={handleChangePage}
-  onRowsPerPageChange={handleChangeRowsPerPage}
-/>
-    </TableContainer>
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]} // Define available rows per page options
+          component="div"
+          count={data.length} // Pass the total number of rows
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </TableContainer>
+      <ConfrimationDialogWithComment
+        isOpen={openConfirmation}
+        handleClose={handleConfirmationClose}
+        message=" "
+      />
+    </>
   );
 }
 /*UnpublishedOutlinedIcon*/

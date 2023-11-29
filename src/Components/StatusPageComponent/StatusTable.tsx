@@ -46,6 +46,7 @@ import { AppliedLeave } from "../../Model/AppliedLeaveModel";
 import TablePagination from "@mui/material/TablePagination";
 import ConfirmationDialog from "../ConfirmationDialog";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
+import ConfirmationDialogWithComment from "../ConfrimationDialogWithComment";
 function StatusTable() {
   const employeeId = DecryptEmployeeID();
 
@@ -133,6 +134,7 @@ function StatusTable() {
       FetchList();
     }
   };
+  
   // console.log("table data", data);
   useEffect(() => {
     FetchList();
@@ -204,16 +206,41 @@ function StatusTable() {
   const onLeaveEdit = (appliedLeaveTypeId: number) => {};
   const onLeaveDelete = (appliedLeaveTypeId: number) => {};
 
+
+  const [currentAppliedLeaveTypeId, setCurrentAppliedLeaveTypeId] = useState(0);
+  const [currentAppliedLeaveStatusCode, setCurrentAppliedLeaveStatusCode] =
+    useState("APP");
+  const handleConfirmationClose2 = async (value: string) => {
+    setOpenConfirmation(false);
+
+    if (value == "yes") {
+      const data = await AppliedLeaveUpdateStatusAsync({
+        appliedLeaveTypeId: currentAppliedLeaveTypeId,
+        leaveAllocationId: leaveAllocation,
+        statusCode: currentAppliedLeaveStatusCode,
+      });
+      // snackbar.showSnackbar(
+      //   data.message,
+      //   "success",
+      //   { vertical: "top", horizontal: "center" },
+      //   5000
+      // );
+      FetchList();
+    }
+  };
+
   const onLeaveStatusUpdate = async (
     appliedLeaveTypeId: number,
     statusCode: string
   ) => {
-
-    const data = await AppliedLeaveUpdateStatusAsync({
-      appliedLeaveTypeId: appliedLeaveTypeId,
-      leaveAllocationId: leaveAllocation,
-      statusCode: statusCode,
-    });
+    setOpenConfirmation(true);
+    setCurrentAppliedLeaveTypeId(appliedLeaveTypeId);
+    setCurrentAppliedLeaveStatusCode(statusCode);
+    // const data = await AppliedLeaveUpdateStatusAsync({
+    //   appliedLeaveTypeId: appliedLeaveTypeId,
+    //   leaveAllocationId: leaveAllocation,
+    //   statusCode: statusCode,
+    // });
 
     FetchList();
   };
@@ -380,6 +407,11 @@ function StatusTable() {
         isOpen={openConfirmation}
         handleClose={handleConfirmationClose}
         message="Are you sure you want to delete this leave"
+      />
+      <ConfirmationDialogWithComment
+        isOpen={openConfirmation}
+        handleClose={handleConfirmationClose2}
+        message=" "
       />
     </>
   );
