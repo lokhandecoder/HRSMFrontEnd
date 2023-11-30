@@ -179,20 +179,43 @@ export async function GetApplyLeaveById(appliedLeaveTypeId: number): Promise<{ d
       throw new Error('Failed to update leave data: ' + (error as Error).message);
     }
   }
-  export async function AppliedLeaveUpdateStatusByEmailConfirmAsync(code: string): Promise<any> {
-    try {
+  // export async function AppliedLeaveUpdateStatusByEmailConfirmAsync(code: string): Promise<any> {
+  //   try {
      
-      const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailConfirmAsync/${code}`,{
-        headers: {
-          Authorization: `Bearer ${TokenByLocalStorage}`,
-        },
-      });
+  //     const response = await axios.get(`${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailConfirmAsync/${code}`,{
+  //       headers: {
+  //         Authorization: `Bearer ${TokenByLocalStorage}`,
+  //       },
+  //     });
+  //     return response.data;
+  //   } catch (error) {
+  //     throw new Error('Failed to update leave data: ' + (error as Error).message);
+  //   }
+  // }
+  interface LeaveUpdateData {
+    code: string;
+    commentByUser: string;
+    commentDate : Date | null;
+  }
+  
+  export async function AppliedLeaveUpdateStatusByEmailConfirmAsync(dataObject: LeaveUpdateData) {
+    try {
+      const { code, commentByUser, commentDate} = dataObject;
+  
+      const response = await axios.post(
+        `${API_URL}AppliedLeave/AppliedLeaveUpdateStatusByEmailConfirmAsync`,
+        { code, commentByUser, commentDate }, // Passing commentByUser in the request body
+        {
+          headers: {
+            Authorization: `Bearer ${TokenByLocalStorage}`,
+          },
+        }
+      );
       return response.data;
     } catch (error) {
       throw new Error('Failed to update leave data: ' + (error as Error).message);
     }
   }
-
 
   export async function DeleteAppliedLeaveByIdAsync(id: number): Promise<{ data: any }> {
 
