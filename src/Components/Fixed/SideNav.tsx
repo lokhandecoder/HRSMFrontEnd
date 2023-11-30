@@ -107,7 +107,7 @@ export default function MiniDrawer() {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
   React.useState<null | HTMLElement>(null);
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = React.useState(true); 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const navigate = useNavigate();
