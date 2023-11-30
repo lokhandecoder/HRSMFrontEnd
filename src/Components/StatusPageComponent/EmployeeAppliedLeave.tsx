@@ -50,10 +50,8 @@ import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import ConfrimationDialogWithComment from "../ConfrimationDialogWithComment";
 import { EmployeeAppliedLeaveUtilities } from "../../Utilities/StatusPageUtilities/EmployeeAppliedLeaveUtilities";
 import Loader from "../Fixed/Loader";
-import Dialog from '@mui/material/Dialog';
-import CircularProgress from '@mui/material/CircularProgress';
-
-
+import Dialog from "@mui/material/Dialog";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function EmployeeAppliedLeave() {
   const appliedleaveutility = EmployeeAppliedLeaveUtilities();
@@ -417,8 +415,8 @@ function EmployeeAppliedLeave() {
               {/* <TableCell>Balance Leaves</TableCell> */}
               <TableCell>Applied Days</TableCell>
               {/* <TableCell>Remaining Leaves</TableCell> */}
-
               <TableCell>Status </TableCell>
+              <TableCell>Comments </TableCell>
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -453,6 +451,11 @@ function EmployeeAppliedLeave() {
                         {row.leaveStatusName} {row.leaveStatusId}
                       </TableCell>
 
+                      <TableCell>
+                        {row.comments && row.comments.length > 0
+                          ? row.comments[0].commentText
+                          : "No comments"}
+                      </TableCell>
                       <TableCell>
                         {renderIconButton(
                           row.leaveStatusCode,
@@ -498,7 +501,7 @@ function EmployeeAppliedLeave() {
         comment={comment}
         handleCommentChange={handleCommentChange}
       />
-      <Loader  loading={loading}/> 
+      <Loader loading={loading} />
     </>
   );
 }

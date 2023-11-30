@@ -372,6 +372,8 @@ function StatusTable() {
               {/* <TableCell>Remaining Leaves</TableCell> */}
 
               <TableCell>Status </TableCell>
+              <TableCell>Comments </TableCell>
+
               <TableCell>Action</TableCell>
             </TableRow>
           </TableHead>
@@ -403,6 +405,11 @@ function StatusTable() {
                       {/* <TableCell>{row.remaingLeave}</TableCell> */}
 
                       <TableCell>{row.leaveStatusName}</TableCell>
+                      <TableCell>
+                        {row.comments && row.comments.length > 0
+                          ? row.comments[0].commentText
+                          : "No comments"}
+                      </TableCell>
 
                       <TableCell>
                         {renderIconButton(

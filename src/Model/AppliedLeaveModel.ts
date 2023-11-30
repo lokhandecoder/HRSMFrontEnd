@@ -17,6 +17,11 @@ export interface AppliedLeave {
     leaveTypeName: string;
     leaveStatusName: string;
     leaveStatusCode: string;
+    comments: [
+      {
+        commentText : string | null;
+      }
+    ]
   }
 
   export interface AppliedLeaveUpdateStatus {
