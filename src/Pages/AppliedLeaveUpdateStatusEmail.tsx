@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   AppliedLeaveUpdateStatusByEmailAsync,
   AppliedLeaveUpdateStatusByEmailConfirmAsync,
@@ -11,6 +11,7 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
 
 const AppliedLeaveUpdateStatusEmail = () => {
   const { code } = useParams();
@@ -18,6 +19,8 @@ const AppliedLeaveUpdateStatusEmail = () => {
   //const [count, setCount] = useState(0);
   const [confrim, setConfrim] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [comment, setComment] = React.useState("");
+
   const renderAfterCalled = useRef(false);
 
   useEffect(() => {
@@ -25,7 +28,9 @@ const AppliedLeaveUpdateStatusEmail = () => {
       fetchData();
     }
   }, []);
-
+  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(event.target.value);
+  };
   const fetchData = async () => {
     try {
       const receivedData = await AppliedLeaveUpdateStatusByEmailAsync(
@@ -42,18 +47,25 @@ const AppliedLeaveUpdateStatusEmail = () => {
   const handleConfirm = async () => {
     try {
       setLoading(true); // Hide loader after confirmation
-      const receivedData = await AppliedLeaveUpdateStatusByEmailConfirmAsync(
-        code || ""
-      );
-      setData(receivedData);
-      //setCount(1);
-      setConfrim(true);
+      if (code !== undefined) {
+        const receivedData = await AppliedLeaveUpdateStatusByEmailConfirmAsync({
+          code: code,
+          commentByUser: comment,
+          commentDate : new Date(),
+        });
+        setData(receivedData);
+        setConfrim(true);
+        renderAfterCalled.current = true;
 
-      renderAfterCalled.current = true;
+
+      } else {
+        // Handle the case when 'code' is undefined, such as displaying an error message or taking appropriate action.
+      }
+      //setCount(1);
+
     } catch (error) {
       console.error("Error fetching data:", error);
       setLoading(false); // Hide loader after confirmation
-
     } finally {
       setLoading(false); // Hide loader after confirmation
     }
@@ -106,6 +118,18 @@ const AppliedLeaveUpdateStatusEmail = () => {
             >
               Are you sure you want to {data?.message}
             </Typography>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="comment"
+              label="Enter your Comment"
+              type="text"
+              fullWidth
+              multiline // Make it multiline
+              rows={4} // Set the number of rows
+              value={comment}
+              onChange={handleCommentChange}
+            />
           </CardContent>
           <CardActions sx={{ justifyContent: "center" }}>
             <button
