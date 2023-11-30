@@ -17,16 +17,15 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
-import {SpaceDashboard, AccessAlarm} from '@mui/icons-material';
+import { SpaceDashboard, AccessAlarm } from "@mui/icons-material";
 
-
-import FactCheckIcon from '@mui/icons-material/FactCheck';
+import FactCheckIcon from "@mui/icons-material/FactCheck";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import BadgeIcon from '@mui/icons-material/Badge';
-import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
+import BadgeIcon from "@mui/icons-material/Badge";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import SideNavLink from "./SideNavLink";
 import { RoleByLocalStorage } from "../../APIConfig";
 import { GetLoginEmployeeByLocalStorage } from "../../Services/LocalStorageData";
@@ -105,9 +104,9 @@ const Drawer = styled(MuiDrawer, {
 export default function MiniDrawer() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-  React.useState<null | HTMLElement>(null);
+    React.useState<null | HTMLElement>(null);
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true); 
+  const [open, setOpen] = React.useState(true);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const navigate = useNavigate();
@@ -140,7 +139,7 @@ export default function MiniDrawer() {
     window.location.href = "/login";
     // navigate("/login")
     // navigate("/login")
-  }
+  };
   const menuId = "primary-search-account-menu";
   // interface StoredData {
   //   employeeId: number;
@@ -153,14 +152,14 @@ export default function MiniDrawer() {
   //   refreshToken?: string;
   //   refreshTokenExpiryTime?: string;
   // }
-  
+
   // let storedData: StoredData | null = null; // Declare storedData variable
-  
+
   // const storedDataString = localStorage.getItem("Role");
-  
+
   // if (storedDataString) {
   //   storedData = JSON.parse(storedDataString);
-  
+
   //   if (storedData !== null) {
   //     if ('userName' in storedData && 'firtsName' in storedData && 'lastName' in storedData) {
   //       // All necessary properties exist in storedData
@@ -173,7 +172,7 @@ export default function MiniDrawer() {
   // } else {
   //   console.log("No data found for 'Role' in localStorage.");
   // }
-  
+
   // Rendering the Menu component
   const storedData = GetLoginEmployeeByLocalStorage();
   const renderMenu = (
@@ -192,15 +191,17 @@ export default function MiniDrawer() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem>{storedData && storedData.firtsName ? storedData.firtsName + " " + storedData.lastName : ""}</MenuItem>
-      <MenuItem>{storedData && storedData.userName ? storedData.userName : ""}</MenuItem>
+      <MenuItem>
+        {storedData && storedData.firtsName
+          ? storedData.firtsName + " " + storedData.lastName
+          : ""}
+      </MenuItem>
+      <MenuItem>
+        {storedData && storedData.userName ? storedData.userName : ""}
+      </MenuItem>
       <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
     </Menu>
   );
-  
-  
-
-
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -237,15 +238,25 @@ export default function MiniDrawer() {
           </IconButton>
         </Toolbar>
       </AppBar>
+      {/* <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
+        <Toolbar>
+          <Typography variant="h6" noWrap component="div">
+            Clipped drawer
+          </Typography>
+        </Toolbar>
+      </AppBar> */}
       {/* {renderMobileMenu} */}
       {renderMenu}
-      <Drawer variant="permanent" open={open}>
-        <DrawerHeader>
+      <Drawer variant="permanent" open={open} >
+        <DrawerHeader sx={{ backgroundColor : "#1976d2"}}>
           <IconButton onClick={handleDrawerClose}>
             {theme.direction === "rtl" ? (
-              <ChevronRightIcon />
+              <ChevronRightIcon sx={{ color : "white" }} />
             ) : (
-              <ChevronLeftIcon />
+              <ChevronLeftIcon sx={{ color : "white" }}  />
             )}
           </IconButton>
         </DrawerHeader>

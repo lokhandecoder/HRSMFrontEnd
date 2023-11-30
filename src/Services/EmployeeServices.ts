@@ -4,6 +4,7 @@ import { EmployeeModel } from "../Model/EmployeeModel";
 import dayjs, { Dayjs } from "dayjs"; // Import dayjs
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { LoginModel } from "../Model/LoginModel";
+import { MainCardEmployee } from "../Model/MainCardEmployee";
 
 export const createEmployee = async (employeeData: EmployeeModel) => {
   try {
@@ -87,6 +88,22 @@ export async function GetEmployeeByIdAsync(employeeId :number): Promise<{ data: 
       },
     });
     //console.log(response);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to update leave data: ' + (error as Error).message);
+  }
+}
+export async function GetEmployeeDetailsByIdAsync(employeeId :number): Promise<{ data: MainCardEmployee}> {
+  try {
+
+    // const token = localStorage.getItem("Token"); // Replace 'YOUR_BEARER_TOKEN' with your actual bearer token
+
+    const response = await axios.get(`${API_URL}employee/GetEmployeeDetailsByIdAsync/${employeeId}`,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
+    console.log("new api", response);
     return response.data;
   } catch (error) {
     throw new Error('Failed to update leave data: ' + (error as Error).message);

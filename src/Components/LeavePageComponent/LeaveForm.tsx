@@ -30,7 +30,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 // import {MuiAlert} from '@mui/material';
 import { DateValidationError } from "@mui/x-date-pickers/models";
-import { useParams } from "react-router-dom"; // Import useParams to get the ID from the route params
+import { useNavigate, useParams } from "react-router-dom"; // Import useParams to get the ID from the route params
 import { GetLeaveData } from "../../Database/LeaveData";
 import { getLeaveTypes } from "../../Services/LeaveType";
 import { GetEmployeeLeaveByEmployeeId } from "../../Services/EmployeeLeaveServices";
@@ -66,6 +66,7 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
   const [balanceLeave, setBalanceLeave] = useState(0);
   const [applyLeaveDefaultValue, setApplyLeaveDefaultValue] = useState(1); // Default value for Apply Leave dropdown
   const [applyLeaveReadOnly, setApplyLeaveReadOnly] = useState(false); // Readonly state for Apply Leave dropdown
+  const navigate = useNavigate()
 
   const initialFormData: LeaveFormData = {
     appliedLeaveTypeId: appliedLeaveTypeId,
@@ -141,6 +142,9 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
     formData.startDate,
     formData.isHalfDay,
   ]);
+  const handleReturn = () => {
+    navigate('/')
+  }
 
 
   return (
@@ -359,6 +363,14 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               onClick={handleClear}
             >
               Clear
+            </Button>
+            <Button
+              size="large"
+              variant="contained"
+              color="warning"
+              onClick={handleReturn}
+            >
+              Back to Dashboard
             </Button>
           </CardActions>
         </Card>
