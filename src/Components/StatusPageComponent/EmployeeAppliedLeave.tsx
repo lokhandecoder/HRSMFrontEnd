@@ -49,21 +49,30 @@ import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 import useCustomSnackbar from "../CustomComponent/useCustomSnackbar";
 import ConfrimationDialogWithComment from "../ConfrimationDialogWithComment";
 import { EmployeeAppliedLeaveUtilities } from "../../Utilities/StatusPageUtilities/EmployeeAppliedLeaveUtilities";
+import Loader from "../Fixed/Loader";
+import Dialog from '@mui/material/Dialog';
+import CircularProgress from '@mui/material/CircularProgress';
+
+
+
 function EmployeeAppliedLeave() {
   const appliedleaveutility = EmployeeAppliedLeaveUtilities();
 
   const {
     onLeaveStatusUpdate,
-        displayedData,
-        formatDate,
-        snackbar,
-        data,
-        rowsPerPage,
-        page,
-        handleChangePage,
-        handleChangeRowsPerPage,
-        openConfirmation,
-        handleConfirmationClose,
+    displayedData,
+    formatDate,
+    snackbar,
+    data,
+    rowsPerPage,
+    page,
+    handleChangePage,
+    handleChangeRowsPerPage,
+    openConfirmation,
+    handleConfirmationClose,
+    comment,
+    handleCommentChange,
+    loading,
   } = appliedleaveutility;
 
   // const employeeId = DecryptEmployeeID();
@@ -258,12 +267,16 @@ function EmployeeAppliedLeave() {
   //   FetchList();
   // };
 
-
   // useEffect(() => {
   //   fetchData(); // Call fetchData when the component mounts
   // }, []);
 
-  function renderIconButton(statusCode: string, appliedLeaveTypeId: number) {
+  function renderIconButton(
+    statusCode: string,
+    appliedLeaveTypeId: number,
+    employeeids: number,
+    leaveStatusId: number
+  ) {
     switch (statusCode) {
       case "APP":
         return (
@@ -272,7 +285,12 @@ function EmployeeAppliedLeave() {
               <IconButton
                 aria-label="Approve"
                 onClick={() =>
-                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "APR")
+                  onLeaveStatusUpdate(
+                    appliedLeaveTypeId || 0,
+                    "APR",
+                    employeeids,
+                    leaveStatusId
+                  )
                 }
               >
                 <DoneOutlineOutlinedIcon color="success" />
@@ -282,7 +300,12 @@ function EmployeeAppliedLeave() {
               <IconButton
                 aria-label="Reject"
                 onClick={() =>
-                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REJ")
+                  onLeaveStatusUpdate(
+                    appliedLeaveTypeId || 0,
+                    "REJ",
+                    employeeids,
+                    leaveStatusId
+                  )
                 }
               >
                 <CancelPresentationOutlinedIcon color="error" />
@@ -334,7 +357,12 @@ function EmployeeAppliedLeave() {
               <IconButton
                 aria-label="Approve Cancel Request"
                 onClick={() =>
-                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "APC")
+                  onLeaveStatusUpdate(
+                    appliedLeaveTypeId || 0,
+                    "APC",
+                    employeeids,
+                    leaveStatusId
+                  )
                 }
               >
                 <DoneAllOutlinedIcon color="success" />
@@ -344,7 +372,12 @@ function EmployeeAppliedLeave() {
               <IconButton
                 aria-label="Reject Cancel Request"
                 onClick={() =>
-                  onLeaveStatusUpdate(appliedLeaveTypeId || 0, "REC")
+                  onLeaveStatusUpdate(
+                    appliedLeaveTypeId || 0,
+                    "REC",
+                    employeeids,
+                    leaveStatusId
+                  )
                 }
               >
                 <CancelOutlinedIcon color="error" />
@@ -416,12 +449,16 @@ function EmployeeAppliedLeave() {
                       <TableCell>{row.applyLeaveDay}</TableCell>
                       {/* <TableCell>{row.remaingLeave}</TableCell> */}
 
-                      <TableCell>{row.leaveStatusName}</TableCell>
+                      <TableCell>
+                        {row.leaveStatusName} {row.leaveStatusId}
+                      </TableCell>
 
                       <TableCell>
                         {renderIconButton(
                           row.leaveStatusCode,
-                          row.appliedLeaveTypeId || 0
+                          row.appliedLeaveTypeId || 0,
+                          row.employeeId,
+                          row.leaveStatusId
                         )}
                       </TableCell>
                     </TableRow>
@@ -458,7 +495,10 @@ function EmployeeAppliedLeave() {
         isOpen={openConfirmation}
         handleClose={handleConfirmationClose}
         message=" "
+        comment={comment}
+        handleCommentChange={handleCommentChange}
       />
+      <Loader  loading={loading}/> 
     </>
   );
 }

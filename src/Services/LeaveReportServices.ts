@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_URL, TokenByLocalStorage } from "../APIConfig";
 import { EmployeeLeavesReportResponse } from "../Model/EmployeeLeavesReportResponse";
 import { EmployeeReportRequest } from "../Model/EmployeeReportRequest";
+import { AppliedLeaveComment } from "../Model/AppliedLeaveComment";
 
 // export async function GetLeavesReportAsync(formData : []): Promise<{}> {
 //     try {
@@ -98,5 +99,17 @@ export async function GetLeavesReportAsync(employeeData: EmployeeReportRequest):
     throw new Error('Failed to fetch leave data: ' + (error as Error).message);
   }
 }
+export const CreateAppliedLeaveComment = async (data: AppliedLeaveComment) => {
+  try {
+    const response = await axios.post(`${API_URL}AppliedLeaveComment/CreateAppliedLeaveComment`,data,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 
 //{ data: LeaveStatus[] }
