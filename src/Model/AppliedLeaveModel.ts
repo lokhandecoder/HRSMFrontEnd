@@ -23,4 +23,6 @@ export interface AppliedLeave {
     appliedLeaveTypeId : number;
     statusCode : string;
     leaveAllocationId : number;
+    commentByUser : string,
+    date : Date | null;
   }

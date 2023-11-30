@@ -48,6 +48,7 @@ import ConfirmationDialog from "../ConfirmationDialog";
 import { GetActiveLeaveAllocationAsync } from "../../Services/LeaveAllocation";
 import ConfirmationDialogWithComment from "../ConfrimationDialogWithComment";
 import { StatusTableUtilitites } from "../../Utilities/StatusPageUtilities/StatusTableUtilitites";
+import Loader from "../Fixed/Loader";
 function StatusTable() {
   const statusTableutility = StatusTableUtilitites();
 
@@ -66,6 +67,9 @@ function StatusTable() {
     handleConfirmationClose,
     openConfirmation2,
     handleConfirmationClose2,
+    comment,
+    handleCommentChange,
+    loading,
   } = statusTableutility;
   // const employeeId = DecryptEmployeeID();
 
@@ -432,7 +436,10 @@ function StatusTable() {
         isOpen={openConfirmation2}
         handleClose={handleConfirmationClose2}
         message=" "
+        comment={comment}
+        handleCommentChange={handleCommentChange}
       />
+      <Loader loading={loading} />
     </>
   );
 }

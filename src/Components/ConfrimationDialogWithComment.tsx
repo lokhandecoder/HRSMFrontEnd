@@ -11,12 +11,14 @@ const ConfirmationDialogWithComment: React.FC<{
   isOpen: boolean;
   handleClose: (value: string, comment?: string) => void;
   message: string;
-}> = ({ isOpen, handleClose, message }) => {
-  const [comment, setComment] = React.useState("");
+  comment: string; // Comment state
+  handleCommentChange: (event: React.ChangeEvent<HTMLInputElement>) => void; // Function to handle comment change
+}> = ({ isOpen, handleClose, message,comment,handleCommentChange }) => {
+  // const [comment, setComment] = React.useState("");
 
-  const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setComment(event.target.value);
-  };
+  // const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setComment(event.target.value);
+  // };
 
   return (
     <React.Fragment>

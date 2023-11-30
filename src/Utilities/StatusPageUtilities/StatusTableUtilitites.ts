@@ -15,7 +15,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 
 export const StatusTableUtilitites = () => {
     const employeeId = DecryptEmployeeID();
-
+    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<AppliedLeave[]>([]); // Specify the type for data
     const [employee, setEmployee] = useState<Employee[]>([]);
     const navigate = useNavigate();
@@ -33,6 +33,11 @@ export const StatusTableUtilitites = () => {
   
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5); // Define the number of rows per page
+    const [comment, setComment] = React.useState("");
+
+    const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setComment(event.target.value);
+    };
   
     const handleChangePage = (event: unknown, newPage: number) => {
       setPage(newPage);
@@ -182,10 +187,13 @@ export const StatusTableUtilitites = () => {
       setOpenConfirmation2(false);
   
       if (value == "yes") {
+        setLoading(true);
         const data = await AppliedLeaveUpdateStatusAsync({
           appliedLeaveTypeId: currentAppliedLeaveTypeId,
           leaveAllocationId: leaveAllocation,
           statusCode: currentAppliedLeaveStatusCode,
+          commentByUser: comment,
+          date: new Date(),  
         });
         // snackbar.showSnackbar(
         //   data.message,
@@ -193,6 +201,7 @@ export const StatusTableUtilitites = () => {
         //   { vertical: "top", horizontal: "center" },
         //   5000
         // );
+        setLoading(false);
         FetchList();
       }
     };
@@ -232,6 +241,9 @@ export const StatusTableUtilitites = () => {
         handleConfirmationClose,
         openConfirmation2,
         handleConfirmationClose2,
+        comment,
+        handleCommentChange,
+        loading,
         
       };
 
