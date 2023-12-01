@@ -5,6 +5,7 @@ import dayjs, { Dayjs } from "dayjs"; // Import dayjs
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { LoginModel } from "../Model/LoginModel";
 import { MainCardEmployee } from "../Model/MainCardEmployee";
+import { AppliedLeave } from "../Model/AppliedLeaveModel";
 
 export const createEmployee = async (employeeData: EmployeeModel) => {
   try {
@@ -133,4 +134,20 @@ export const EmployeeLoginAsync = async (data: LoginModel) => {
     throw error;
   }
 };
+export async function GetPendingAppliedLeavesByEmpIdAsync(employeeId :number): Promise<{ data: AppliedLeave}> {
+  try {
 
+    // const token = localStorage.getItem("Token"); // Replace 'YOUR_BEARER_TOKEN' with your actual bearer token
+
+    const response = await axios.get(`${API_URL}appliedLeave/GetPendingAppliedLeavesByEmpIdAsync/${employeeId}`,{
+      headers: {
+        Authorization: `Bearer ${TokenByLocalStorage}`,
+      },
+    });
+    console.log("pending leaves", response);
+    return response.data;
+  } catch (error) {
+    throw new Error('Failed to update leave data: ' + (error as Error).message);
+  }
+}
+// http://localhost:5024/api/appliedLeave/GetPendingAppliedLeavesByEmpIdAsync/1

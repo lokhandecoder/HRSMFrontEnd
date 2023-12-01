@@ -8,6 +8,7 @@ import ProfileImage from "../Components/HomePageComponents/ProfileImage";
 import Paper from '@mui/material/Paper';
 import UpcomingHolidays from "../Components/HomePageComponents/UpcomingHolidays";
 import LeavesCard from "../Components/HomePageComponents/LeavesCard";
+import EmployeePendingLeaves from "../Components/HomePageComponents/EmployeePendingLeaves";
 
 
 function DashBoardPage() {
@@ -17,11 +18,13 @@ function DashBoardPage() {
         <Grid container spacing={2}>
           <Grid item xs={8}>
             <ProfileCard />
+   
             {/* <ProfileCard /> */}
             <LeavesCard />
           </Grid>
           <Grid item xs={4}>
             <UpcomingHolidays />
+                     <EmployeePendingLeaves />
           </Grid>
         </Grid>
       </LayoutComponent>

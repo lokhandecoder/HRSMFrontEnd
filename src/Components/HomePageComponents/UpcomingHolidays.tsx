@@ -16,46 +16,13 @@ export interface Holiday {
 }
 
 function UpcomingHolidays() {
-  const [isTableOpen, setIsTableOpen] = useState(false);
-
-  const toggleTable = () => {
-    setIsTableOpen(!isTableOpen);
-  };
-
-
-
   return (
     <Card sx={{ p: 1, boxShadow: 4, mt: 5 }}>
-      <Typography variant="h5" sx={{ textAlign: "center" }}>
+      <Typography variant="h5" sx={{ textAlign: "center", marginTop: "30px" }}>
         Upcoming Holidays
       </Typography>
       <CardContent>
-        <Typography
-          variant="body1"
-          onClick={toggleTable}
-          sx={{
-            cursor: "pointer",
-            textAlign: "center",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          {isTableOpen ? (
-            <>
-              <KeyboardArrowUpIcon />
-              Hide Holidays
-            </>
-          ) : (
-            <>
-              <KeyboardArrowDownIcon />
-              Show Holidays
-            </>
-          )}
-        </Typography>
-        <Collapse in={isTableOpen}>
         <UpcomingTable />
-        </Collapse>
       </CardContent>
     </Card>
   );
