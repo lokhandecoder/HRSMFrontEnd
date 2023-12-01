@@ -71,6 +71,9 @@ const AppliedLeaveUpdateStatusEmail = () => {
     }
   };
 
+  const handleCancel = () => {
+    window.close();
+  };
   return (
     <div style={{ ...styles.container, backgroundColor: "#85a4a6" }}>
       {confrim && confrim ? (
@@ -139,6 +142,13 @@ const AppliedLeaveUpdateStatusEmail = () => {
             >
               {isLoading ? "Loading..." : "Yes"}
             </button>
+            <button
+              style={styles.cancelbutton}
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              No
+            </button>
           </CardActions>
         </Card>
       )}
@@ -175,7 +185,20 @@ const styles: { [key: string]: CSSProperties } = {
     borderRadius: "4px",
     cursor: "pointer",
     color: "#fff",
-    backgroundColor: "#007bff",
+    backgroundColor: "green",
+    border: "none",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+    transition: "background-color 0.3s ease",
+  },
+  cancelbutton: {
+    margin: "0 10px",
+    padding: "8px 16px",
+    fontSize: "16px",
+    fontWeight: "bold",
+    borderRadius: "4px",
+    cursor: "pointer",
+    color: "#fff",
+    backgroundColor: "red",
     border: "none",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
     transition: "background-color 0.3s ease",
