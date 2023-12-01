@@ -11,6 +11,8 @@ import { getLeaveStatus, getLeaveTypes } from "../../Services/LeaveType";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
 import { LeaveStatus } from "../../Model/LeaveStatus";
 import ClearIcon from "@mui/icons-material/Clear";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 import {
   AppliedLeaveUpdateStatusAsync,
@@ -25,6 +27,7 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 //import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
 //import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
 
 import {
@@ -70,6 +73,8 @@ function StatusTable() {
     comment,
     handleCommentChange,
     loading,
+    handleReminder,
+    snackbar,
   } = statusTableutility;
   // const employeeId = DecryptEmployeeID();
 
@@ -293,6 +298,14 @@ function StatusTable() {
                 <DeleteForeverOutlined />
               </IconButton>
             </Tooltip>
+            <Tooltip title="Send Reminder">
+              <IconButton
+                aria-label="reminder"
+                onClick={() => handleReminder(appliedLeaveTypeId || 0)}
+              >
+                <NotificationImportantIcon />
+              </IconButton>
+            </Tooltip>
           </Stack>
         );
       case "APR":
@@ -433,6 +446,20 @@ function StatusTable() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </TableContainer>
+      <Snackbar
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
+          onClose={snackbar.handleSnackbarClose}
+          anchorOrigin={snackbar.position}
+        >
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
 
       <ConfirmationDialog
         isOpen={openConfirmation}
