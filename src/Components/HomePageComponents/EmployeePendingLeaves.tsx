@@ -22,6 +22,8 @@ import TableRow from "@mui/material/TableRow";
 import TableHead from "@mui/material/TableHead";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import { EmployeeIDByLocalStorage } from "../../APIConfig";
+import { getDecryptedValueFromStorage } from "../../Utilities/LocalStorageEncryptionUtilities";
 
 
 
@@ -30,7 +32,8 @@ function EmployeePendingLeaves() {
 
     const fetchdata = async () => {
         try {
-            const data = await GetPendingAppliedLeavesByEmpIdAsync(5);
+            const employeeId = getDecryptedValueFromStorage("employeeID", 0);
+            const data = await GetPendingAppliedLeavesByEmpIdAsync(employeeId);
             console.log(data.data);
 
             // Assuming data.data is an array of AppliedLeave objects
