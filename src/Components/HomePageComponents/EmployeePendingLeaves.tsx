@@ -53,12 +53,14 @@ function EmployeePendingLeaves() {
     }, []);
 
   return (
-    <Card sx={{ p: 1, boxShadow: 4, mt: 5 }}>
+    <Card sx={{ p: 1, boxShadow: 4, mt: 2 }}>
       <CardContent>
       <Typography variant="h5" sx={{ textAlign: "center" }}>
         Pending Leaves
       </Typography>
-        <TableContainer component={Paper}>
+      {/* <TableContainer  style={{ maxHeight: pendingLeaves.length > 2 ? 300 : 'auto', overflow: 'auto', marginTop : "2px" }}> */}
+      <TableContainer component={Paper} style={{ maxHeight: 250, overflow: "auto" }}>
+      {/* <Table stickyHeader > */}
           <Table aria-label="pending-leaves-table">
             <TableHead>
               <TableRow>

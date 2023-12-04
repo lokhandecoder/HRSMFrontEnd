@@ -18,6 +18,8 @@ import LeaveApprovedPage from "../Pages/LeaveApprovedPage";
 import AppliedLeaveUpdateStatusEmail from "../Pages/AppliedLeaveUpdateStatusEmail";
 import PageNotFoundPage from "../Pages/PageNotFoundPage";
 import LeaveReportsPage from "../Pages/LeaveReportsPage";
+import ManageHolidays from "../Pages/ManageHolidays";
+// import ManageHolidays from "../Pages/ManageHolidays_copy";
 
 function RoutingPgae() {
   interface RouteConfig {
@@ -94,6 +96,8 @@ function RoutingPgae() {
         return LeaveApprovedPage;
       case "LeaveReportsPage":
         return LeaveReportsPage;
+      case "ManageHolidays":
+        return ManageHolidays;
       default:
         return null; // Return a default component or handle the error
     }

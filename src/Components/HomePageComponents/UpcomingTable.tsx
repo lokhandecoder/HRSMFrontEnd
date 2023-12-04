@@ -36,9 +36,22 @@ const UpcomingTable = () => {
     FetchList();
   }, []);
 
+  const getTableSize = () => {
+    if (data.length > 4) {
+      return "large";
+    } else if (data.length > 2) {
+      return "medium";
+    } else {
+      return "small";
+    }
+  };
+  const tableSize = getTableSize();
+
   return (
-    <TableContainer>
-      <Table>
+    // <TableContainer style={{ maxHeight: data.length > 3 ? 300 : 'auto', overflow: 'auto' }}>
+    //   <Table size={tableSize === "large" ? undefined : tableSize}>
+    <TableContainer style={{ maxHeight: 250, overflow: "auto" }}>
+      <Table stickyHeader>
         <TableHead>
           <TableRow>
             <TableCell>Date</TableCell>

@@ -17,7 +17,8 @@ export interface Holiday {
 
 function UpcomingHolidays() {
   return (
-    <Card sx={{ p: 1, boxShadow: 4, mt: 5 }}>
+    // <Card sx={{ p: 1, boxShadow: 4, mt: 5, height: "365px" }}> {/* Adjust the height as needed */}
+       <Card sx={{ p: 1, boxShadow: 4, mt: 5 }}>
       <Typography variant="h5" sx={{ textAlign: "center", marginTop: "30px" }}>
         Upcoming Holidays
       </Typography>
