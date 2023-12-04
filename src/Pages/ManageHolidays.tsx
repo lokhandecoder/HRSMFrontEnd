@@ -10,6 +10,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import TextField from "@mui/material/TextField";
+import FormControl from "@mui/material/FormControl";
 import axios from "axios";
 import dayjs, { Dayjs } from "dayjs"; // Import Dayjs
 import { CreateHoliday } from "../Services/HolidaysServices";
@@ -19,31 +20,32 @@ function ManageHolidays() {
   const [holidayName, setHolidayName] = useState(""); // State to store the holiday name
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null); // Define the type for selectedDate
 
-  const handleDateChange = (date: Dayjs | null) => { // Define the type for the 'date' parameter
+  const handleDateChange = (date: Dayjs | null) => {
+    // Define the type for the 'date' parameter
     setSelectedDate(date);
   };
 
   const handleAddHoliday = async () => {
     if (holidayName && selectedDate) {
-      const formattedDate = selectedDate.toDate(); // Convert Dayjs to Date object
+      // const formattedDate = selectedDate.toDate(); // Convert Dayjs to Date object
+      const formattedDate = selectedDate.startOf("day").toDate(); // Extract only the date part
+
       const holidayData: ManageHolidayModel = {
         holidayName: holidayName,
         HolidayDate: formattedDate,
       };
       console.log("holidayData", holidayData);
-  
+
       try {
         const sendData = await CreateHoliday(holidayData);
-        console.log('Holiday successfully created:', sendData);
+        console.log("Holiday successfully created:", sendData);
       } catch (error) {
-        console.error('Error creating holiday:', error);
+        console.error("Error creating holiday:", error);
       }
     } else {
-      console.error('Please fill in both holiday name and select a date.');
+      console.error("Please fill in both holiday name and select a date.");
     }
   };
-  
-  
 
   return (
     <LayoutComponent>
@@ -56,7 +58,7 @@ function ManageHolidays() {
               rowSpacing={1}
               columnSpacing={{ xs: 1, sm: 2, md: 3, lg: 1 }}
             >
-              <Grid item xs={12} sm={4} md={3} lg={3}>
+              {/* <Grid item xs={12} sm={4} md={3} lg={3}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DatePicker
                     label="Select the date"
@@ -64,14 +66,26 @@ function ManageHolidays() {
                     onChange={handleDateChange}
                   />
                 </LocalizationProvider>
+              </Grid> */}
+              <Grid item xs={12} sm={4} md={3} lg={3}>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <FormControl fullWidth>
+                    <DatePicker
+                      label="Select the date"
+                      value={selectedDate}
+                      onChange={handleDateChange}
+                    />
+                  </FormControl>
+                </LocalizationProvider>
               </Grid>
+
               <Grid item xs={12} sm={4} md={3} lg={3}>
                 <TextField
                   label="Enter the holiday name"
                   variant="outlined"
                   fullWidth
                   value={holidayName}
-                  sx={{ mt: 1 }}
+                  // sx={{ mt: 1 }}
                   onChange={(e) => setHolidayName(e.target.value)}
                 />
               </Grid>
