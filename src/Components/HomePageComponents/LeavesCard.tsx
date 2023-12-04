@@ -46,12 +46,13 @@ function  LeavesCard() {
           );
 
           return (
-            <Grid xs={3} key={key} >
+            // <Grid xs={3} key={key} >
               <Card
                 sx={{
-                  minWidth: 275,
+                  width : "100%",
                   boxShadow: 4,
                   borderRadius: 3,
+                  margin : 1,
                 }}
               >
                 <CardContent>
@@ -66,7 +67,7 @@ function  LeavesCard() {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid>
+            // </Grid>
           );
         })}
       </Grid>

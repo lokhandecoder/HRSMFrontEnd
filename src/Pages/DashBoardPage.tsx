@@ -20,11 +20,12 @@ function DashBoardPage() {
             <ProfileCard />
    
             {/* <ProfileCard /> */}
-            <LeavesCard />
+            <EmployeePendingLeaves />
+           
           </Grid>
           <Grid item xs={4}>
             <UpcomingHolidays />
-                     <EmployeePendingLeaves />
+            <LeavesCard />
           </Grid>
         </Grid>
       </LayoutComponent>

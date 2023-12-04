@@ -25,55 +25,71 @@ import Typography from "@mui/material/Typography";
 import { EmployeeIDByLocalStorage } from "../../APIConfig";
 import { getDecryptedValueFromStorage } from "../../Utilities/LocalStorageEncryptionUtilities";
 
-
-
 function EmployeePendingLeaves() {
-    const [pendingLeaves, setPendingLeaves] = useState<AppliedLeave[]>([]);
+  const [pendingLeaves, setPendingLeaves] = useState<AppliedLeave[]>([]);
 
-    const fetchdata = async () => {
-        try {
-            const employeeId = getDecryptedValueFromStorage("employeeID", 0);
-            const data = await GetPendingAppliedLeavesByEmpIdAsync(employeeId);
-            console.log(data.data);
+  const fetchdata = async () => {
+    try {
+      const employeeId = getDecryptedValueFromStorage("employeeID", 0);
+      const data = await GetPendingAppliedLeavesByEmpIdAsync(employeeId);
+      console.log(data.data);
 
-            // Assuming data.data is an array of AppliedLeave objects
-            if (Array.isArray(data.data)) {
-                setPendingLeaves(data.data); // Saving fetched data in state
-            } else {
-                // Handle the case where data.data is not an array
-                console.error('Data is not an array:', data.data);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
+      // Assuming data.data is an array of AppliedLeave objects
+      if (Array.isArray(data.data)) {
+        setPendingLeaves(data.data); // Saving fetched data in state
+      } else {
+        // Handle the case where data.data is not an array
+        console.error("Data is not an array:", data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-    useEffect(() => {
-        fetchdata();
-    }, []);
+  useEffect(() => {
+    fetchdata();
+  }, []);
 
   return (
     <Card sx={{ p: 1, boxShadow: 4, mt: 2 }}>
       <CardContent>
-      <Typography variant="h5" sx={{ textAlign: "center" }}>
-        Pending Leaves
-      </Typography>
-      {/* <TableContainer  style={{ maxHeight: pendingLeaves.length > 2 ? 300 : 'auto', overflow: 'auto', marginTop : "2px" }}> */}
-      <TableContainer component={Paper} style={{ maxHeight: 250, overflow: "auto" }}>
-      {/* <Table stickyHeader > */}
+        <Typography variant="h5" sx={{ textAlign: "center" }}>
+          Pending Leaves
+        </Typography>
+        {/* <TableContainer  style={{ maxHeight: pendingLeaves.length > 2 ? 300 : 'auto', overflow: 'auto', marginTop : "2px" }}> */}
+        <TableContainer
+          component={Paper}
+          style={{ maxHeight: 250, overflow: "auto" }}
+        >
+          {/* <Table stickyHeader > */}
           <Table aria-label="pending-leaves-table">
             <TableHead>
               <TableRow>
-                <TableCell>Leave Type</TableCell>
+                {/* <TableCell>Leave Type</TableCell> */}
+                <TableCell>Start Date</TableCell>
+                <TableCell>End Date</TableCell>
+                <TableCell>Applied Days</TableCell>
                 <TableCell>Reason</TableCell>
                 <TableCell>Status</TableCell>
+                
                 {/* Add additional TableCell components for more leave details */}
               </TableRow>
             </TableHead>
             <TableBody>
               {pendingLeaves.map((leave, index) => (
                 <TableRow key={index}>
-                  <TableCell>{leave.leaveTypeName}</TableCell>
+                  {/* <TableCell>{leave.leaveTypeName}</TableCell> */}
+                  <TableCell>
+                    {leave.startDate
+                      ? new Date(leave.startDate).toLocaleDateString()
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {leave.endDate
+                      ? new Date(leave.endDate).toLocaleDateString()
+                      : "N/A"}
+                  </TableCell>
+                  <TableCell>{leave.applyLeaveDay}</TableCell>
                   <TableCell>{leave.leaveReason}</TableCell>
                   <TableCell>{leave.leaveStatusName}</TableCell>
                   {/* Add additional TableCell components for more leave details */}
