@@ -13,6 +13,8 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DateField } from "@mui/x-date-pickers/DateField";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import Checkbox from "@mui/material/Checkbox";
+import Autocomplete from '@mui/material/Autocomplete';
+
 import {
   Box,
   Button,
@@ -52,7 +54,6 @@ function AddEmployee() {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
   return (
     <>
-    
       <Card sx={{ minWidth: 275, boxShadow: 5 }}>
         <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Employee</h1>
 
@@ -63,7 +64,7 @@ function AddEmployee() {
               rowSpacing={2}
               columnSpacing={{ xs: 1, sm: 2, md: 3 }}
             >
-              <Grid item xs={3} sx={{ mt: "-7px" }}>
+              <Grid item xs={12} sm={8} md={6} lg={3} sx={{ mt: "-7px" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <FormControl fullWidth>
@@ -83,11 +84,9 @@ function AddEmployee() {
                         // }}
 
                         onChange={(date) => {
-                          
-                            // Only allow changing the end date if not half-day
-                            if (date) {
-                              handleDateChange("dateOfJoining", date.toDate());
-                            
+                          // Only allow changing the end date if not half-day
+                          if (date) {
+                            handleDateChange("dateOfJoining", date.toDate());
                           }
                         }}
                         format="DD/MM/YYYY"
@@ -96,7 +95,7 @@ function AddEmployee() {
                   </DemoContainer>
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 <TextField
                   fullWidth
                   autoComplete="off"
@@ -111,7 +110,7 @@ function AddEmployee() {
                   helperText={fieldErrors.firstName}
                 />
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 <TextField
                   fullWidth
                   autoComplete="off"
@@ -126,7 +125,7 @@ function AddEmployee() {
                   helperText={fieldErrors.lastName}
                 />
               </Grid>
-              <Grid item xs={3} sx={{ mt: "-7px" }}>
+              <Grid item xs={12} sm={8} md={6} lg={3} sx={{ mt: "-7px" }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer components={["DatePicker"]}>
                     <FormControl fullWidth>
@@ -144,20 +143,18 @@ function AddEmployee() {
                         //   handleFieldChange("dateOfBirth", dateString || ""); // Use an empty string for null values
                         // }}
                         onChange={(date) => {
-                          
                           // Only allow changing the end date if not half-day
                           if (date) {
                             handleDateChange("dateOfBirth", date.toDate());
-                          
-                        }
-                      }}
+                          }
+                        }}
                         format="DD/MM/YYYY"
                       />
                     </FormControl>
                   </DemoContainer>
                 </LocalizationProvider>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 <TextField
                   fullWidth
                   autoComplete="off"
@@ -172,8 +169,8 @@ function AddEmployee() {
                   helperText={fieldErrors.emailAddress}
                 />
               </Grid>
-              <Grid item xs={3}>
-                <TextField
+              <Grid item xs={12} sm={8} md={6} lg={3}>
+                {/* <TextField
                   fullWidth
                   autoComplete="off"
                   id="mobileNo"
@@ -185,9 +182,32 @@ function AddEmployee() {
                   }
                   error={!!fieldErrors.mobileNo}
                   helperText={fieldErrors.mobileNo}
+                /> */}
+                <TextField
+                  fullWidth
+                  autoComplete="off"
+                  id="mobileNo"
+                  name="mobileNo"
+                  label="Mobile No"
+                  value={employeeData.mobileNo}
+                  onChange={(e) => {
+                    // Remove non-numeric characters and limit the length to 10 digits
+                    const numericValue = e.target.value
+                      .replace(/\D/g, "")
+                      .slice(0, 10);
+                    handleFieldChange("mobileNo", numericValue);
+                  }}
+                  inputProps={{
+                    inputMode: "numeric", // Specify numeric input mode
+                    pattern: "[0-9]*", // Restrict input to numbers only
+                    maxLength: 10, // Set maximum length to 10 digits
+                  }}
+                  error={!!fieldErrors.mobileNo}
+                  helperText={fieldErrors.mobileNo}
                 />
               </Grid>
-              <Grid item xs={3}>
+
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.genderId}>
                   <InputLabel id="demo-simple-select-label">Gender</InputLabel>
                   <Select
@@ -214,7 +234,7 @@ function AddEmployee() {
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.designationId}>
                   <InputLabel id="demo-simple-select-label">
                     Designation
@@ -247,7 +267,7 @@ function AddEmployee() {
                 </FormControl>
               </Grid>
               {/* for selecting role */}
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.roleAssignId}>
                   <InputLabel id="demo-simple-select-label">Role</InputLabel>
                   <Select
@@ -278,7 +298,7 @@ function AddEmployee() {
                 </FormControl>
               </Grid>
               {/* //adding reporting person */}
-              <Grid item xs={3}>
+              {/* <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.reportingPersonId}>
                   <InputLabel id="demo-simple-select-label">
                     Reporting Person
@@ -301,7 +321,8 @@ function AddEmployee() {
                         key={repPerson.employeeId}
                         value={repPerson.employeeId}
                       >
-                        {repPerson.firstName}  {repPerson.lastName} ({repPerson.emailAddress})
+                        {repPerson.firstName} {repPerson.lastName} (
+                        {repPerson.emailAddress})
                       </MenuItem>
                     ))}
                   </Select>
@@ -311,9 +332,42 @@ function AddEmployee() {
                     </FormHelperText>
                   )}
                 </FormControl>
+              </Grid> */}
+              <Grid item xs={12} sm={8} md={6} lg={3}>
+                <FormControl fullWidth error={!!fieldErrors.reportingPersonId}>
+                  {/* <InputLabel id="demo-simple-select-label">
+                    Reporting Person
+                  </InputLabel> */}
+                  <Autocomplete
+                    id="reportingPersonId"
+                    // name="reportingPersonId"
+                    options={selectedReportingPersons}
+                    getOptionLabel={(repPerson) =>
+                      `${repPerson.firstName} ${repPerson.lastName} (${repPerson.emailAddress})`
+                    }
+                    value={selectedReportingPersons.find(
+                      (person) =>
+                        person.employeeId === employeeData.reportingPersonId
+                    )}
+                    onChange={(e, value) => {
+                      handleFieldChange(
+                        "reportingPersonId",
+                        value ? value.employeeId : 0
+                      );
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Reporting Person"
+                        error={!!fieldErrors.reportingPersonId}
+                        helperText={fieldErrors.reportingPersonId}
+                      />
+                    )}
+                  />
+                </FormControl>
               </Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12} sm={8} md={6} lg={3}>
                 {" "}
                 <FormControlLabel
                   required

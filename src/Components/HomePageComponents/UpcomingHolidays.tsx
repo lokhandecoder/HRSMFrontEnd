@@ -11,6 +11,7 @@ import Collapse from "@mui/material/Collapse"; // Import Collapse from Material-
 import { GetHolidaysAsync } from "../../Services/HolidaysServices";
 
 export interface Holiday {
+  id : number;
   holidayName: string;
   holidayDate: string;
 }

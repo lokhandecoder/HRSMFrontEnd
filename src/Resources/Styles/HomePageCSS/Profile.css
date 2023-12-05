@@ -33,7 +33,7 @@
   margin: 0;
 }
 
-#container .product-details h1:before {
+/* #container .product-details h1:before {
   position: absolute;
   content: "";
   right: 0%;
@@ -48,7 +48,7 @@
   color: white;
   margin: 0;
   animation: chan-sh 6s ease infinite;
-}
+} */
 .profile-picture-upload {
   position: relative;
   width: 200px;

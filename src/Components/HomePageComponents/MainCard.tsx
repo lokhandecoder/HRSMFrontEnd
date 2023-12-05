@@ -42,15 +42,15 @@ function MainCard() {
       {employeeData ? (
         <div className="product-details">
           <h1>
-            Welcome, {`${employeeData.firstName} ${employeeData.lastName}`}
+            Welcome, {employeeData.firstName} {employeeData.lastName}
           </h1>
-          <span className="hint-star star">
+          {/* <span className="hint-star star">
             <i className="fa fa-star" aria-hidden="true" />
             <i className="fa fa-star" aria-hidden="true" />
             <i className="fa fa-star" aria-hidden="true" />
             <i className="fa fa-star" aria-hidden="true" />
             <i className="fa fa-star-o" aria-hidden="true" />
-          </span>
+          </span> */}
           <h3>
             Designation:{" "}
             {employeeData.designationName}

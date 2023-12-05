@@ -26,6 +26,7 @@ import {
   TableCell,
   TableBody,
 } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
@@ -105,14 +106,139 @@ function LeaveSearch() {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3} lg={3}  sx={{ mt : 1}}>
+                {/* <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt: 1 }}>
+                  <Autocomplete
+                    fullWidth
+                    options={employeeNames}
+                    getOptionLabel={(employee) =>
+                      `${employee.firstName} ${employee.lastName}`
+                    }                    
+                    value={
+                      employeeNames.find(
+                        (employee) =>
+                          employee.employeeId === formData.employeeId
+                      ) || null
+                    }
+                    onChange={(e, value) =>
+                      handleChange("employeeId", value ? value.employeeId : 0)
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Employee Name"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid> */}
+                <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt: 1 }}>
+                  <Autocomplete
+                    fullWidth
+                    options={[
+                      { employeeId: 0, firstName: "None", lastName: "" },
+                      ...employeeNames,
+                    ]} // Adding "None" option
+                    getOptionLabel={(employee) =>
+                      `${employee.firstName} ${employee.lastName}`
+                    }
+                    value={
+                      employeeNames.find(
+                        (employee) =>
+                          employee.employeeId === formData.employeeId
+                      ) || { employeeId: 0, firstName: "None", lastName: "" } // Set default value to "None"
+                    }
+                    onChange={(e, value) =>
+                      handleChange("employeeId", value ? value.employeeId : 0)
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Employee Name"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt: 1 }}>
+                  <Autocomplete
+                    fullWidth
+                    options={[
+                      { leaveStatusId: 0, leaveStatusName: "None" },
+                      ...leaveStatuses,
+                    ]} // Adding "None" option
+                    getOptionLabel={(leave) => leave.leaveStatusName}
+                    value={
+                      leaveStatuses.find(
+                        (leave) =>
+                          leave.leaveStatusId === formData.leaveStatusId
+                      ) || { leaveStatusId: 0, leaveStatusName: "None" } // Set default value to "None"
+                    }
+                    onChange={(e, value) =>
+                      handleChange(
+                        "leaveStatusId",
+                        value ? value.leaveStatusId : 0
+                      )
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Leave Status"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid>
+
+                {/* <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt: 1 }}>
+                  <Autocomplete
+                    fullWidth
+                    options={leaveStatuses}
+                    getOptionLabel={(leave) => leave.leaveStatusName}
+                    value={
+                      leaveStatuses.find(
+                        (leave) =>
+                          leave.leaveStatusId === formData.leaveStatusId
+                      ) || null
+                    }
+                    onChange={(e, value) =>
+                      handleChange(
+                        "leaveStatusId",
+                        value ? value.leaveStatusId : 0
+                      )
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label="Leave Status"
+                        variant="outlined"
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    )}
+                  />
+                </Grid> */}
+
+                {/* <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt: 1 }}>
                   <FormControl fullWidth>
                     <InputLabel id="employee-name-label">
                       Employee Name
                     </InputLabel>
                     <Select
                       labelId="employee-name-label"
-                      value={formData.employeeId || ""} // Use formData values or empty string
+                      id="employeeId"
+                      label="EmployeeName"
+                      name="employeeId"
+                      value={formData.employeeId || ""} 
                       onChange={(e) =>
                         handleChange("employeeId", e.target.value as string)
                       }
@@ -128,14 +254,17 @@ function LeaveSearch() {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt : 1}}>
+                <Grid item xs={12} sm={4} md={3} lg={3} sx={{ mt: 1 }}>
                   <FormControl fullWidth>
                     <InputLabel id="leave-status-label">
                       Leave Status
                     </InputLabel>
                     <Select
                       labelId="leave-status-label"
-                      value={formData.leaveStatusId || ""} // Use formData values or empty string
+                      id="leaveStatusId"
+                      label="Leave Status"
+                      name="leaveStatusId"
+                      value={formData.leaveStatusId || ""} 
                       onChange={(e) =>
                         handleChange("leaveStatusId", e.target.value as string)
                       }
@@ -150,7 +279,7 @@ function LeaveSearch() {
                       ))}
                     </Select>
                   </FormControl>
-                </Grid>
+                </Grid> */}
               </Grid>
               <Grid
                 container
@@ -159,7 +288,7 @@ function LeaveSearch() {
               ></Grid>
             </Box>
           </CardContent>
-          <CardActions style={{ justifyContent: "right",}}>
+          <CardActions style={{ justifyContent: "right" }}>
             <Button
               type="submit"
               size="large"
@@ -174,7 +303,6 @@ function LeaveSearch() {
         </Card>
       </form>
       <LeaveSearchList employeeLeaveReport={employeeLeaveReport} />
-
     </>
   );
 }

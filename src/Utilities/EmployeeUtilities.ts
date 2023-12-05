@@ -71,6 +71,8 @@ export const EmployeeUtilities = (employeeId: number) => {
     // Test()
   };
 
+  
+
   // const handledob = (
   //   fieldName: keyof EmployeeModel,
   //   value: string | number | boolean
@@ -328,11 +330,26 @@ const isValidDate = (dateString:string) => {
 
     if (mobileNo.trim() === "") {
       setFieldErrors((prev) => ({ ...prev, mobileNo: "Mobile is required" }));
+
       valid = false;
     } else {
-      setFieldErrors((prev) => ({ ...prev, mobileNo: null }));
+      // setFieldErrors((prev) => ({ ...prev, mobileNo: null }));
+      const isValidMobileNumber = /^\d{10}$/.test(mobileNo);
+      if (!isValidMobileNumber) {
+        // setFieldErrors((prevErrors) => ({
+        //   ...prevErrors,
+        //   [field]: "Mobile number should contain exactly 10 digits.",
+        // }));
+        setFieldErrors((prev) => ({ ...prev, mobileNo: "Mobile number should contain exactly 10 digits" }));
+
+      } else {
+        // Clear the error if the mobile number is valid
+        setFieldErrors((prev) => ({ ...prev, mobileNo: null }));
+
+      }
      // valid = true;
     }
+
 
     if (genderId === 0) {
       setFieldErrors((prev) => ({ ...prev, genderId: "Gender is required" }));

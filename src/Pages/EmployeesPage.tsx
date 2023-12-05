@@ -73,8 +73,8 @@ const EmployeesPage = () => {
               <TableHead className="tableHead">
                 <TableRow>
                   <TableCell sx={{ color: "white" }}>Date of Joining</TableCell>
-                  <TableCell sx={{ color: "white" }}>First Name</TableCell>
-                  <TableCell sx={{ color: "white" }}>Last Name</TableCell>
+                  <TableCell sx={{ color: "white" }}>Full Name</TableCell>
+                  {/* <TableCell sx={{ color: "white" }}>Last Name</TableCell> */}
                   <TableCell sx={{ color: "white" }}>Date of Birth</TableCell>
                   <TableCell sx={{ color: "white" }}>Email Address</TableCell>
                   <TableCell sx={{ color: "white" }}>Mobile No</TableCell>
@@ -99,9 +99,9 @@ const EmployeesPage = () => {
                     <TableCell>{row.dateOfJoining}</TableCell>
                     <TableCell component="th" scope="row">
                       {" "}
-                      {row.firstName}{" "}
+                      {row.firstName}{" "}{row.lastName}
                     </TableCell>
-                    <TableCell>{row.lastName}</TableCell>
+                    {/* <TableCell>{row.lastName}</TableCell> */}
                     <TableCell>{row.dateOfBirth}</TableCell>
                     <TableCell>{row.emailAddress}</TableCell>
                     <TableCell>{row.mobileNo}</TableCell>

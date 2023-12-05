@@ -30,3 +30,15 @@ export async function GetHolidaysAsync(): Promise<{ data: Holiday[]}> {
       throw error;
     }
   };
+  export const UpdateHoliday = async (data: ManageHolidayModel) => {
+    try {
+      const response = await axios.post(`${API_URL}holiday/UpdateHoliday/`, data,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
