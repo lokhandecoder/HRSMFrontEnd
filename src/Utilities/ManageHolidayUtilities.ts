@@ -1,40 +1,96 @@
 import { ManageHolidayModel } from "../Model/ManageHolidayModel";
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { CreateHoliday, GetHolidaysAsync, UpdateHoliday } from "../Services/HolidaysServices";
+import {
+  CreateHoliday,
+  GetHolidaysAsync,
+  UpdateHoliday,
+} from "../Services/HolidaysServices";
 import dayjs, { Dayjs } from "dayjs"; //
 import { Holiday } from "../Components/HomePageComponents/UpcomingHolidays";
+import { HolidayModel } from "../Model/HolidayModel";
+import useCustomSnackbar from "../Components/CustomComponent/useCustomSnackbar";
+import { send } from "process";
 
 export const ManageHolidayUtilities = () => {
+  const today = dayjs();
+  const todayDate = today.toDate();
+  const snackbar = useCustomSnackbar();
+  const [formData, setFormData] = useState<ManageHolidayModel>({
+    // id: 0,
+    holidayName: "",
+    HolidayDate: dayjs(todayDate).format("YYYY-MM-DD"),
+  });
+  const [fieldErrors, setFieldErrors] = useState<{
+    [key: string]: string | null;
+  }>({});
   const [holidayName, setHolidayName] = useState(""); // State to store the holiday name
   const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null); // Define the type for selectedDate
   const [data, setData] = useState<Holiday[]>([]);
   const [editableRows, setEditableRows] = useState<Record<number, boolean>>({});
   const [editingRowId, setEditingRowId] = useState<number | null>(null); //
-  const handleDateChange = (date: Dayjs | null) => {
-    // Define the type for the 'date' parameter
-    setSelectedDate(date);
+
+  const handleDateChange = (name: string, date: Date | null) => {
+    setFormData({
+      ...formData,
+      [name]: date,
+    });
   };
 
   const handleAddHoliday = async () => {
-    if (holidayName && selectedDate) {
-      // const formattedDate = selectedDate.toDate(); // Convert Dayjs to Date object
-      const formattedDate = selectedDate.startOf("day").toDate(); // Extract only the date part
+    if (formData && formData.holidayName && formData.HolidayDate) {
+      if(formData.holidayName === ""){
+        // setFieldErrors((prev) => ({
+        //   ...prev,
+        //   holidayName: "Holiday Name  is required",
+        // }));
+      }else{
+        // setFieldErrors((prev) => ({ ...prev, holidayName: null }));
+        try {
+          // Format the date in the desired format ("YYYY-MM-DD") before sending
+          const formattedDate = dayjs(formData.HolidayDate).format("YYYY-MM-DD");
+    
+          const dataToSend = {
+            ...formData,  
+            HolidayDate: formattedDate,
+          };
+    
+          const sendData = await CreateHoliday(dataToSend);
+          if(sendData.data.status === 200 ){
+            snackbar.showSnackbar(
+              sendData.data.message,
+              "success",
+              { vertical: "top", horizontal: "center" },
+              5000
+            );
+          }else{
+            snackbar.showSnackbar(
+              "Failed to Add Holiday 2",
+              "error",
+              { vertical: "top", horizontal: "center" },
+              5000
+            );
+          }
+          console.log("Holiday successfully created:", sendData);
 
-      const holidayData: ManageHolidayModel = {
-        id: editingRowId !== null ? editingRowId : 0, // Provide a default value when editingRowId is null
-        holidayName: holidayName,
-        HolidayDate: formattedDate,
-      };
-      console.log("holidayData", holidayData);
-
-      try {
-        const sendData = await CreateHoliday(holidayData);
-        console.log("Holiday successfully created:", sendData);
-      } catch (error) {
-        console.error("Error creating holiday:", error);
+        } catch (error) {
+          console.error("Error creating holiday:", error);
+          snackbar.showSnackbar(
+            "Failed to Add Holiday",
+            "error",
+            { vertical: "top", horizontal: "center" },
+            5000
+          );
+        }
       }
+      
     } else {
       console.error("Please fill in both holiday name and select a date.");
+      snackbar.showSnackbar(
+        "Please fill in both holiday name and select a date.",
+        "error",
+        { vertical: "top", horizontal: "center" },
+        5000
+      );
     }
   };
   const initializeEditableRows = (length: number) => {
@@ -45,55 +101,66 @@ export const ManageHolidayUtilities = () => {
     setEditableRows(initialRowsState);
   };
 
-  //   const handleEdit = (index: number) => {
-  //     const updatedEditableRows = { ...editableRows };
-  //     updatedEditableRows[index] = true;
-  //     setEditableRows(updatedEditableRows);
-  //     setEditingRowId(index); // Set currently editing row ID
-  //   };
+
   const handleEdit = (id: number) => {
     const editingHoliday = data.find((holiday) => holiday.id === id);
-  
+
     if (editingHoliday) {
       const updatedEditableRows = { ...editableRows };
       updatedEditableRows[id] = true;
       setEditableRows(updatedEditableRows);
       setEditingRowId(id); // Set currently editing row ID
-  
-      setHolidayName(editingHoliday.holidayName);
-      setSelectedDate(dayjs(editingHoliday.holidayDate));
+
+      setFormData({
+        holidayName: editingHoliday.holidayName,
+        HolidayDate: editingHoliday.holidayDate,
+      });
+
     }
   };
 
   const handleUpdate = async () => {
-    if (holidayName && selectedDate && editingRowId !== null) {
-      const formattedDate = selectedDate.startOf("day").toDate();
-
-      const updatedHolidayData: ManageHolidayModel = {
-        id : editingRowId,
-        holidayName: holidayName,
-        HolidayDate: formattedDate,
-      };
-
+    if (formData && formData.holidayName && formData.HolidayDate && editingRowId !== null) {
       try {
-        console.log("updatedHolidayData",updatedHolidayData )
-        // Assuming you have an UpdateHolidayAsync function in your service to update the holiday data
-        // const updatedData = await UpdateHolidayAsync(editingRowId, updatedHolidayData);
+        // Format the date in the desired format ("YYYY-MM-DD") before sending
+        const formattedDate = dayjs(formData.HolidayDate).format("YYYY-MM-DD");
+  
+        const updatedHolidayData: HolidayModel = {
+          id: editingRowId,
+          holidayName: formData.holidayName,
+          HolidayDate: formattedDate,
+        };
+  
         const sendData = await UpdateHoliday(updatedHolidayData);
+        if(sendData.status === 200 ){
+          snackbar.showSnackbar(
+            sendData.message,
+            "success",
+            { vertical: "top", horizontal: "center" },
+            5000
+          );
+        }else{
+          snackbar.showSnackbar(
+            "Failed to Add Holiday 2",
+            "error",
+            { vertical: "top", horizontal: "center" },
+            5000
+          );
+        }
         console.log("Holiday successfully Updated:", sendData);
-        // Update the data with the updated holiday details returned from the API
-        const updatedHolidays = [...data];
-        // updatedHolidays[editingRowId] = updatedData;
-
-        // Update the state with the modified data
-        setData(updatedHolidays);
-        setEditableRows({ ...editableRows, [editingRowId]: false });
-        setEditingRowId(null);
+  
+        // Rest of your code for updating state etc.
       } catch (error) {
         console.error("Error updating holiday:", error);
       }
     } else {
       console.error("Please fill in both holiday name and select a date.");
+      snackbar.showSnackbar(
+        "Please fill in both holiday name and select a date.",
+        "error",
+        { vertical: "top", horizontal: "center" },
+        5000
+      );
     }
   };
 
@@ -114,6 +181,14 @@ export const ManageHolidayUtilities = () => {
     };
     fetchList();
   }, []);
+
+  const handleFieldChange = (
+    fieldName: keyof ManageHolidayModel,
+    value: string | number | boolean
+  ) => {
+    setFormData({ ...formData, [fieldName]: value });
+    // setFieldErrors((prev) => ({ ...prev, [fieldName]: null })); // Clear the error when the field changes
+  };
   return {
     selectedDate,
     handleDateChange,
@@ -124,5 +199,9 @@ export const ManageHolidayUtilities = () => {
     handleEdit,
     handleUpdate,
     editingRowId,
+    formData,
+    handleFieldChange,
+    fieldErrors,
+    snackbar,
   };
 };

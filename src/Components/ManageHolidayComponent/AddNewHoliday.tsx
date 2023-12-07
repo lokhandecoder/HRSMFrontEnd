@@ -14,17 +14,53 @@ import axios from "axios";
 import dayjs, { Dayjs } from "dayjs"; //
 import { ManageHolidayModel } from "../../Model/ManageHolidayModel";
 import { CreateHoliday } from "../../Services/HolidaysServices";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 import { ManageHolidayUtilities } from "../../Utilities/ManageHolidayUtilities";
+
+enum Severity {
+  Success = 'success',
+  Error = 'error',
+  Warning = 'warning',
+  Info = 'info',
+}
+type SnackbarSeverity = 'success' | 'error' | 'warning' | 'info';
+type CustomSeverity = 'low' | 'medium' | 'high';
+
+type Position = {
+  vertical: 'top' | 'bottom';
+  horizontal: 'left' | 'center' | 'right';
+};
+
 
 interface AddNewHolidayProps {
   selectedDate: Dayjs | null;
-  handleDateChange: (date: Dayjs | null) => void;
+  handleDateChange: (name: string, date: Date | null) => void;
   holidayName: string;
   setHolidayName: React.Dispatch<React.SetStateAction<string>>;
   handleAddHoliday: () => void;
   safeEditingRowId: number;
   handleUpdate: () => void;
-  // Other props if any
+  formData: ManageHolidayModel;
+  handleFieldChange: (
+    fieldName: keyof ManageHolidayModel,
+    value: string | number | boolean
+  ) => void; // Other props if any
+  snackbar: {
+    open: boolean;
+    message: string;
+    severity: SnackbarSeverity; // Use the appropriate severity type
+    handleSnackbarClose: () => void;
+    showSnackbar: (
+      newMessage: string,
+      newSeverity: Severity,
+      newPosition: Position,
+      newDuration: number
+    ) => void;
+    position: Position; // Using the 'Position' enum
+    duration: number;
+  };
+  // fieldErrors: string | null; // Updated type definition
 }
 
 const AddNewHoliday: React.FC<AddNewHolidayProps> = ({
@@ -35,6 +71,10 @@ const AddNewHoliday: React.FC<AddNewHolidayProps> = ({
   handleAddHoliday,
   safeEditingRowId,
   handleUpdate,
+  formData,
+  // fieldErrors,
+  snackbar,
+  handleFieldChange,
 }) => {
   // const [holidayName, setHolidayName] = useState(""); // State to store the holiday name
   // const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null); // Define the type for selectedDate
@@ -90,8 +130,16 @@ const AddNewHoliday: React.FC<AddNewHolidayProps> = ({
                 <FormControl fullWidth>
                   <DatePicker
                     label="Select the date"
-                    value={selectedDate}
-                    onChange={handleDateChange}
+                    value={
+                      formData.HolidayDate
+                        ? dayjs(formData.HolidayDate)
+                        : null
+                    }
+                    onChange={(date) => {
+                      if (date) {
+                        handleDateChange("HolidayDate", date.toDate());
+                      }
+                    }}
                   />
                 </FormControl>
               </LocalizationProvider>
@@ -102,10 +150,13 @@ const AddNewHoliday: React.FC<AddNewHolidayProps> = ({
                 label="Enter the holiday name"
                 variant="outlined"
                 fullWidth
-                value={holidayName}
+
+                name="HolidayName"
+                                // value={holidayName}
+                value={formData.holidayName}
                 // sx={{ mt: 1 }}
-                onChange={(e) => setHolidayName(e.target.value)}
-              />
+                onChange={(e) => handleFieldChange('holidayName', e.target.value)}
+                />
             </Grid>
           </Grid>
         </Box>
@@ -135,7 +186,22 @@ const AddNewHoliday: React.FC<AddNewHolidayProps> = ({
           </Button>
         )}
       </CardActions>
+      <Snackbar
+          open={snackbar.open}
+          autoHideDuration={snackbar.duration}
+          onClose={snackbar.handleSnackbarClose}
+          anchorOrigin={snackbar.position}
+        >
+          <Alert
+            onClose={snackbar.handleSnackbarClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
     </Card>
+
   );
 };
 

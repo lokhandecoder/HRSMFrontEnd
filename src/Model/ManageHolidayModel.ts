@@ -1,6 +1,7 @@
 export interface ManageHolidayModel {
-  id : number;
+  // id : number;
   holidayName: string;
-  HolidayDate: Date | null;
+  // HolidayDate: Date | null;
+  HolidayDate : string | null;
   // isActive : Boolean;
 }

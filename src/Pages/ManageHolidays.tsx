@@ -32,6 +32,10 @@ function ManageHolidays() {
     handleEdit,
     handleUpdate,
     editingRowId,
+    formData,
+    handleFieldChange,
+    fieldErrors,
+    snackbar,
   } = manageHoliday;
 
 
@@ -47,6 +51,10 @@ function ManageHolidays() {
         handleAddHoliday={handleAddHoliday}
         safeEditingRowId={safeEditingRowId}
         handleUpdate={handleUpdate}
+        formData={formData}
+        handleFieldChange={handleFieldChange}
+        snackbar={snackbar}
+        // fieldErrors={fieldErrors}
       />
       <DisplayHoliday data={data} handleEdit={handleEdit} />
     </LayoutComponent>
