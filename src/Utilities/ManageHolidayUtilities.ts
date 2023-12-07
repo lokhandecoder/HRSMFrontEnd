@@ -55,16 +55,16 @@ export const ManageHolidayUtilities = () => {
           };
     
           const sendData = await CreateHoliday(dataToSend);
-          if(sendData.data.status === 200 ){
+          if(sendData.status === 200 ){
             snackbar.showSnackbar(
-              sendData.data.message,
+              sendData.message,
               "success",
               { vertical: "top", horizontal: "center" },
               5000
             );
           }else{
             snackbar.showSnackbar(
-              "Failed to Add Holiday 2",
+              sendData.message,
               "error",
               { vertical: "top", horizontal: "center" },
               5000
