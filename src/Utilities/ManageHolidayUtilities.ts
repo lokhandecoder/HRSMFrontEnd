@@ -2,6 +2,7 @@ import { ManageHolidayModel } from "../Model/ManageHolidayModel";
 import React, { useState, useEffect, ChangeEvent } from "react";
 import {
   CreateHoliday,
+  DeleteHoliday,
   GetHolidaysAsync,
   UpdateHoliday,
 } from "../Services/HolidaysServices";
@@ -28,6 +29,25 @@ export const ManageHolidayUtilities = () => {
   const [data, setData] = useState<Holiday[]>([]);
   const [editableRows, setEditableRows] = useState<Record<number, boolean>>({});
   const [editingRowId, setEditingRowId] = useState<number | null>(null); //
+
+  const fetchList = async () => {
+    try {
+      const fetchData = await GetHolidaysAsync();
+      const fetched = fetchData.data;
+      if (Array.isArray(fetched)) {
+        setData(fetched);
+        initializeEditableRows(fetched.length);
+      } else {
+        console.error("Invalid holidays data.");
+      }
+    } catch (error) {
+      console.error("Error fetching leave types:", (error as Error).message);
+    }
+  };
+  useEffect(() => {
+    
+    fetchList();
+  }, []);
 
   const handleDateChange = (name: string, date: Date | null) => {
     setFormData({
@@ -62,6 +82,7 @@ export const ManageHolidayUtilities = () => {
               { vertical: "top", horizontal: "center" },
               5000
             );
+            fetchList()
           }else{
             snackbar.showSnackbar(
               sendData.message,
@@ -139,6 +160,7 @@ export const ManageHolidayUtilities = () => {
             { vertical: "top", horizontal: "center" },
             5000
           );
+          fetchList();
         }else{
           snackbar.showSnackbar(
             "Failed to Add Holiday 2",
@@ -164,23 +186,7 @@ export const ManageHolidayUtilities = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchList = async () => {
-      try {
-        const fetchData = await GetHolidaysAsync();
-        const fetched = fetchData.data;
-        if (Array.isArray(fetched)) {
-          setData(fetched);
-          initializeEditableRows(fetched.length);
-        } else {
-          console.error("Invalid holidays data.");
-        }
-      } catch (error) {
-        console.error("Error fetching leave types:", (error as Error).message);
-      }
-    };
-    fetchList();
-  }, []);
+
 
   const handleFieldChange = (
     fieldName: keyof ManageHolidayModel,
@@ -189,6 +195,41 @@ export const ManageHolidayUtilities = () => {
     setFormData({ ...formData, [fieldName]: value });
     // setFieldErrors((prev) => ({ ...prev, [fieldName]: null })); // Clear the error when the field changes
   };
+
+
+  const handleDelete = async (id: number) => { // Mark the function as async
+    const editingHoliday = data.find((holiday) => holiday.id === id);
+  
+    if (editingHoliday) {
+      try {
+        const fetchData = await DeleteHoliday(id); // Assuming DeleteHoliday returns a Promise
+        const fetched = fetchData.data;
+        console.log("delete", fetchData.status)
+        if(fetchData.status === 200){
+          snackbar.showSnackbar(
+            "Deleted Successfully",
+            "success",
+            { vertical: "top", horizontal: "center" },
+            5000
+          );
+          fetchList()
+        }else{
+          snackbar.showSnackbar(
+            "Failed to Delete Data",
+            "error",
+            { vertical: "top", horizontal: "center" },
+            5000
+          );
+        }
+
+        // Further logic with fetched data
+  
+      } catch (error) {
+        console.error("Error fetching leave types:", (error as Error).message);
+      }
+    }
+  }
+  
   return {
     selectedDate,
     handleDateChange,
@@ -203,5 +244,6 @@ export const ManageHolidayUtilities = () => {
     handleFieldChange,
     fieldErrors,
     snackbar,
+    handleDelete,
   };
 };

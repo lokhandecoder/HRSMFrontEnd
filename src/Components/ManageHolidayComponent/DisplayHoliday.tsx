@@ -29,10 +29,11 @@ const formatDate = (date: string) => {
 interface DisplayHolidayProps {
   data: Holiday[];
   handleEdit: (index: number) => void;
+  handleDelete: (index: number) => void;
   // Other props if present
 }
 
-const DisplayHoliday: React.FC<DisplayHolidayProps> = ({ data, handleEdit }) => {
+const DisplayHoliday: React.FC<DisplayHolidayProps> = ({ data, handleEdit , handleDelete }) => {
 
   
 
@@ -62,6 +63,13 @@ const DisplayHoliday: React.FC<DisplayHolidayProps> = ({ data, handleEdit }) => 
                         color="primary"
                       >
                         Edit
+                      </Button>
+                      <Button
+                        onClick={() => handleDelete(holiday.id)}
+                        variant="outlined"
+                        color="primary"
+                      >
+                        Delete
                       </Button>
                     </TableCell>
                   </TableRow>

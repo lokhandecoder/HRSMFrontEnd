@@ -36,6 +36,7 @@ function ManageHolidays() {
     handleFieldChange,
     fieldErrors,
     snackbar,
+    handleDelete,
   } = manageHoliday;
 
 
@@ -56,7 +57,7 @@ function ManageHolidays() {
         snackbar={snackbar}
         // fieldErrors={fieldErrors}
       />
-      <DisplayHoliday data={data} handleEdit={handleEdit} />
+      <DisplayHoliday data={data} handleEdit={handleEdit} handleDelete={handleDelete} />
     </LayoutComponent>
   );
 }
