@@ -19,6 +19,7 @@ import AppliedLeaveUpdateStatusEmail from "../Pages/AppliedLeaveUpdateStatusEmai
 import PageNotFoundPage from "../Pages/PageNotFoundPage";
 import LeaveReportsPage from "../Pages/LeaveReportsPage";
 import ManageHolidays from "../Pages/ManageHolidays";
+import ProfilePage from "../Pages/ProfilePage";
 // import ManageHolidays from "../Pages/ManageHolidays_copy";
 
 function RoutingPgae() {
@@ -98,6 +99,8 @@ function RoutingPgae() {
         return LeaveReportsPage;
       case "ManageHolidays":
         return ManageHolidays;
+      case "ProfilePage":
+        return ProfilePage;
       default:
         return null; // Return a default component or handle the error
     }

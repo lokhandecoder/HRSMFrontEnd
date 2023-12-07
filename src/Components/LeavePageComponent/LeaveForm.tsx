@@ -326,6 +326,9 @@ const LeaveForm: React.FC<LeaveFormProps> = ({ onSubmit }) => {
               onChange={handleInputChange}
               helperText={errors.leaveReason || ""}
               fullWidth
+              // inputProps={{
+              //   maxLength: 250 // Set the maximum length here
+              // }}
             />
           </CardContent>
           <CardActions style={{ justifyContent: "right" }}>

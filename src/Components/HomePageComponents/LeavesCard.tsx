@@ -35,6 +35,7 @@ function  LeavesCard() {
 
     fetchData();
   }, []);
+  console.log("employeeLeaves",employeeLeaves)
 
   return (
     <Box sx={{ flexGrow: 1, mt : 2 }}>

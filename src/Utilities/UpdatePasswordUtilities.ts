@@ -35,6 +35,18 @@ export const UpdatePasswordUtilities = () => {
 
     const { password, confirmPassword } = formData;
 
+    const passwordRegex =
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+
+    if (!password.match(passwordRegex)) {
+      setFieldErrors((prevErrors) => ({
+        ...prevErrors,
+        password:
+          "Password must contain at least 8 characters, including one letter, one number, and one special character (@$!%*#?&).",
+      }));
+      setLoading(false);
+      return;
+    }
     if (!password) {
       setFieldErrors((prevErrors) => ({
         ...prevErrors,
@@ -58,7 +70,7 @@ export const UpdatePasswordUtilities = () => {
     if (password !== confirmPassword) {
       setFieldErrors((prevErrors) => ({
         ...prevErrors,
-        confirmPassword: "Passwords do not match.",
+        confirmPassword: "Password does not match.",
       }));
       setLoading(false);
 
@@ -91,7 +103,6 @@ export const UpdatePasswordUtilities = () => {
           5000
         );
         setLoading(false);
-
       });
   };
 

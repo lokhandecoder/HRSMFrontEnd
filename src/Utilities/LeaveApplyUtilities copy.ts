@@ -57,13 +57,13 @@ const LeaveApplyUtilities = (
       //setsubmitMessageOpen(true);
       snackbar.showSnackbar(message, 'success', { vertical: 'top', horizontal: 'center' }, 5000);
       setLoading(false);
-     if( formData.appliedLeaveTypeId ===0)
+    //  if( formData.appliedLeaveTypeId ===0)
       handleClear();
     }else{
       //setsubmitMessageOpen(true);
       //handleClear();
       setLoading(false);
-      snackbar.showSnackbar(message, 'warning', { vertical: 'top', horizontal: 'center' }, 5000);
+      // snackbar.showSnackbar(message, 'warning', { vertical: 'top', horizontal: 'center' }, 5000);
     }
 
     // console.log({formData});

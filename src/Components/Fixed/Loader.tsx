@@ -1,6 +1,8 @@
 import React from 'react';
 import CircularProgress from '@mui/material/CircularProgress';
 import Dialog from '@mui/material/Dialog';
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+
 
 interface LoaderProps {
   loading: boolean;
@@ -28,7 +30,8 @@ const Loader: React.FC<LoaderProps> = ({ loading }) => {
           padding: '20px',
         }}
       >
-        <CircularProgress />
+        {/* <CircularProgress /> */}
+        <ClimbingBoxLoader color="#1976d2"  size={20} />
       </div>
     </Dialog>
   );

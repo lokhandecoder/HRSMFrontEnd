@@ -454,7 +454,7 @@ function EmployeeAppliedLeave() {
                       <TableCell>
                         {row.comments && row.comments.length > 0
                           ? row.comments[0].commentText
-                          : "No comments"}
+                          : " "}
                       </TableCell>
                       <TableCell>
                         {renderIconButton(

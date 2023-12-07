@@ -128,44 +128,113 @@ const LeaveApplyUtilities = (
   //   return false;
   // };
 
+  // const handleSubmit = async (event: React.FormEvent) => {
+  //   setLoading(true);
+
+  //   event.preventDefault();
+  //   const isValid = isFormDataValid(formData);
+  //   if (!isValid) {
+  //     setLoading(false);
+  //     return;
+  //   }
+
+  //   const applyLeave =
+  //     formData.appliedLeaveTypeId > 0
+  //       ? await updateLeaveApply(formData.appliedLeaveTypeId, formData)
+  //       : await createLeaveApply(formData);
+
+  //   const { status, message } = applyLeave;
+
+  //   if (status === 200) {
+  //     snackbar.showSnackbar(
+  //       message,
+  //       "success",
+  //       { vertical: "top", horizontal: "center" },
+  //       5000
+  //     );
+  //     setLoading(false);
+  //     if (formData.appliedLeaveTypeId === 0) handleClear();
+  //     fetchData();
+  //   } else {
+  //     fetchData();
+  //     setLoading(false);
+  //     snackbar.showSnackbar(
+  //       message,
+  //       "warning",
+  //       { vertical: "top", horizontal: "center" },
+  //       5000
+  //     );
+  //   }
+  // };
   const handleSubmit = async (event: React.FormEvent) => {
     setLoading(true);
-
+  
     event.preventDefault();
     const isValid = isFormDataValid(formData);
     if (!isValid) {
       setLoading(false);
       return;
     }
+  
+    try {
+      const applyLeave =
+        formData.appliedLeaveTypeId > 0
+          ? await updateLeaveApply(formData.appliedLeaveTypeId, formData)
+          : await createLeaveApply(formData);
 
-    const applyLeave =
-      formData.appliedLeaveTypeId > 0
-        ? await updateLeaveApply(formData.appliedLeaveTypeId, formData)
-        : await createLeaveApply(formData);
 
-    const { status, message } = applyLeave;
+          console.log("apply ", applyLeave)
+  
+      const { status, message , error  } = applyLeave;
+  
+      if (status === 200) {
+        snackbar.showSnackbar(
+          message,
+          'success',
+          { vertical: 'top', horizontal: 'center' },
+          5000
+        );
+        setLoading(false); 
+        handleClear();
+        fetchData();
+      } else {
+        fetchData();
+        setLoading(false);
+        snackbar.showSnackbar(
+          error,
+          'warning',
+          { vertical: 'top', horizontal: 'center' },
+          5000
+        );
+      }
 
-    if (status === 200) {
-      snackbar.showSnackbar(
-        message,
-        "success",
-        { vertical: "top", horizontal: "center" },
-        5000
-      );
+    } catch (error: any) {
+      // Handle errors that occur during submission or fetching
       setLoading(false);
-      if (formData.appliedLeaveTypeId === 0) handleClear();
-      fetchData();
-    } else {
-      fetchData();
-      setLoading(false);
-      snackbar.showSnackbar(
-        message,
-        "warning",
-        { vertical: "top", horizontal: "center" },
-        5000
-      );
+      console.log("error", error)
+      // if (error?.message === 'Network Error') {
+      //   const errorMessage = 'Failed to fetch leave data. Please check your network connection.';
+      //   snackbar.showSnackbar(
+      //     errorMessage,
+      //     'error',
+      //     { vertical: 'top', horizontal: 'center' },
+      //     5000
+      //   );
+      // } else {
+      //   const errorMessage = 'An error occurred. Please try again.';
+      //   console.log("error", {error})
+      //   snackbar.showSnackbar(
+      //     errorMessage,
+      //     'error',
+      //     { vertical: 'top', horizontal: 'center' },
+      //     5000
+      //   );
+      // }
+      console.error('Error:', error);
     }
   };
+  
+  
   const isFormDataValid = (formData: LeaveFormData) => {
     const newErrors: Partial<Record<keyof LeaveFormData, string>> = {};
     if (formData.leaveTypeId <= 0) {

@@ -131,6 +131,9 @@ const AppliedLeaveUpdateStatusEmail = () => {
               multiline // Make it multiline
               rows={4} // Set the number of rows
               value={comment}
+              inputProps={{
+                maxLength: 250 // Set the maximum length here
+              }}
               onChange={handleCommentChange}
             />
           </CardContent>
@@ -147,7 +150,7 @@ const AppliedLeaveUpdateStatusEmail = () => {
               onClick={handleCancel}
               disabled={isLoading}
             >
-              No
+              Cancel
             </button>
           </CardActions>
         </Card>

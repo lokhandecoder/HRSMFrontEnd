@@ -44,18 +44,22 @@ export const ForgotPageUtilities = () => {
       .then((response) => {
         console.log("Email Verification Sent Successfully:", response.data);
         snackbar.showSnackbar(
-          "Rest password link has been sent to your email",
+          "Reset password link has been sent to your email",
           "success",
           { vertical: "top", horizontal: "center" },
           5000
         );
         setLoading(false);
 
+        // window.location.reload();
+        
+
       })
       .catch((error) => {
+        // console.log("not found ", error.response.data);
         console.error("Error submitting:", error);
         snackbar.showSnackbar(
-          "Failed to Change Password",
+          error.response.data,
           "error",
           { vertical: "top", horizontal: "center" },
           5000

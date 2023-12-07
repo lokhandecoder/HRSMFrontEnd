@@ -61,6 +61,9 @@ export default function UpdatePassword() {
               helperText={fieldErrors.password}
               onChange={handleInputChange}
               value={formData.password}
+              inputProps={{
+                maxLength: 20 // Set the maximum length here
+              }}
             />
             <TextField
               margin="normal"
@@ -75,6 +78,9 @@ export default function UpdatePassword() {
               helperText={fieldErrors.confirmPassword}
               onChange={handleInputChange}
               value={formData.confirmPassword}
+              inputProps={{
+                maxLength: 20 // Set the maximum length here
+              }}
             />
             <Button
               type="submit"
