@@ -26,3 +26,23 @@ export async function GetEmployeeLeaveByEmployeeId(): Promise<{
     throw new Error("Failed to fetch leave types: " + (error as Error).message);
   }
 }
+export async function GetEmployeeLeaveById(ID : number): Promise<{
+  data: EmployeeLeave[];
+}> {
+  try {
+    // const ID = DecryptEmployeeID();
+    const response = await axios.get<{ data: EmployeeLeave[] }>(
+      `${API_URL}EmployeeLeave/GetEmployeeLeaveByEmployeeId/${ID}`,{
+        headers: {
+          Authorization: `Bearer ${TokenByLocalStorage}`,
+        },
+      }
+    );
+    // console.log("Data from New API: ", response.data.data)
+
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to fetch leave types: " + (error as Error).message);
+  }
+}
+

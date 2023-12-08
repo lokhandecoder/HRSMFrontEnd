@@ -20,6 +20,7 @@ import PageNotFoundPage from "../Pages/PageNotFoundPage";
 import LeaveReportsPage from "../Pages/LeaveReportsPage";
 import ManageHolidays from "../Pages/ManageHolidays";
 import ProfilePage from "../Pages/ProfilePage";
+import LeaveAdjustment from "../Pages/LeaveAdjustment";
 // import ManageHolidays from "../Pages/ManageHolidays_copy";
 
 function RoutingPgae() {
@@ -145,6 +146,7 @@ function RoutingPgae() {
               />
               <Route path="/profile/:id" element={<ProfilePage />} />
               <Route path="*" element={<PageNotFoundPage />} />
+              <Route path="/leaveadjustment" element={<LeaveAdjustment />}  />
             </>
           ) : (
             // If no token, redirect to the 'PageNotFoundPage' route
