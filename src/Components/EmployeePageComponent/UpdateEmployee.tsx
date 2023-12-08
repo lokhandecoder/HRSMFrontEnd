@@ -31,11 +31,16 @@ import {
   TextField,
 } from "@mui/material";
 
-function UpdateEmployee() {
-  const { id } = useParams();
-  const employeeId = id ? parseInt(id, 10) : 0;
+interface UpdateEmployeeProps {
+  employeeId?: number; // Adjust the type as needed, also make it optional with `?`
+}
 
-  const employeeUtilities = EmployeeUtilities(employeeId);
+function UpdateEmployee({ employeeId }: UpdateEmployeeProps) {
+  // const { id } = useParams();
+  // const employeeId = id ? parseInt(id, 10) : 0;
+
+  const employeeUtilities = EmployeeUtilities(employeeId! || 0);
+
 
   const {
     employeeData,
@@ -55,7 +60,7 @@ function UpdateEmployee() {
   return (
     <>
       <Card sx={{ minWidth: 275, boxShadow: 5 }}>
-        <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Employee</h1>
+        <h1 style={{ marginLeft: "1%", fontSize: "24px" }}>Your Details</h1>
 
         <CardContent>
           <Box component="form" noValidate autoComplete="off">
@@ -71,6 +76,8 @@ function UpdateEmployee() {
                       <DatePicker
                         views={["year", "month", "day"]}
                         label="Date of Joining"
+                        disabled
+                        aria-readonly
                         value={
                           employeeData.dateOfJoining
                             ? dayjs(employeeData.dateOfJoining)
@@ -161,6 +168,8 @@ function UpdateEmployee() {
                   id="emailAddress"
                   name="emailAddress"
                   label="Email Address"
+                  disabled
+                  aria-readonly
                   value={employeeData.emailAddress}
                   onChange={(e) =>
                     handleFieldChange("emailAddress", e.target.value)
@@ -234,7 +243,7 @@ function UpdateEmployee() {
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={8} md={6} lg={3}>
+              {/* <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.designationId}>
                   <InputLabel id="demo-simple-select-label">
                     Designation
@@ -244,6 +253,7 @@ function UpdateEmployee() {
                     id="designationId"
                     name="designationId"
                     label="Designation"
+                    disabled
                     value={employeeData.designationId}
                     onChange={(e) =>
                       handleFieldChange("designationId", e.target.value)
@@ -265,15 +275,16 @@ function UpdateEmployee() {
                     <FormHelperText>{fieldErrors.designationId}</FormHelperText>
                   )}
                 </FormControl>
-              </Grid>
+              </Grid> */}
               {/* for selecting role */}
-              <Grid item xs={12} sm={8} md={6} lg={3}>
+              {/* <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.roleAssignId}>
                   <InputLabel id="demo-simple-select-label">Role</InputLabel>
                   <Select
                     labelId="roleAssignId"
                     id="roleAssignId"
                     name="roleAssignId"
+                    disabled
                     label="Role"
                     value={employeeData.roleAssignId}
                     onChange={(e) =>
@@ -296,7 +307,7 @@ function UpdateEmployee() {
                     <FormHelperText>{fieldErrors.roleAssignId}</FormHelperText>
                   )}
                 </FormControl>
-              </Grid>
+              </Grid> */}
               {/* //adding reporting person */}
               {/* <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.reportingPersonId}>
@@ -308,6 +319,7 @@ function UpdateEmployee() {
                     id="reportingPersonId"
                     name="reportingPersonId"
                     label="Reporting Person"
+                    disabled
                     value={employeeData.reportingPersonId}
                     onChange={(e) =>
                       handleFieldChange("reportingPersonId", e.target.value)
@@ -333,14 +345,11 @@ function UpdateEmployee() {
                   )}
                 </FormControl>
               </Grid> */}
-              <Grid item xs={12} sm={8} md={6} lg={3}>
+              {/* <Grid item xs={12} sm={8} md={6} lg={3}>
                 <FormControl fullWidth error={!!fieldErrors.reportingPersonId}>
-                  {/* <InputLabel id="demo-simple-select-label">
-                    Reporting Person
-                  </InputLabel> */}
+
                   <Autocomplete
                     id="reportingPersonId"
-                    // name="reportingPersonId"
                     options={selectedReportingPersons}
                     getOptionLabel={(repPerson) =>
                       `${repPerson.firstName} ${repPerson.lastName} (${repPerson.emailAddress})`
@@ -365,9 +374,9 @@ function UpdateEmployee() {
                     )}
                   />
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
-              <Grid item xs={12} sm={8} md={6} lg={3}>
+              {/* <Grid item xs={12} sm={8} md={6} lg={3}>
                 {" "}
                 <FormControlLabel
                   required
@@ -376,7 +385,7 @@ function UpdateEmployee() {
                   //checked={employeeData.isActive}
                   //onChange={(e) => handleFieldChange('isActive', e.target.checked)}
                 />
-              </Grid>
+              </Grid> */}
             </Grid>
           </Box>
         </CardContent>

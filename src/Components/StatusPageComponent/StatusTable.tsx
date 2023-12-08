@@ -27,7 +27,7 @@ import DeleteForeverOutlinedIcon from "@mui/icons-material/DeleteForeverOutlined
 import DoneAllOutlinedIcon from "@mui/icons-material/DoneAllOutlined";
 //import ThumbDownOffAltOutlinedIcon from "@mui/icons-material/ThumbDownOffAltOutlined";
 import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
-import NotificationImportantIcon from '@mui/icons-material/NotificationImportant';
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 //import UnpublishedOutlinedIcon from "@mui/icons-material/UnpublishedOutlined";
 
 import {
@@ -286,6 +286,7 @@ function StatusTable() {
               <IconButton
                 aria-label="Edit"
                 onClick={() => handleEdit(appliedLeaveTypeId || 0)}
+                style={{ color: "blue" }} // Change the color here
               >
                 <EditNoteOutlinedIcon />
               </IconButton>
@@ -294,6 +295,7 @@ function StatusTable() {
               <IconButton
                 aria-label="Delete"
                 onClick={() => handleDelete(appliedLeaveTypeId || 0)}
+                style={{ color: "red" }} // Change the color here
               >
                 <DeleteForeverOutlined />
               </IconButton>
@@ -302,6 +304,7 @@ function StatusTable() {
               <IconButton
                 aria-label="reminder"
                 onClick={() => handleReminder(appliedLeaveTypeId || 0)}
+                style={{ color: "green" }} // Change the color here
               >
                 <NotificationImportantIcon />
               </IconButton>
@@ -447,19 +450,19 @@ function StatusTable() {
         />
       </TableContainer>
       <Snackbar
-          open={snackbar.open}
-          autoHideDuration={snackbar.duration}
+        open={snackbar.open}
+        autoHideDuration={snackbar.duration}
+        onClose={snackbar.handleSnackbarClose}
+        anchorOrigin={snackbar.position}
+      >
+        <Alert
           onClose={snackbar.handleSnackbarClose}
-          anchorOrigin={snackbar.position}
+          severity={snackbar.severity}
+          sx={{ width: "100%" }}
         >
-          <Alert
-            onClose={snackbar.handleSnackbarClose}
-            severity={snackbar.severity}
-            sx={{ width: "100%" }}
-          >
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
 
       <ConfirmationDialog
         isOpen={openConfirmation}

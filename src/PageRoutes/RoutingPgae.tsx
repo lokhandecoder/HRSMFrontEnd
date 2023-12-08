@@ -143,6 +143,7 @@ function RoutingPgae() {
                 path="/appliedleavestatus/:code"
                 element={<AppliedLeaveUpdateStatusEmail />}
               />
+              <Route path="/profile/:id" element={<ProfilePage />} />
               <Route path="*" element={<PageNotFoundPage />} />
             </>
           ) : (

@@ -29,6 +29,7 @@ import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import SideNavLink from "./SideNavLink";
 import { RoleByLocalStorage } from "../../APIConfig";
 import { GetLoginEmployeeByLocalStorage } from "../../Services/LocalStorageData";
+import EditProfileDialogBox from "../EditProfileDialogBox";
 
 const drawerWidth = 240;
 
@@ -110,7 +111,11 @@ export default function MiniDrawer() {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const navigate = useNavigate();
-
+  const [openConfirmation, setOpenConfirmation] =
+    React.useState<boolean>(false);
+  const handleClose = async (value: string) => {
+    setOpenConfirmation(false);
+  };
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -174,6 +179,10 @@ export default function MiniDrawer() {
   // }
 
   // Rendering the Menu component
+  const handleEditProfile = () => {
+    setOpenConfirmation(true)
+
+  }
   const storedData = GetLoginEmployeeByLocalStorage();
   const renderMenu = (
     <Menu
@@ -199,6 +208,7 @@ export default function MiniDrawer() {
       <MenuItem>
         {storedData && storedData.userName ? storedData.userName : ""}
       </MenuItem>
+      <MenuItem onClick={handleEditProfile} >Profile</MenuItem>
       <MenuItem onClick={handleSignout}>Sign Out</MenuItem>
     </Menu>
   );
@@ -423,6 +433,7 @@ export default function MiniDrawer() {
             </ListItemButton>
           </ListItem>
         </List> */}
+        <EditProfileDialogBox  openConfirmation={openConfirmation} handleClose={handleClose} />
       </Drawer>
     </Box>
   );

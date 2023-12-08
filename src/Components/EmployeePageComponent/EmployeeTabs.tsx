@@ -7,6 +7,7 @@ import AddEmployee from "./AddEmployee";
 import EmployeeBankDetails from "./EmployeeBankDetails";
 import EmployeeIdentity from "./EmployeeIdentity";
 import EmployeePassportDetailsPage from "./EmployeePassportDetailsPage";
+import UpdateEmployee from "./UpdateEmployee";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,23 +58,24 @@ export default function EmployeeTabs() {
           aria-label="basic tabs example"
         >
           <Tab label="Add Employee" {...a11yProps(0)} />
-          <Tab label="Bank Details" {...a11yProps(1)} />
+          {/* <Tab label="Bank Details" {...a11yProps(1)} />
           <Tab label="Identity Details" {...a11yProps(2)} />
           <Tab label="Passport Details" {...a11yProps(3)} />
-          <Tab label="Identity Details" {...a11yProps(4)} />
+          <Tab label="Identity Details" {...a11yProps(4)} /> */}
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
+        {/* <UpdateEmployee /> */}
         <AddEmployee />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <EmployeeBankDetails />
+        {/* <EmployeeBankDetails /> */}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
-        <EmployeeIdentity />
+        {/* <EmployeeIdentity /> */}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={3}>
-        <EmployeePassportDetailsPage />
+        {/* <EmployeePassportDetailsPage /> */}
       </CustomTabPanel>
       <CustomTabPanel value={value} index={4}></CustomTabPanel>
     </Box>
