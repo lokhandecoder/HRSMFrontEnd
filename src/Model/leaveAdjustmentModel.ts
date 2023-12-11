@@ -1,7 +1,7 @@
 export interface leaveAdjustmentModel{
     employeeId : number
-    addLeaves : number,
-    deleteLeaves : number,
-    leaveReason : string;
+    adjustmentAdd: number | null;
+    adjustmentDel: number | null;
+    // leaveReason : string;
 
 }

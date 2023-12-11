@@ -267,8 +267,8 @@ function LeaveAdjustment() {
                     }
                     value={
                       selectedOption === "Add"
-                        ? formData.addLeaves
-                        : formData.deleteLeaves
+                        ? formData.adjustmentAdd
+                        : formData.adjustmentDel
                     }
                     onChange={(e) => handleNoOfDays(e.target.value)}
                     inputProps={{
@@ -278,7 +278,7 @@ function LeaveAdjustment() {
                 </Grid>
               </Grid>
             </Box>
-            <TextField
+            {/* <TextField
               error={!!fieldErrors.leaveReason} // Set error state
               sx={{ mt: 1 }}
               id="leaveReason"
@@ -293,7 +293,7 @@ function LeaveAdjustment() {
               inputProps={{
                 maxLength: 250, // Set the maximum length here
               }}
-            />
+            /> */}
           </CardContent>
           <CardActions style={{ justifyContent: "right" }}>
             <Button
