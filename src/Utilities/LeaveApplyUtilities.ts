@@ -55,7 +55,7 @@ const LeaveApplyUtilities = (
       if (Array.isArray(fetched)) {
         const holidayDates = fetched.map((holiday) => {
           const date = dayjs(holiday.holidayDate); // Create a dayjs object from the holiday date
-          return date.format("YYYY-MM-DD"); // Format the date to "YYYY-MM-DD"
+          return date.format("DD/MM/YYYY"); // Format the date to "YYYY-MM-DD"
         });
 
         console.log("Holiday Dates (yyyy-mm-dd):", holidayDates);
@@ -99,7 +99,10 @@ const LeaveApplyUtilities = (
   };
 
   const isPublicHoliday = (date: Date) => {
-    const dateString = date.toISOString().split("T")[0];
+    // const dateString = date.toISOString().split("T")[0];
+
+    const dateString = dayjs(date).format("DD/MM/YYYY");
+
     return publicHolidaysList.some((holiday) => holiday === dateString);
   };
 
@@ -168,33 +171,32 @@ const LeaveApplyUtilities = (
   // };
   const handleSubmit = async (event: React.FormEvent) => {
     setLoading(true);
-  
+
     event.preventDefault();
     const isValid = isFormDataValid(formData);
     if (!isValid) {
       setLoading(false);
       return;
     }
-  
+
     try {
       const applyLeave =
         formData.appliedLeaveTypeId > 0
           ? await updateLeaveApply(formData.appliedLeaveTypeId, formData)
           : await createLeaveApply(formData);
 
+      console.log("apply ", applyLeave);
 
-          console.log("apply ", applyLeave)
-  
-      const { status, message , error  } = applyLeave;
-  
+      const { status, message, error } = applyLeave;
+
       if (status === 200) {
         snackbar.showSnackbar(
           message,
-          'success',
-          { vertical: 'top', horizontal: 'center' },
+          "success",
+          { vertical: "top", horizontal: "center" },
           5000
         );
-        setLoading(false); 
+        setLoading(false);
         handleClear();
         fetchData();
       } else {
@@ -202,16 +204,15 @@ const LeaveApplyUtilities = (
         setLoading(false);
         snackbar.showSnackbar(
           error,
-          'warning',
-          { vertical: 'top', horizontal: 'center' },
+          "warning",
+          { vertical: "top", horizontal: "center" },
           5000
         );
       }
-
     } catch (error: any) {
       // Handle errors that occur during submission or fetching
       setLoading(false);
-      console.log("error", error)
+      console.log("error", error);
       // if (error?.message === 'Network Error') {
       //   const errorMessage = 'Failed to fetch leave data. Please check your network connection.';
       //   snackbar.showSnackbar(
@@ -230,11 +231,10 @@ const LeaveApplyUtilities = (
       //     5000
       //   );
       // }
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
-  
-  
+
   const isFormDataValid = (formData: LeaveFormData) => {
     const newErrors: Partial<Record<keyof LeaveFormData, string>> = {};
     if (formData.leaveTypeId <= 0) {
@@ -415,7 +415,7 @@ const LeaveApplyUtilities = (
   //   }
   // };
 
-  const differenceChecker = () => {
+  const differenceChecker2 = () => {
     const date1 = dayjs(formData.startDate);
     const date2 = dayjs(formData.endDate);
     const differenceInDays = date2.diff(date1, "day") + 1; // Including both start and end days
@@ -430,6 +430,8 @@ const LeaveApplyUtilities = (
       { length: differenceInDays },
       (_, index) => date1.add(index, "day")
     ).filter((date) => isPublicHoliday(date.toDate()));
+
+    console.log({ publicHolidaysList });
 
     const publicHolidaysCount = publicHolidaysBetween.length;
 
@@ -450,6 +452,98 @@ const LeaveApplyUtilities = (
       );
       return finaldays;
     }
+  };
+  function calculateDateDifference(startDate: string, endDate: string): number {
+    // Formatting start and end dates using Day.js
+    const formattedStartDate = dayjs(startDate).format("DD/MM/YYYY");
+    const formattedEndDate = dayjs(endDate).format("DD/MM/YYYY");
+
+    // Parsing the formatted strings back into Day.js objects
+    const parsedStartDate = dayjs(formattedStartDate, "DD/MM/YYYY");
+    const parsedEndDate = dayjs(formattedEndDate, "DD/MM/YYYY");
+
+    // Check if the dates are the same
+    if (parsedEndDate.isSame(parsedStartDate, "day")) {
+      return 1; // If dates are the same, return 1
+    }
+
+    // Calculating the difference in days, excluding Sundays
+    let differenceInDays = parsedEndDate.diff(parsedStartDate, "day") + 1; // Include the end date
+
+    // Excluding Sundays from the difference
+    const start = parsedStartDate.toDate();
+    const end = parsedEndDate.toDate();
+
+    for (let date = start; date <= end; date.setDate(date.getDate() + 1)) {
+      if (date.getDay() === 0 || date.getDay() === 6) {
+        differenceInDays--; // Reduce the count if the day is Sunday
+      }
+    }
+
+    return differenceInDays;
+  }
+
+  //
+  function countHolidaysInRange(startDate: string, endDate: string): number {
+    const [startDay, startMonth, startYear] = startDate.split('/').map(Number);
+    const [endDay, endMonth, endYear] = endDate.split('/').map(Number);
+  
+    const startTimestamp: number = new Date(startYear, startMonth - 1, startDay).getTime();
+    const endTimestamp: number = new Date(endYear, endMonth - 1, endDay).getTime();
+  
+    let count: number = 0;
+  
+    for (const holiday of publicHolidaysList) {
+      const [holidayDay, holidayMonth, holidayYear] = holiday.split('/').map(Number);
+      const holidayTimestamp: number = new Date(holidayYear, holidayMonth - 1, holidayDay).getTime();
+  
+      if (holidayTimestamp >= startTimestamp && holidayTimestamp <= endTimestamp) {
+        count++;
+      }
+    }
+  
+    return count;
+  }
+  //
+  const differenceChecker = () => {
+    const date1 = new Date(formData.startDate);
+    const date2 = new Date(formData.endDate);
+    const formattedDate1 = dayjs(date1).format('DD/MM/YYYY');
+    const formattedDate2 = dayjs(date2).format('DD/MM/YYYY');
+
+
+
+    let differenceInDays = calculateDateDifference(
+      formData.startDate,
+      formData.endDate
+    );
+
+
+    const excludePublicHolidayCount = countHolidaysInRange(formattedDate1, formattedDate2);
+
+    console.log("countHolidaysInRange", excludePublicHolidayCount);
+
+    // const publicHolidaysCount = publicHolidaysBetween.length;
+    // console.log("publicHolidaysCount", publicHolidaysCount)
+
+    // if(publicHolidaysCount){
+    //    let removePublicholiday = differenceInDays - publicHolidaysCount
+    //    return removePublicholiday;
+    // }else{
+    //   return differenceInDays
+
+    // }
+
+    //var test123 = new Date(date11);
+    console.log("***************");
+    console.log({ differenceInDays });
+    console.log("***************");
+    let finaldays = differenceInDays - excludePublicHolidayCount;
+
+    setdifference(finaldays);
+
+    console.log({ finaldays });
+    return finaldays;
   };
 
   const Test = () => {
