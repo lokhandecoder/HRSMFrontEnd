@@ -541,6 +541,7 @@ const LeaveApplyUtilities = (
     let finaldays = differenceInDays - excludePublicHolidayCount;
 
     setdifference(finaldays);
+    //comment by AMit Lokhande
 
     console.log({ finaldays });
     return finaldays;
